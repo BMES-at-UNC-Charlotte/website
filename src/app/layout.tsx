@@ -1,9 +1,22 @@
 import "@/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Crimson_Text, Fraunces } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import { cn } from "@/lib/utils";
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  weight: "400",
+});
+
+const crimsonText = Crimson_Text({
+  subsets: ["latin"],
+  variable: "--font-crimson",
+  weight: "400",
+});
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -11,17 +24,15 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`}>
-      <body>
+    <html
+      lang="en"
+      className={cn(fraunces.variable, crimsonText.variable, "dark")}
+    >
+      <body suppressHydrationWarning>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
