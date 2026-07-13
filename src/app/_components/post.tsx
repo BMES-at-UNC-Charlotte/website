@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
-
-import { api } from "@/trpc/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { api } from "@/trpc/react";
+import { useState } from "react";
 
 export function LatestPost() {
   const [latestPost] = api.post.getLatest.useSuspenseQuery();
@@ -21,11 +20,11 @@ export function LatestPost() {
   return (
     <div className="w-full max-w-xs space-y-3">
       {latestPost ? (
-        <p className="truncate text-sm text-muted-foreground">
+        <p className="text-muted-foreground truncate text-sm">
           Your most recent post: {latestPost.name}
         </p>
       ) : (
-        <p className="text-sm text-muted-foreground">You have no posts yet.</p>
+        <p className="text-muted-foreground text-sm">You have no posts yet.</p>
       )}
       <form
         onSubmit={(e) => {
