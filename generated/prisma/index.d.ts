@@ -3,7 +3,7 @@
  * Client
 **/
 
-import * as runtime from './runtime/library.js';
+import * as runtime from './runtime/client.js';
 import $Types = runtime.Types // general types
 import $Public = runtime.Types.Public
 import $Utils = runtime.Types.Utils
@@ -14,6 +14,16 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
+ * Model RegistrationAttempt
+ * 
+ */
+export type RegistrationAttempt = $Result.DefaultSelection<Prisma.$RegistrationAttemptPayload>
+/**
+ * Model EmployerRegistration
+ * 
+ */
+export type EmployerRegistration = $Result.DefaultSelection<Prisma.$EmployerRegistrationPayload>
+/**
  * Model Post
  * 
  */
@@ -23,6 +33,11 @@ export type Post = $Result.DefaultSelection<Prisma.$PostPayload>
  * 
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
+/**
+ * Model AdminUser
+ * 
+ */
+export type AdminUser = $Result.DefaultSelection<Prisma.$AdminUserPayload>
 /**
  * Model Session
  * 
@@ -40,18 +55,65 @@ export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
 export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const RegistrationAttemptStatus: {
+  PENDING: 'PENDING',
+  REQUIRES_ACTION: 'REQUIRES_ACTION',
+  PROCESSING: 'PROCESSING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+};
+
+export type RegistrationAttemptStatus = (typeof RegistrationAttemptStatus)[keyof typeof RegistrationAttemptStatus]
+
+
+export const RegistrationPaymentStatus: {
+  PROCESSING: 'PROCESSING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+};
+
+export type RegistrationPaymentStatus = (typeof RegistrationPaymentStatus)[keyof typeof RegistrationPaymentStatus]
+
+
+export const AdminRole: {
+  ADMIN: 'ADMIN',
+  OFFICER: 'OFFICER'
+};
+
+export type AdminRole = (typeof AdminRole)[keyof typeof AdminRole]
+
+}
+
+export type RegistrationAttemptStatus = $Enums.RegistrationAttemptStatus
+
+export const RegistrationAttemptStatus: typeof $Enums.RegistrationAttemptStatus
+
+export type RegistrationPaymentStatus = $Enums.RegistrationPaymentStatus
+
+export const RegistrationPaymentStatus: typeof $Enums.RegistrationPaymentStatus
+
+export type AdminRole = $Enums.AdminRole
+
+export const AdminRole: typeof $Enums.AdminRole
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
  * @example
  * ```
- * const prisma = new PrismaClient()
- * // Fetch zero or more Posts
- * const posts = await prisma.post.findMany()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
+ * // Fetch zero or more RegistrationAttempts
+ * const registrationAttempts = await prisma.registrationAttempt.findMany()
  * ```
  *
  *
- * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+ * Read more in our [docs](https://pris.ly/d/client).
  */
 export class PrismaClient<
   ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
@@ -66,16 +128,18 @@ export class PrismaClient<
    * Type-safe database client for TypeScript & Node.js
    * @example
    * ```
-   * const prisma = new PrismaClient()
-   * // Fetch zero or more Posts
-   * const posts = await prisma.post.findMany()
+   * const prisma = new PrismaClient({
+   *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * })
+   * // Fetch zero or more RegistrationAttempts
+   * const registrationAttempts = await prisma.registrationAttempt.findMany()
    * ```
    *
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+   * Read more in our [docs](https://pris.ly/d/client).
    */
 
-  constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
+  constructor(optionsArg ?: Prisma.PrismaClientConstructorArgs<ClientOptions>);
   $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): PrismaClient;
 
   /**
@@ -95,7 +159,7 @@ export class PrismaClient<
    * const result = await prisma.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -107,7 +171,7 @@ export class PrismaClient<
    * const result = await prisma.$executeRawUnsafe('UPDATE User SET cool = $1 WHERE email = $2 ;', true, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -118,7 +182,7 @@ export class PrismaClient<
    * const result = await prisma.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -130,7 +194,7 @@ export class PrismaClient<
    * const result = await prisma.$queryRawUnsafe('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -146,18 +210,37 @@ export class PrismaClient<
    * ])
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
-  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
-
 
   $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb<ClientOptions>, ExtArgs, $Utils.Call<Prisma.TypeMapCb<ClientOptions>, {
     extArgs: ExtArgs
   }>>
 
       /**
+   * `prisma.registrationAttempt`: Exposes CRUD operations for the **RegistrationAttempt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RegistrationAttempts
+    * const registrationAttempts = await prisma.registrationAttempt.findMany()
+    * ```
+    */
+  get registrationAttempt(): Prisma.RegistrationAttemptDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.employerRegistration`: Exposes CRUD operations for the **EmployerRegistration** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployerRegistrations
+    * const employerRegistrations = await prisma.employerRegistration.findMany()
+    * ```
+    */
+  get employerRegistration(): Prisma.EmployerRegistrationDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.post`: Exposes CRUD operations for the **Post** model.
     * Example usage:
     * ```ts
@@ -176,6 +259,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.adminUser`: Exposes CRUD operations for the **AdminUser** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdminUsers
+    * const adminUsers = await prisma.adminUser.findMany()
+    * ```
+    */
+  get adminUser(): Prisma.AdminUserDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.session`: Exposes CRUD operations for the **Session** model.
@@ -246,14 +339,6 @@ export namespace Prisma {
   export type DecimalJsLike = runtime.DecimalJsLike
 
   /**
-   * Metrics
-   */
-  export type Metrics = runtime.Metrics
-  export type Metric<T> = runtime.Metric<T>
-  export type MetricHistogram = runtime.MetricHistogram
-  export type MetricHistogramBucket = runtime.MetricHistogramBucket
-
-  /**
   * Extensions
   */
   export import Extension = $Extensions.UserArgs
@@ -264,11 +349,12 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.19.3
-   * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
+   * Prisma Client JS version: 7.9.1
+   * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
    */
   export type PrismaVersion = {
     client: string
+    engine: string
   }
 
   export const prismaVersion: PrismaVersion
@@ -399,6 +485,19 @@ export namespace Prisma {
   };
 
   /**
+   * Resolved type of the argument passed to the `PrismaClient` constructor.
+   *
+   * When called without a narrower options type (the common case), this resolves
+   * to `PrismaClientOptions` directly, which produces a clear TypeScript error
+   * message (`not assignable to parameter of type 'PrismaClientOptions'`) when
+   * the argument is missing or incomplete. When the user supplies a narrower
+   * options type (e.g. via a literal), it falls back to `Subset` to keep
+   * filtering out unknown properties.
+   */
+  export type PrismaClientConstructorArgs<Options extends PrismaClientOptions> =
+    [PrismaClientOptions] extends [Options] ? PrismaClientOptions : Subset<Options, PrismaClientOptions>;
+
+  /**
    * SelectSubset
    * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
    * Additionally, it validates, if both select and include are present. If the case, it errors.
@@ -430,7 +529,7 @@ export namespace Prisma {
   type XOR<T, U> =
     T extends object ?
     U extends object ?
-      (Without<T, U> & U) | (Without<U, T> & T)
+      ((Without<T, U> & U) | (Without<U, T> & T)) & object
     : U : T
 
 
@@ -647,8 +746,11 @@ export namespace Prisma {
 
 
   export const ModelName: {
+    RegistrationAttempt: 'RegistrationAttempt',
+    EmployerRegistration: 'EmployerRegistration',
     Post: 'Post',
     User: 'User',
+    AdminUser: 'AdminUser',
     Session: 'Session',
     Account: 'Account',
     Verification: 'Verification'
@@ -657,9 +759,6 @@ export namespace Prisma {
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
 
 
-  export type Datasources = {
-    db?: Datasource
-  }
 
   interface TypeMapCb<ClientOptions = {}> extends $Utils.Fn<{extArgs: $Extensions.InternalArgs }, $Utils.Record<string, any>> {
     returns: Prisma.TypeMap<this['params']['extArgs'], ClientOptions extends { omit: infer OmitOptions } ? OmitOptions : {}>
@@ -670,10 +769,158 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "user" | "session" | "account" | "verification"
+      modelProps: "registrationAttempt" | "employerRegistration" | "post" | "user" | "adminUser" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
+      RegistrationAttempt: {
+        payload: Prisma.$RegistrationAttemptPayload<ExtArgs>
+        fields: Prisma.RegistrationAttemptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RegistrationAttemptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RegistrationAttemptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>
+          }
+          findFirst: {
+            args: Prisma.RegistrationAttemptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RegistrationAttemptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>
+          }
+          findMany: {
+            args: Prisma.RegistrationAttemptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>[]
+          }
+          create: {
+            args: Prisma.RegistrationAttemptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>
+          }
+          createMany: {
+            args: Prisma.RegistrationAttemptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RegistrationAttemptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>[]
+          }
+          delete: {
+            args: Prisma.RegistrationAttemptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>
+          }
+          update: {
+            args: Prisma.RegistrationAttemptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>
+          }
+          deleteMany: {
+            args: Prisma.RegistrationAttemptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RegistrationAttemptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RegistrationAttemptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>[]
+          }
+          upsert: {
+            args: Prisma.RegistrationAttemptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RegistrationAttemptPayload>
+          }
+          aggregate: {
+            args: Prisma.RegistrationAttemptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRegistrationAttempt>
+          }
+          groupBy: {
+            args: Prisma.RegistrationAttemptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RegistrationAttemptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RegistrationAttemptCountArgs<ExtArgs>
+            result: $Utils.Optional<RegistrationAttemptCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmployerRegistration: {
+        payload: Prisma.$EmployerRegistrationPayload<ExtArgs>
+        fields: Prisma.EmployerRegistrationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmployerRegistrationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmployerRegistrationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>
+          }
+          findFirst: {
+            args: Prisma.EmployerRegistrationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmployerRegistrationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>
+          }
+          findMany: {
+            args: Prisma.EmployerRegistrationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>[]
+          }
+          create: {
+            args: Prisma.EmployerRegistrationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>
+          }
+          createMany: {
+            args: Prisma.EmployerRegistrationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmployerRegistrationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>[]
+          }
+          delete: {
+            args: Prisma.EmployerRegistrationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>
+          }
+          update: {
+            args: Prisma.EmployerRegistrationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmployerRegistrationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmployerRegistrationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmployerRegistrationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>[]
+          }
+          upsert: {
+            args: Prisma.EmployerRegistrationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPayload>
+          }
+          aggregate: {
+            args: Prisma.EmployerRegistrationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmployerRegistration>
+          }
+          groupBy: {
+            args: Prisma.EmployerRegistrationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmployerRegistrationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmployerRegistrationCountArgs<ExtArgs>
+            result: $Utils.Optional<EmployerRegistrationCountAggregateOutputType> | number
+          }
+        }
+      }
       Post: {
         payload: Prisma.$PostPayload<ExtArgs>
         fields: Prisma.PostFieldRefs
@@ -819,6 +1066,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      AdminUser: {
+        payload: Prisma.$AdminUserPayload<ExtArgs>
+        fields: Prisma.AdminUserFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminUserFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminUserFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminUserFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminUserFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>
+          }
+          findMany: {
+            args: Prisma.AdminUserFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>[]
+          }
+          create: {
+            args: Prisma.AdminUserCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>
+          }
+          createMany: {
+            args: Prisma.AdminUserCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminUserCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminUserDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>
+          }
+          update: {
+            args: Prisma.AdminUserUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminUserDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminUserUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdminUserUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdminUserUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminUserPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminUserAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdminUser>
+          }
+          groupBy: {
+            args: Prisma.AdminUserGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminUserGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminUserCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminUserCountAggregateOutputType> | number
           }
         }
       }
@@ -1073,14 +1394,6 @@ export namespace Prisma {
   export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
   export interface PrismaClientOptions {
     /**
-     * Overwrites the datasource url from your schema.prisma file
-     */
-    datasources?: Datasources
-    /**
-     * Overwrites the datasource url from your schema.prisma file
-     */
-    datasourceUrl?: string
-    /**
      * @default "colorless"
      */
     errorFormat?: ErrorFormat
@@ -1106,7 +1419,7 @@ export namespace Prisma {
      *  { emit: 'stdout', level: 'error' }
      * 
      * ```
-     * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
+     * Read more in our [docs](https://pris.ly/d/logging).
      */
     log?: (LogLevel | LogDefinition)[]
     /**
@@ -1120,9 +1433,28 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
-     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
+     * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
+     * 
+     * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
+     * 
+     * Learn more: https://pris.ly/d/driver-adapters
+     * 
+     * @example
+     * ```ts
+     * import { PrismaPg } from '@prisma/adapter-pg'
+     * import { PrismaClient } from './generated/prisma/client'
+     * 
+     * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+     * const prisma = new PrismaClient({ adapter })
+     * ```
      */
-    adapter?: runtime.SqlDriverAdapterFactory | null
+    adapter?: runtime.SqlDriverAdapterFactory
+    /**
+     * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
+     * 
+     * Learn more: https://pris.ly/d/accelerate
+     */
+    accelerateUrl?: string
     /**
      * Global configuration for omitting model fields by default.
      * 
@@ -1138,10 +1470,29 @@ export namespace Prisma {
      * ```
      */
     omit?: Prisma.GlobalOmitConfig
+    /**
+     * SQL commenter plugins that add metadata to SQL queries as comments.
+     * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
+     * 
+     * @example
+     * ```
+     * const prisma = new PrismaClient({
+     *   adapter,
+     *   comments: [
+     *     traceContext(),
+     *     queryInsights(),
+     *   ],
+     * })
+     * ```
+     */
+    comments?: runtime.SqlCommenterPlugin[]
   }
   export type GlobalOmitConfig = {
+    registrationAttempt?: RegistrationAttemptOmit
+    employerRegistration?: EmployerRegistrationOmit
     post?: PostOmit
     user?: UserOmit
+    adminUser?: AdminUserOmit
     session?: SessionOmit
     account?: AccountOmit
     verification?: VerificationOmit
@@ -1228,12 +1579,14 @@ export namespace Prisma {
     sessions: number
     accounts: number
     posts: number
+    adminUsersCreated: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     posts?: boolean | UserCountOutputTypeCountPostsArgs
+    adminUsersCreated?: boolean | UserCountOutputTypeCountAdminUsersCreatedArgs
   }
 
   // Custom InputTypes
@@ -1268,10 +1621,2801 @@ export namespace Prisma {
     where?: PostWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAdminUsersCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminUserWhereInput
+  }
+
 
   /**
    * Models
    */
+
+  /**
+   * Model RegistrationAttempt
+   */
+
+  export type AggregateRegistrationAttempt = {
+    _count: RegistrationAttemptCountAggregateOutputType | null
+    _avg: RegistrationAttemptAvgAggregateOutputType | null
+    _sum: RegistrationAttemptSumAggregateOutputType | null
+    _min: RegistrationAttemptMinAggregateOutputType | null
+    _max: RegistrationAttemptMaxAggregateOutputType | null
+  }
+
+  export type RegistrationAttemptAvgAggregateOutputType = {
+    additionalRepCount: number | null
+    additionalRepUnitAmount: number | null
+    amount: number | null
+  }
+
+  export type RegistrationAttemptSumAggregateOutputType = {
+    additionalRepCount: number | null
+    additionalRepUnitAmount: number | null
+    amount: number | null
+  }
+
+  export type RegistrationAttemptMinAggregateOutputType = {
+    id: string | null
+    idempotencyKey: string | null
+    selectedPriceId: string | null
+    stripeProductId: string | null
+    tierName: string | null
+    confirmationTokenId: string | null
+    additionalRepPriceId: string | null
+    additionalRepProductId: string | null
+    additionalRepCount: number | null
+    additionalRepUnitAmount: number | null
+    stripePaymentIntentId: string | null
+    amount: number | null
+    currency: string | null
+    status: $Enums.RegistrationAttemptStatus | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RegistrationAttemptMaxAggregateOutputType = {
+    id: string | null
+    idempotencyKey: string | null
+    selectedPriceId: string | null
+    stripeProductId: string | null
+    tierName: string | null
+    confirmationTokenId: string | null
+    additionalRepPriceId: string | null
+    additionalRepProductId: string | null
+    additionalRepCount: number | null
+    additionalRepUnitAmount: number | null
+    stripePaymentIntentId: string | null
+    amount: number | null
+    currency: string | null
+    status: $Enums.RegistrationAttemptStatus | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RegistrationAttemptCountAggregateOutputType = {
+    id: number
+    idempotencyKey: number
+    formPayload: number
+    selectedPriceId: number
+    stripeProductId: number
+    tierName: number
+    confirmationTokenId: number
+    additionalRepPriceId: number
+    additionalRepProductId: number
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: number
+    amount: number
+    currency: number
+    status: number
+    expiresAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RegistrationAttemptAvgAggregateInputType = {
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    amount?: true
+  }
+
+  export type RegistrationAttemptSumAggregateInputType = {
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    amount?: true
+  }
+
+  export type RegistrationAttemptMinAggregateInputType = {
+    id?: true
+    idempotencyKey?: true
+    selectedPriceId?: true
+    stripeProductId?: true
+    tierName?: true
+    confirmationTokenId?: true
+    additionalRepPriceId?: true
+    additionalRepProductId?: true
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    stripePaymentIntentId?: true
+    amount?: true
+    currency?: true
+    status?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RegistrationAttemptMaxAggregateInputType = {
+    id?: true
+    idempotencyKey?: true
+    selectedPriceId?: true
+    stripeProductId?: true
+    tierName?: true
+    confirmationTokenId?: true
+    additionalRepPriceId?: true
+    additionalRepProductId?: true
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    stripePaymentIntentId?: true
+    amount?: true
+    currency?: true
+    status?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RegistrationAttemptCountAggregateInputType = {
+    id?: true
+    idempotencyKey?: true
+    formPayload?: true
+    selectedPriceId?: true
+    stripeProductId?: true
+    tierName?: true
+    confirmationTokenId?: true
+    additionalRepPriceId?: true
+    additionalRepProductId?: true
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    stripePaymentIntentId?: true
+    amount?: true
+    currency?: true
+    status?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RegistrationAttemptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RegistrationAttempt to aggregate.
+     */
+    where?: RegistrationAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RegistrationAttempts to fetch.
+     */
+    orderBy?: RegistrationAttemptOrderByWithRelationInput | RegistrationAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RegistrationAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RegistrationAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RegistrationAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RegistrationAttempts
+    **/
+    _count?: true | RegistrationAttemptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RegistrationAttemptAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RegistrationAttemptSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RegistrationAttemptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RegistrationAttemptMaxAggregateInputType
+  }
+
+  export type GetRegistrationAttemptAggregateType<T extends RegistrationAttemptAggregateArgs> = {
+        [P in keyof T & keyof AggregateRegistrationAttempt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRegistrationAttempt[P]>
+      : GetScalarType<T[P], AggregateRegistrationAttempt[P]>
+  }
+
+
+
+
+  export type RegistrationAttemptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RegistrationAttemptWhereInput
+    orderBy?: RegistrationAttemptOrderByWithAggregationInput | RegistrationAttemptOrderByWithAggregationInput[]
+    by: RegistrationAttemptScalarFieldEnum[] | RegistrationAttemptScalarFieldEnum
+    having?: RegistrationAttemptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RegistrationAttemptCountAggregateInputType | true
+    _avg?: RegistrationAttemptAvgAggregateInputType
+    _sum?: RegistrationAttemptSumAggregateInputType
+    _min?: RegistrationAttemptMinAggregateInputType
+    _max?: RegistrationAttemptMaxAggregateInputType
+  }
+
+  export type RegistrationAttemptGroupByOutputType = {
+    id: string
+    idempotencyKey: string
+    formPayload: JsonValue
+    selectedPriceId: string
+    stripeProductId: string
+    tierName: string
+    confirmationTokenId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: string | null
+    amount: number
+    currency: string
+    status: $Enums.RegistrationAttemptStatus
+    expiresAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: RegistrationAttemptCountAggregateOutputType | null
+    _avg: RegistrationAttemptAvgAggregateOutputType | null
+    _sum: RegistrationAttemptSumAggregateOutputType | null
+    _min: RegistrationAttemptMinAggregateOutputType | null
+    _max: RegistrationAttemptMaxAggregateOutputType | null
+  }
+
+  type GetRegistrationAttemptGroupByPayload<T extends RegistrationAttemptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RegistrationAttemptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RegistrationAttemptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RegistrationAttemptGroupByOutputType[P]>
+            : GetScalarType<T[P], RegistrationAttemptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RegistrationAttemptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    idempotencyKey?: boolean
+    formPayload?: boolean
+    selectedPriceId?: boolean
+    stripeProductId?: boolean
+    tierName?: boolean
+    confirmationTokenId?: boolean
+    additionalRepPriceId?: boolean
+    additionalRepProductId?: boolean
+    additionalRepCount?: boolean
+    additionalRepUnitAmount?: boolean
+    stripePaymentIntentId?: boolean
+    amount?: boolean
+    currency?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    registration?: boolean | RegistrationAttempt$registrationArgs<ExtArgs>
+  }, ExtArgs["result"]["registrationAttempt"]>
+
+  export type RegistrationAttemptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    idempotencyKey?: boolean
+    formPayload?: boolean
+    selectedPriceId?: boolean
+    stripeProductId?: boolean
+    tierName?: boolean
+    confirmationTokenId?: boolean
+    additionalRepPriceId?: boolean
+    additionalRepProductId?: boolean
+    additionalRepCount?: boolean
+    additionalRepUnitAmount?: boolean
+    stripePaymentIntentId?: boolean
+    amount?: boolean
+    currency?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["registrationAttempt"]>
+
+  export type RegistrationAttemptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    idempotencyKey?: boolean
+    formPayload?: boolean
+    selectedPriceId?: boolean
+    stripeProductId?: boolean
+    tierName?: boolean
+    confirmationTokenId?: boolean
+    additionalRepPriceId?: boolean
+    additionalRepProductId?: boolean
+    additionalRepCount?: boolean
+    additionalRepUnitAmount?: boolean
+    stripePaymentIntentId?: boolean
+    amount?: boolean
+    currency?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["registrationAttempt"]>
+
+  export type RegistrationAttemptSelectScalar = {
+    id?: boolean
+    idempotencyKey?: boolean
+    formPayload?: boolean
+    selectedPriceId?: boolean
+    stripeProductId?: boolean
+    tierName?: boolean
+    confirmationTokenId?: boolean
+    additionalRepPriceId?: boolean
+    additionalRepProductId?: boolean
+    additionalRepCount?: boolean
+    additionalRepUnitAmount?: boolean
+    stripePaymentIntentId?: boolean
+    amount?: boolean
+    currency?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RegistrationAttemptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "idempotencyKey" | "formPayload" | "selectedPriceId" | "stripeProductId" | "tierName" | "confirmationTokenId" | "additionalRepPriceId" | "additionalRepProductId" | "additionalRepCount" | "additionalRepUnitAmount" | "stripePaymentIntentId" | "amount" | "currency" | "status" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["registrationAttempt"]>
+  export type RegistrationAttemptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    registration?: boolean | RegistrationAttempt$registrationArgs<ExtArgs>
+  }
+  export type RegistrationAttemptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type RegistrationAttemptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $RegistrationAttemptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RegistrationAttempt"
+    objects: {
+      registration: Prisma.$EmployerRegistrationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      idempotencyKey: string
+      formPayload: Prisma.JsonValue
+      selectedPriceId: string
+      stripeProductId: string
+      tierName: string
+      confirmationTokenId: string
+      additionalRepPriceId: string
+      additionalRepProductId: string
+      additionalRepCount: number
+      additionalRepUnitAmount: number
+      stripePaymentIntentId: string | null
+      amount: number
+      currency: string
+      status: $Enums.RegistrationAttemptStatus
+      expiresAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["registrationAttempt"]>
+    composites: {}
+  }
+
+  type RegistrationAttemptGetPayload<S extends boolean | null | undefined | RegistrationAttemptDefaultArgs> = $Result.GetResult<Prisma.$RegistrationAttemptPayload, S>
+
+  type RegistrationAttemptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RegistrationAttemptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RegistrationAttemptCountAggregateInputType | true
+    }
+
+  export interface RegistrationAttemptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RegistrationAttempt'], meta: { name: 'RegistrationAttempt' } }
+    /**
+     * Find zero or one RegistrationAttempt that matches the filter.
+     * @param {RegistrationAttemptFindUniqueArgs} args - Arguments to find a RegistrationAttempt
+     * @example
+     * // Get one RegistrationAttempt
+     * const registrationAttempt = await prisma.registrationAttempt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RegistrationAttemptFindUniqueArgs>(args: SelectSubset<T, RegistrationAttemptFindUniqueArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RegistrationAttempt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RegistrationAttemptFindUniqueOrThrowArgs} args - Arguments to find a RegistrationAttempt
+     * @example
+     * // Get one RegistrationAttempt
+     * const registrationAttempt = await prisma.registrationAttempt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RegistrationAttemptFindUniqueOrThrowArgs>(args: SelectSubset<T, RegistrationAttemptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RegistrationAttempt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationAttemptFindFirstArgs} args - Arguments to find a RegistrationAttempt
+     * @example
+     * // Get one RegistrationAttempt
+     * const registrationAttempt = await prisma.registrationAttempt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RegistrationAttemptFindFirstArgs>(args?: SelectSubset<T, RegistrationAttemptFindFirstArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RegistrationAttempt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationAttemptFindFirstOrThrowArgs} args - Arguments to find a RegistrationAttempt
+     * @example
+     * // Get one RegistrationAttempt
+     * const registrationAttempt = await prisma.registrationAttempt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RegistrationAttemptFindFirstOrThrowArgs>(args?: SelectSubset<T, RegistrationAttemptFindFirstOrThrowArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RegistrationAttempts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationAttemptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RegistrationAttempts
+     * const registrationAttempts = await prisma.registrationAttempt.findMany()
+     * 
+     * // Get first 10 RegistrationAttempts
+     * const registrationAttempts = await prisma.registrationAttempt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const registrationAttemptWithIdOnly = await prisma.registrationAttempt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RegistrationAttemptFindManyArgs>(args?: SelectSubset<T, RegistrationAttemptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RegistrationAttempt.
+     * @param {RegistrationAttemptCreateArgs} args - Arguments to create a RegistrationAttempt.
+     * @example
+     * // Create one RegistrationAttempt
+     * const RegistrationAttempt = await prisma.registrationAttempt.create({
+     *   data: {
+     *     // ... data to create a RegistrationAttempt
+     *   }
+     * })
+     * 
+     */
+    create<T extends RegistrationAttemptCreateArgs>(args: SelectSubset<T, RegistrationAttemptCreateArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RegistrationAttempts.
+     * @param {RegistrationAttemptCreateManyArgs} args - Arguments to create many RegistrationAttempts.
+     * @example
+     * // Create many RegistrationAttempts
+     * const registrationAttempt = await prisma.registrationAttempt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RegistrationAttemptCreateManyArgs>(args?: SelectSubset<T, RegistrationAttemptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RegistrationAttempts and returns the data saved in the database.
+     * @param {RegistrationAttemptCreateManyAndReturnArgs} args - Arguments to create many RegistrationAttempts.
+     * @example
+     * // Create many RegistrationAttempts
+     * const registrationAttempt = await prisma.registrationAttempt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RegistrationAttempts and only return the `id`
+     * const registrationAttemptWithIdOnly = await prisma.registrationAttempt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RegistrationAttemptCreateManyAndReturnArgs>(args?: SelectSubset<T, RegistrationAttemptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RegistrationAttempt.
+     * @param {RegistrationAttemptDeleteArgs} args - Arguments to delete one RegistrationAttempt.
+     * @example
+     * // Delete one RegistrationAttempt
+     * const RegistrationAttempt = await prisma.registrationAttempt.delete({
+     *   where: {
+     *     // ... filter to delete one RegistrationAttempt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RegistrationAttemptDeleteArgs>(args: SelectSubset<T, RegistrationAttemptDeleteArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RegistrationAttempt.
+     * @param {RegistrationAttemptUpdateArgs} args - Arguments to update one RegistrationAttempt.
+     * @example
+     * // Update one RegistrationAttempt
+     * const registrationAttempt = await prisma.registrationAttempt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RegistrationAttemptUpdateArgs>(args: SelectSubset<T, RegistrationAttemptUpdateArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RegistrationAttempts.
+     * @param {RegistrationAttemptDeleteManyArgs} args - Arguments to filter RegistrationAttempts to delete.
+     * @example
+     * // Delete a few RegistrationAttempts
+     * const { count } = await prisma.registrationAttempt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RegistrationAttemptDeleteManyArgs>(args?: SelectSubset<T, RegistrationAttemptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RegistrationAttempts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationAttemptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RegistrationAttempts
+     * const registrationAttempt = await prisma.registrationAttempt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RegistrationAttemptUpdateManyArgs>(args: SelectSubset<T, RegistrationAttemptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RegistrationAttempts and returns the data updated in the database.
+     * @param {RegistrationAttemptUpdateManyAndReturnArgs} args - Arguments to update many RegistrationAttempts.
+     * @example
+     * // Update many RegistrationAttempts
+     * const registrationAttempt = await prisma.registrationAttempt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RegistrationAttempts and only return the `id`
+     * const registrationAttemptWithIdOnly = await prisma.registrationAttempt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RegistrationAttemptUpdateManyAndReturnArgs>(args: SelectSubset<T, RegistrationAttemptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RegistrationAttempt.
+     * @param {RegistrationAttemptUpsertArgs} args - Arguments to update or create a RegistrationAttempt.
+     * @example
+     * // Update or create a RegistrationAttempt
+     * const registrationAttempt = await prisma.registrationAttempt.upsert({
+     *   create: {
+     *     // ... data to create a RegistrationAttempt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RegistrationAttempt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RegistrationAttemptUpsertArgs>(args: SelectSubset<T, RegistrationAttemptUpsertArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RegistrationAttempts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationAttemptCountArgs} args - Arguments to filter RegistrationAttempts to count.
+     * @example
+     * // Count the number of RegistrationAttempts
+     * const count = await prisma.registrationAttempt.count({
+     *   where: {
+     *     // ... the filter for the RegistrationAttempts we want to count
+     *   }
+     * })
+    **/
+    count<T extends RegistrationAttemptCountArgs>(
+      args?: Subset<T, RegistrationAttemptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RegistrationAttemptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RegistrationAttempt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationAttemptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RegistrationAttemptAggregateArgs>(args: Subset<T, RegistrationAttemptAggregateArgs>): Prisma.PrismaPromise<GetRegistrationAttemptAggregateType<T>>
+
+    /**
+     * Group by RegistrationAttempt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationAttemptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RegistrationAttemptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RegistrationAttemptGroupByArgs['orderBy'] }
+        : { orderBy?: RegistrationAttemptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RegistrationAttemptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRegistrationAttemptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RegistrationAttempt model
+   */
+  readonly fields: RegistrationAttemptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RegistrationAttempt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RegistrationAttemptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    registration<T extends RegistrationAttempt$registrationArgs<ExtArgs> = {}>(args?: Subset<T, RegistrationAttempt$registrationArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RegistrationAttempt model
+   */
+  interface RegistrationAttemptFieldRefs {
+    readonly id: FieldRef<"RegistrationAttempt", 'String'>
+    readonly idempotencyKey: FieldRef<"RegistrationAttempt", 'String'>
+    readonly formPayload: FieldRef<"RegistrationAttempt", 'Json'>
+    readonly selectedPriceId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly stripeProductId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly tierName: FieldRef<"RegistrationAttempt", 'String'>
+    readonly confirmationTokenId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly additionalRepPriceId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly additionalRepProductId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly additionalRepCount: FieldRef<"RegistrationAttempt", 'Int'>
+    readonly additionalRepUnitAmount: FieldRef<"RegistrationAttempt", 'Int'>
+    readonly stripePaymentIntentId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly amount: FieldRef<"RegistrationAttempt", 'Int'>
+    readonly currency: FieldRef<"RegistrationAttempt", 'String'>
+    readonly status: FieldRef<"RegistrationAttempt", 'RegistrationAttemptStatus'>
+    readonly expiresAt: FieldRef<"RegistrationAttempt", 'DateTime'>
+    readonly createdAt: FieldRef<"RegistrationAttempt", 'DateTime'>
+    readonly updatedAt: FieldRef<"RegistrationAttempt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RegistrationAttempt findUnique
+   */
+  export type RegistrationAttemptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which RegistrationAttempt to fetch.
+     */
+    where: RegistrationAttemptWhereUniqueInput
+  }
+
+  /**
+   * RegistrationAttempt findUniqueOrThrow
+   */
+  export type RegistrationAttemptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which RegistrationAttempt to fetch.
+     */
+    where: RegistrationAttemptWhereUniqueInput
+  }
+
+  /**
+   * RegistrationAttempt findFirst
+   */
+  export type RegistrationAttemptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which RegistrationAttempt to fetch.
+     */
+    where?: RegistrationAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RegistrationAttempts to fetch.
+     */
+    orderBy?: RegistrationAttemptOrderByWithRelationInput | RegistrationAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RegistrationAttempts.
+     */
+    cursor?: RegistrationAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RegistrationAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RegistrationAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RegistrationAttempts.
+     */
+    distinct?: RegistrationAttemptScalarFieldEnum | RegistrationAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * RegistrationAttempt findFirstOrThrow
+   */
+  export type RegistrationAttemptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which RegistrationAttempt to fetch.
+     */
+    where?: RegistrationAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RegistrationAttempts to fetch.
+     */
+    orderBy?: RegistrationAttemptOrderByWithRelationInput | RegistrationAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RegistrationAttempts.
+     */
+    cursor?: RegistrationAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RegistrationAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RegistrationAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RegistrationAttempts.
+     */
+    distinct?: RegistrationAttemptScalarFieldEnum | RegistrationAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * RegistrationAttempt findMany
+   */
+  export type RegistrationAttemptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * Filter, which RegistrationAttempts to fetch.
+     */
+    where?: RegistrationAttemptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RegistrationAttempts to fetch.
+     */
+    orderBy?: RegistrationAttemptOrderByWithRelationInput | RegistrationAttemptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RegistrationAttempts.
+     */
+    cursor?: RegistrationAttemptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RegistrationAttempts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RegistrationAttempts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RegistrationAttempts.
+     */
+    distinct?: RegistrationAttemptScalarFieldEnum | RegistrationAttemptScalarFieldEnum[]
+  }
+
+  /**
+   * RegistrationAttempt create
+   */
+  export type RegistrationAttemptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RegistrationAttempt.
+     */
+    data: XOR<RegistrationAttemptCreateInput, RegistrationAttemptUncheckedCreateInput>
+  }
+
+  /**
+   * RegistrationAttempt createMany
+   */
+  export type RegistrationAttemptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RegistrationAttempts.
+     */
+    data: RegistrationAttemptCreateManyInput | RegistrationAttemptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RegistrationAttempt createManyAndReturn
+   */
+  export type RegistrationAttemptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * The data used to create many RegistrationAttempts.
+     */
+    data: RegistrationAttemptCreateManyInput | RegistrationAttemptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RegistrationAttempt update
+   */
+  export type RegistrationAttemptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RegistrationAttempt.
+     */
+    data: XOR<RegistrationAttemptUpdateInput, RegistrationAttemptUncheckedUpdateInput>
+    /**
+     * Choose, which RegistrationAttempt to update.
+     */
+    where: RegistrationAttemptWhereUniqueInput
+  }
+
+  /**
+   * RegistrationAttempt updateMany
+   */
+  export type RegistrationAttemptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RegistrationAttempts.
+     */
+    data: XOR<RegistrationAttemptUpdateManyMutationInput, RegistrationAttemptUncheckedUpdateManyInput>
+    /**
+     * Filter which RegistrationAttempts to update
+     */
+    where?: RegistrationAttemptWhereInput
+    /**
+     * Limit how many RegistrationAttempts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RegistrationAttempt updateManyAndReturn
+   */
+  export type RegistrationAttemptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * The data used to update RegistrationAttempts.
+     */
+    data: XOR<RegistrationAttemptUpdateManyMutationInput, RegistrationAttemptUncheckedUpdateManyInput>
+    /**
+     * Filter which RegistrationAttempts to update
+     */
+    where?: RegistrationAttemptWhereInput
+    /**
+     * Limit how many RegistrationAttempts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RegistrationAttempt upsert
+   */
+  export type RegistrationAttemptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RegistrationAttempt to update in case it exists.
+     */
+    where: RegistrationAttemptWhereUniqueInput
+    /**
+     * In case the RegistrationAttempt found by the `where` argument doesn't exist, create a new RegistrationAttempt with this data.
+     */
+    create: XOR<RegistrationAttemptCreateInput, RegistrationAttemptUncheckedCreateInput>
+    /**
+     * In case the RegistrationAttempt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RegistrationAttemptUpdateInput, RegistrationAttemptUncheckedUpdateInput>
+  }
+
+  /**
+   * RegistrationAttempt delete
+   */
+  export type RegistrationAttemptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+    /**
+     * Filter which RegistrationAttempt to delete.
+     */
+    where: RegistrationAttemptWhereUniqueInput
+  }
+
+  /**
+   * RegistrationAttempt deleteMany
+   */
+  export type RegistrationAttemptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RegistrationAttempts to delete
+     */
+    where?: RegistrationAttemptWhereInput
+    /**
+     * Limit how many RegistrationAttempts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RegistrationAttempt.registration
+   */
+  export type RegistrationAttempt$registrationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    where?: EmployerRegistrationWhereInput
+  }
+
+  /**
+   * RegistrationAttempt without action
+   */
+  export type RegistrationAttemptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationAttempt
+     */
+    select?: RegistrationAttemptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RegistrationAttempt
+     */
+    omit?: RegistrationAttemptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RegistrationAttemptInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmployerRegistration
+   */
+
+  export type AggregateEmployerRegistration = {
+    _count: EmployerRegistrationCountAggregateOutputType | null
+    _avg: EmployerRegistrationAvgAggregateOutputType | null
+    _sum: EmployerRegistrationSumAggregateOutputType | null
+    _min: EmployerRegistrationMinAggregateOutputType | null
+    _max: EmployerRegistrationMaxAggregateOutputType | null
+  }
+
+  export type EmployerRegistrationAvgAggregateOutputType = {
+    representativeCount: number | null
+    additionalRepCount: number | null
+    additionalRepUnitAmount: number | null
+    amount: number | null
+  }
+
+  export type EmployerRegistrationSumAggregateOutputType = {
+    representativeCount: number | null
+    additionalRepCount: number | null
+    additionalRepUnitAmount: number | null
+    amount: number | null
+  }
+
+  export type EmployerRegistrationMinAggregateOutputType = {
+    id: string | null
+    attemptId: string | null
+    companyName: string | null
+    contactName: string | null
+    title: string | null
+    representativeCount: number | null
+    addressCountry: string | null
+    addressState: string | null
+    addressPostalCode: string | null
+    addressCity: string | null
+    addressStreet: string | null
+    division: string | null
+    phone: string | null
+    email: string | null
+    fax: string | null
+    thirdPartyRecruiter: boolean | null
+    alumni: boolean | null
+    website: string | null
+    overview: string | null
+    workAuthorizationOther: string | null
+    tierName: string | null
+    stripeProductId: string | null
+    stripePriceId: string | null
+    additionalRepPriceId: string | null
+    additionalRepProductId: string | null
+    additionalRepCount: number | null
+    additionalRepUnitAmount: number | null
+    stripePaymentIntentId: string | null
+    amount: number | null
+    currency: string | null
+    paymentStatus: $Enums.RegistrationPaymentStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployerRegistrationMaxAggregateOutputType = {
+    id: string | null
+    attemptId: string | null
+    companyName: string | null
+    contactName: string | null
+    title: string | null
+    representativeCount: number | null
+    addressCountry: string | null
+    addressState: string | null
+    addressPostalCode: string | null
+    addressCity: string | null
+    addressStreet: string | null
+    division: string | null
+    phone: string | null
+    email: string | null
+    fax: string | null
+    thirdPartyRecruiter: boolean | null
+    alumni: boolean | null
+    website: string | null
+    overview: string | null
+    workAuthorizationOther: string | null
+    tierName: string | null
+    stripeProductId: string | null
+    stripePriceId: string | null
+    additionalRepPriceId: string | null
+    additionalRepProductId: string | null
+    additionalRepCount: number | null
+    additionalRepUnitAmount: number | null
+    stripePaymentIntentId: string | null
+    amount: number | null
+    currency: string | null
+    paymentStatus: $Enums.RegistrationPaymentStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployerRegistrationCountAggregateOutputType = {
+    id: number
+    attemptId: number
+    companyName: number
+    contactName: number
+    title: number
+    representativeCount: number
+    addressCountry: number
+    addressState: number
+    addressPostalCode: number
+    addressCity: number
+    addressStreet: number
+    division: number
+    phone: number
+    email: number
+    fax: number
+    thirdPartyRecruiter: number
+    alumni: number
+    website: number
+    overview: number
+    majorsRecruiting: number
+    workAuthorizations: number
+    workAuthorizationOther: number
+    degreeLevels: number
+    positionsAvailable: number
+    tierName: number
+    stripeProductId: number
+    stripePriceId: number
+    additionalRepPriceId: number
+    additionalRepProductId: number
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: number
+    amount: number
+    currency: number
+    paymentStatus: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmployerRegistrationAvgAggregateInputType = {
+    representativeCount?: true
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    amount?: true
+  }
+
+  export type EmployerRegistrationSumAggregateInputType = {
+    representativeCount?: true
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    amount?: true
+  }
+
+  export type EmployerRegistrationMinAggregateInputType = {
+    id?: true
+    attemptId?: true
+    companyName?: true
+    contactName?: true
+    title?: true
+    representativeCount?: true
+    addressCountry?: true
+    addressState?: true
+    addressPostalCode?: true
+    addressCity?: true
+    addressStreet?: true
+    division?: true
+    phone?: true
+    email?: true
+    fax?: true
+    thirdPartyRecruiter?: true
+    alumni?: true
+    website?: true
+    overview?: true
+    workAuthorizationOther?: true
+    tierName?: true
+    stripeProductId?: true
+    stripePriceId?: true
+    additionalRepPriceId?: true
+    additionalRepProductId?: true
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    stripePaymentIntentId?: true
+    amount?: true
+    currency?: true
+    paymentStatus?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployerRegistrationMaxAggregateInputType = {
+    id?: true
+    attemptId?: true
+    companyName?: true
+    contactName?: true
+    title?: true
+    representativeCount?: true
+    addressCountry?: true
+    addressState?: true
+    addressPostalCode?: true
+    addressCity?: true
+    addressStreet?: true
+    division?: true
+    phone?: true
+    email?: true
+    fax?: true
+    thirdPartyRecruiter?: true
+    alumni?: true
+    website?: true
+    overview?: true
+    workAuthorizationOther?: true
+    tierName?: true
+    stripeProductId?: true
+    stripePriceId?: true
+    additionalRepPriceId?: true
+    additionalRepProductId?: true
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    stripePaymentIntentId?: true
+    amount?: true
+    currency?: true
+    paymentStatus?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployerRegistrationCountAggregateInputType = {
+    id?: true
+    attemptId?: true
+    companyName?: true
+    contactName?: true
+    title?: true
+    representativeCount?: true
+    addressCountry?: true
+    addressState?: true
+    addressPostalCode?: true
+    addressCity?: true
+    addressStreet?: true
+    division?: true
+    phone?: true
+    email?: true
+    fax?: true
+    thirdPartyRecruiter?: true
+    alumni?: true
+    website?: true
+    overview?: true
+    majorsRecruiting?: true
+    workAuthorizations?: true
+    workAuthorizationOther?: true
+    degreeLevels?: true
+    positionsAvailable?: true
+    tierName?: true
+    stripeProductId?: true
+    stripePriceId?: true
+    additionalRepPriceId?: true
+    additionalRepProductId?: true
+    additionalRepCount?: true
+    additionalRepUnitAmount?: true
+    stripePaymentIntentId?: true
+    amount?: true
+    currency?: true
+    paymentStatus?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmployerRegistrationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployerRegistration to aggregate.
+     */
+    where?: EmployerRegistrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployerRegistrations to fetch.
+     */
+    orderBy?: EmployerRegistrationOrderByWithRelationInput | EmployerRegistrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmployerRegistrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployerRegistrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployerRegistrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmployerRegistrations
+    **/
+    _count?: true | EmployerRegistrationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EmployerRegistrationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EmployerRegistrationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmployerRegistrationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmployerRegistrationMaxAggregateInputType
+  }
+
+  export type GetEmployerRegistrationAggregateType<T extends EmployerRegistrationAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmployerRegistration]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmployerRegistration[P]>
+      : GetScalarType<T[P], AggregateEmployerRegistration[P]>
+  }
+
+
+
+
+  export type EmployerRegistrationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployerRegistrationWhereInput
+    orderBy?: EmployerRegistrationOrderByWithAggregationInput | EmployerRegistrationOrderByWithAggregationInput[]
+    by: EmployerRegistrationScalarFieldEnum[] | EmployerRegistrationScalarFieldEnum
+    having?: EmployerRegistrationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmployerRegistrationCountAggregateInputType | true
+    _avg?: EmployerRegistrationAvgAggregateInputType
+    _sum?: EmployerRegistrationSumAggregateInputType
+    _min?: EmployerRegistrationMinAggregateInputType
+    _max?: EmployerRegistrationMaxAggregateInputType
+  }
+
+  export type EmployerRegistrationGroupByOutputType = {
+    id: string
+    attemptId: string
+    companyName: string
+    contactName: string
+    title: string | null
+    representativeCount: number
+    addressCountry: string
+    addressState: string
+    addressPostalCode: string
+    addressCity: string
+    addressStreet: string
+    division: string | null
+    phone: string
+    email: string
+    fax: string | null
+    thirdPartyRecruiter: boolean
+    alumni: boolean | null
+    website: string | null
+    overview: string
+    majorsRecruiting: string[]
+    workAuthorizations: string[]
+    workAuthorizationOther: string | null
+    degreeLevels: string[]
+    positionsAvailable: string[]
+    tierName: string
+    stripeProductId: string
+    stripePriceId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: string
+    amount: number
+    currency: string
+    paymentStatus: $Enums.RegistrationPaymentStatus
+    createdAt: Date
+    updatedAt: Date
+    _count: EmployerRegistrationCountAggregateOutputType | null
+    _avg: EmployerRegistrationAvgAggregateOutputType | null
+    _sum: EmployerRegistrationSumAggregateOutputType | null
+    _min: EmployerRegistrationMinAggregateOutputType | null
+    _max: EmployerRegistrationMaxAggregateOutputType | null
+  }
+
+  type GetEmployerRegistrationGroupByPayload<T extends EmployerRegistrationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmployerRegistrationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmployerRegistrationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmployerRegistrationGroupByOutputType[P]>
+            : GetScalarType<T[P], EmployerRegistrationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmployerRegistrationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    attemptId?: boolean
+    companyName?: boolean
+    contactName?: boolean
+    title?: boolean
+    representativeCount?: boolean
+    addressCountry?: boolean
+    addressState?: boolean
+    addressPostalCode?: boolean
+    addressCity?: boolean
+    addressStreet?: boolean
+    division?: boolean
+    phone?: boolean
+    email?: boolean
+    fax?: boolean
+    thirdPartyRecruiter?: boolean
+    alumni?: boolean
+    website?: boolean
+    overview?: boolean
+    majorsRecruiting?: boolean
+    workAuthorizations?: boolean
+    workAuthorizationOther?: boolean
+    degreeLevels?: boolean
+    positionsAvailable?: boolean
+    tierName?: boolean
+    stripeProductId?: boolean
+    stripePriceId?: boolean
+    additionalRepPriceId?: boolean
+    additionalRepProductId?: boolean
+    additionalRepCount?: boolean
+    additionalRepUnitAmount?: boolean
+    stripePaymentIntentId?: boolean
+    amount?: boolean
+    currency?: boolean
+    paymentStatus?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    attempt?: boolean | RegistrationAttemptDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employerRegistration"]>
+
+  export type EmployerRegistrationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    attemptId?: boolean
+    companyName?: boolean
+    contactName?: boolean
+    title?: boolean
+    representativeCount?: boolean
+    addressCountry?: boolean
+    addressState?: boolean
+    addressPostalCode?: boolean
+    addressCity?: boolean
+    addressStreet?: boolean
+    division?: boolean
+    phone?: boolean
+    email?: boolean
+    fax?: boolean
+    thirdPartyRecruiter?: boolean
+    alumni?: boolean
+    website?: boolean
+    overview?: boolean
+    majorsRecruiting?: boolean
+    workAuthorizations?: boolean
+    workAuthorizationOther?: boolean
+    degreeLevels?: boolean
+    positionsAvailable?: boolean
+    tierName?: boolean
+    stripeProductId?: boolean
+    stripePriceId?: boolean
+    additionalRepPriceId?: boolean
+    additionalRepProductId?: boolean
+    additionalRepCount?: boolean
+    additionalRepUnitAmount?: boolean
+    stripePaymentIntentId?: boolean
+    amount?: boolean
+    currency?: boolean
+    paymentStatus?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    attempt?: boolean | RegistrationAttemptDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employerRegistration"]>
+
+  export type EmployerRegistrationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    attemptId?: boolean
+    companyName?: boolean
+    contactName?: boolean
+    title?: boolean
+    representativeCount?: boolean
+    addressCountry?: boolean
+    addressState?: boolean
+    addressPostalCode?: boolean
+    addressCity?: boolean
+    addressStreet?: boolean
+    division?: boolean
+    phone?: boolean
+    email?: boolean
+    fax?: boolean
+    thirdPartyRecruiter?: boolean
+    alumni?: boolean
+    website?: boolean
+    overview?: boolean
+    majorsRecruiting?: boolean
+    workAuthorizations?: boolean
+    workAuthorizationOther?: boolean
+    degreeLevels?: boolean
+    positionsAvailable?: boolean
+    tierName?: boolean
+    stripeProductId?: boolean
+    stripePriceId?: boolean
+    additionalRepPriceId?: boolean
+    additionalRepProductId?: boolean
+    additionalRepCount?: boolean
+    additionalRepUnitAmount?: boolean
+    stripePaymentIntentId?: boolean
+    amount?: boolean
+    currency?: boolean
+    paymentStatus?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    attempt?: boolean | RegistrationAttemptDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employerRegistration"]>
+
+  export type EmployerRegistrationSelectScalar = {
+    id?: boolean
+    attemptId?: boolean
+    companyName?: boolean
+    contactName?: boolean
+    title?: boolean
+    representativeCount?: boolean
+    addressCountry?: boolean
+    addressState?: boolean
+    addressPostalCode?: boolean
+    addressCity?: boolean
+    addressStreet?: boolean
+    division?: boolean
+    phone?: boolean
+    email?: boolean
+    fax?: boolean
+    thirdPartyRecruiter?: boolean
+    alumni?: boolean
+    website?: boolean
+    overview?: boolean
+    majorsRecruiting?: boolean
+    workAuthorizations?: boolean
+    workAuthorizationOther?: boolean
+    degreeLevels?: boolean
+    positionsAvailable?: boolean
+    tierName?: boolean
+    stripeProductId?: boolean
+    stripePriceId?: boolean
+    additionalRepPriceId?: boolean
+    additionalRepProductId?: boolean
+    additionalRepCount?: boolean
+    additionalRepUnitAmount?: boolean
+    stripePaymentIntentId?: boolean
+    amount?: boolean
+    currency?: boolean
+    paymentStatus?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmployerRegistrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "attemptId" | "companyName" | "contactName" | "title" | "representativeCount" | "addressCountry" | "addressState" | "addressPostalCode" | "addressCity" | "addressStreet" | "division" | "phone" | "email" | "fax" | "thirdPartyRecruiter" | "alumni" | "website" | "overview" | "majorsRecruiting" | "workAuthorizations" | "workAuthorizationOther" | "degreeLevels" | "positionsAvailable" | "tierName" | "stripeProductId" | "stripePriceId" | "additionalRepPriceId" | "additionalRepProductId" | "additionalRepCount" | "additionalRepUnitAmount" | "stripePaymentIntentId" | "amount" | "currency" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["employerRegistration"]>
+  export type EmployerRegistrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attempt?: boolean | RegistrationAttemptDefaultArgs<ExtArgs>
+  }
+  export type EmployerRegistrationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attempt?: boolean | RegistrationAttemptDefaultArgs<ExtArgs>
+  }
+  export type EmployerRegistrationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attempt?: boolean | RegistrationAttemptDefaultArgs<ExtArgs>
+  }
+
+  export type $EmployerRegistrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmployerRegistration"
+    objects: {
+      attempt: Prisma.$RegistrationAttemptPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      attemptId: string
+      companyName: string
+      contactName: string
+      title: string | null
+      representativeCount: number
+      addressCountry: string
+      addressState: string
+      addressPostalCode: string
+      addressCity: string
+      addressStreet: string
+      division: string | null
+      phone: string
+      email: string
+      fax: string | null
+      thirdPartyRecruiter: boolean
+      alumni: boolean | null
+      website: string | null
+      overview: string
+      majorsRecruiting: string[]
+      workAuthorizations: string[]
+      workAuthorizationOther: string | null
+      degreeLevels: string[]
+      positionsAvailable: string[]
+      tierName: string
+      stripeProductId: string
+      stripePriceId: string
+      additionalRepPriceId: string
+      additionalRepProductId: string
+      additionalRepCount: number
+      additionalRepUnitAmount: number
+      stripePaymentIntentId: string
+      amount: number
+      currency: string
+      paymentStatus: $Enums.RegistrationPaymentStatus
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["employerRegistration"]>
+    composites: {}
+  }
+
+  type EmployerRegistrationGetPayload<S extends boolean | null | undefined | EmployerRegistrationDefaultArgs> = $Result.GetResult<Prisma.$EmployerRegistrationPayload, S>
+
+  type EmployerRegistrationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmployerRegistrationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmployerRegistrationCountAggregateInputType | true
+    }
+
+  export interface EmployerRegistrationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmployerRegistration'], meta: { name: 'EmployerRegistration' } }
+    /**
+     * Find zero or one EmployerRegistration that matches the filter.
+     * @param {EmployerRegistrationFindUniqueArgs} args - Arguments to find a EmployerRegistration
+     * @example
+     * // Get one EmployerRegistration
+     * const employerRegistration = await prisma.employerRegistration.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmployerRegistrationFindUniqueArgs>(args: SelectSubset<T, EmployerRegistrationFindUniqueArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmployerRegistration that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmployerRegistrationFindUniqueOrThrowArgs} args - Arguments to find a EmployerRegistration
+     * @example
+     * // Get one EmployerRegistration
+     * const employerRegistration = await prisma.employerRegistration.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmployerRegistrationFindUniqueOrThrowArgs>(args: SelectSubset<T, EmployerRegistrationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployerRegistration that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationFindFirstArgs} args - Arguments to find a EmployerRegistration
+     * @example
+     * // Get one EmployerRegistration
+     * const employerRegistration = await prisma.employerRegistration.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmployerRegistrationFindFirstArgs>(args?: SelectSubset<T, EmployerRegistrationFindFirstArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployerRegistration that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationFindFirstOrThrowArgs} args - Arguments to find a EmployerRegistration
+     * @example
+     * // Get one EmployerRegistration
+     * const employerRegistration = await prisma.employerRegistration.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmployerRegistrationFindFirstOrThrowArgs>(args?: SelectSubset<T, EmployerRegistrationFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmployerRegistrations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmployerRegistrations
+     * const employerRegistrations = await prisma.employerRegistration.findMany()
+     * 
+     * // Get first 10 EmployerRegistrations
+     * const employerRegistrations = await prisma.employerRegistration.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const employerRegistrationWithIdOnly = await prisma.employerRegistration.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmployerRegistrationFindManyArgs>(args?: SelectSubset<T, EmployerRegistrationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmployerRegistration.
+     * @param {EmployerRegistrationCreateArgs} args - Arguments to create a EmployerRegistration.
+     * @example
+     * // Create one EmployerRegistration
+     * const EmployerRegistration = await prisma.employerRegistration.create({
+     *   data: {
+     *     // ... data to create a EmployerRegistration
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmployerRegistrationCreateArgs>(args: SelectSubset<T, EmployerRegistrationCreateArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmployerRegistrations.
+     * @param {EmployerRegistrationCreateManyArgs} args - Arguments to create many EmployerRegistrations.
+     * @example
+     * // Create many EmployerRegistrations
+     * const employerRegistration = await prisma.employerRegistration.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmployerRegistrationCreateManyArgs>(args?: SelectSubset<T, EmployerRegistrationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmployerRegistrations and returns the data saved in the database.
+     * @param {EmployerRegistrationCreateManyAndReturnArgs} args - Arguments to create many EmployerRegistrations.
+     * @example
+     * // Create many EmployerRegistrations
+     * const employerRegistration = await prisma.employerRegistration.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmployerRegistrations and only return the `id`
+     * const employerRegistrationWithIdOnly = await prisma.employerRegistration.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmployerRegistrationCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployerRegistrationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmployerRegistration.
+     * @param {EmployerRegistrationDeleteArgs} args - Arguments to delete one EmployerRegistration.
+     * @example
+     * // Delete one EmployerRegistration
+     * const EmployerRegistration = await prisma.employerRegistration.delete({
+     *   where: {
+     *     // ... filter to delete one EmployerRegistration
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmployerRegistrationDeleteArgs>(args: SelectSubset<T, EmployerRegistrationDeleteArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmployerRegistration.
+     * @param {EmployerRegistrationUpdateArgs} args - Arguments to update one EmployerRegistration.
+     * @example
+     * // Update one EmployerRegistration
+     * const employerRegistration = await prisma.employerRegistration.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmployerRegistrationUpdateArgs>(args: SelectSubset<T, EmployerRegistrationUpdateArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmployerRegistrations.
+     * @param {EmployerRegistrationDeleteManyArgs} args - Arguments to filter EmployerRegistrations to delete.
+     * @example
+     * // Delete a few EmployerRegistrations
+     * const { count } = await prisma.employerRegistration.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmployerRegistrationDeleteManyArgs>(args?: SelectSubset<T, EmployerRegistrationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployerRegistrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmployerRegistrations
+     * const employerRegistration = await prisma.employerRegistration.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmployerRegistrationUpdateManyArgs>(args: SelectSubset<T, EmployerRegistrationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployerRegistrations and returns the data updated in the database.
+     * @param {EmployerRegistrationUpdateManyAndReturnArgs} args - Arguments to update many EmployerRegistrations.
+     * @example
+     * // Update many EmployerRegistrations
+     * const employerRegistration = await prisma.employerRegistration.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmployerRegistrations and only return the `id`
+     * const employerRegistrationWithIdOnly = await prisma.employerRegistration.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmployerRegistrationUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployerRegistrationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmployerRegistration.
+     * @param {EmployerRegistrationUpsertArgs} args - Arguments to update or create a EmployerRegistration.
+     * @example
+     * // Update or create a EmployerRegistration
+     * const employerRegistration = await prisma.employerRegistration.upsert({
+     *   create: {
+     *     // ... data to create a EmployerRegistration
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmployerRegistration we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmployerRegistrationUpsertArgs>(args: SelectSubset<T, EmployerRegistrationUpsertArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmployerRegistrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationCountArgs} args - Arguments to filter EmployerRegistrations to count.
+     * @example
+     * // Count the number of EmployerRegistrations
+     * const count = await prisma.employerRegistration.count({
+     *   where: {
+     *     // ... the filter for the EmployerRegistrations we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmployerRegistrationCountArgs>(
+      args?: Subset<T, EmployerRegistrationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmployerRegistrationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmployerRegistration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmployerRegistrationAggregateArgs>(args: Subset<T, EmployerRegistrationAggregateArgs>): Prisma.PrismaPromise<GetEmployerRegistrationAggregateType<T>>
+
+    /**
+     * Group by EmployerRegistration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmployerRegistrationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmployerRegistrationGroupByArgs['orderBy'] }
+        : { orderBy?: EmployerRegistrationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmployerRegistrationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmployerRegistrationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmployerRegistration model
+   */
+  readonly fields: EmployerRegistrationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmployerRegistration.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmployerRegistrationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    attempt<T extends RegistrationAttemptDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RegistrationAttemptDefaultArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmployerRegistration model
+   */
+  interface EmployerRegistrationFieldRefs {
+    readonly id: FieldRef<"EmployerRegistration", 'String'>
+    readonly attemptId: FieldRef<"EmployerRegistration", 'String'>
+    readonly companyName: FieldRef<"EmployerRegistration", 'String'>
+    readonly contactName: FieldRef<"EmployerRegistration", 'String'>
+    readonly title: FieldRef<"EmployerRegistration", 'String'>
+    readonly representativeCount: FieldRef<"EmployerRegistration", 'Int'>
+    readonly addressCountry: FieldRef<"EmployerRegistration", 'String'>
+    readonly addressState: FieldRef<"EmployerRegistration", 'String'>
+    readonly addressPostalCode: FieldRef<"EmployerRegistration", 'String'>
+    readonly addressCity: FieldRef<"EmployerRegistration", 'String'>
+    readonly addressStreet: FieldRef<"EmployerRegistration", 'String'>
+    readonly division: FieldRef<"EmployerRegistration", 'String'>
+    readonly phone: FieldRef<"EmployerRegistration", 'String'>
+    readonly email: FieldRef<"EmployerRegistration", 'String'>
+    readonly fax: FieldRef<"EmployerRegistration", 'String'>
+    readonly thirdPartyRecruiter: FieldRef<"EmployerRegistration", 'Boolean'>
+    readonly alumni: FieldRef<"EmployerRegistration", 'Boolean'>
+    readonly website: FieldRef<"EmployerRegistration", 'String'>
+    readonly overview: FieldRef<"EmployerRegistration", 'String'>
+    readonly majorsRecruiting: FieldRef<"EmployerRegistration", 'String[]'>
+    readonly workAuthorizations: FieldRef<"EmployerRegistration", 'String[]'>
+    readonly workAuthorizationOther: FieldRef<"EmployerRegistration", 'String'>
+    readonly degreeLevels: FieldRef<"EmployerRegistration", 'String[]'>
+    readonly positionsAvailable: FieldRef<"EmployerRegistration", 'String[]'>
+    readonly tierName: FieldRef<"EmployerRegistration", 'String'>
+    readonly stripeProductId: FieldRef<"EmployerRegistration", 'String'>
+    readonly stripePriceId: FieldRef<"EmployerRegistration", 'String'>
+    readonly additionalRepPriceId: FieldRef<"EmployerRegistration", 'String'>
+    readonly additionalRepProductId: FieldRef<"EmployerRegistration", 'String'>
+    readonly additionalRepCount: FieldRef<"EmployerRegistration", 'Int'>
+    readonly additionalRepUnitAmount: FieldRef<"EmployerRegistration", 'Int'>
+    readonly stripePaymentIntentId: FieldRef<"EmployerRegistration", 'String'>
+    readonly amount: FieldRef<"EmployerRegistration", 'Int'>
+    readonly currency: FieldRef<"EmployerRegistration", 'String'>
+    readonly paymentStatus: FieldRef<"EmployerRegistration", 'RegistrationPaymentStatus'>
+    readonly createdAt: FieldRef<"EmployerRegistration", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmployerRegistration", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmployerRegistration findUnique
+   */
+  export type EmployerRegistrationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistration to fetch.
+     */
+    where: EmployerRegistrationWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistration findUniqueOrThrow
+   */
+  export type EmployerRegistrationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistration to fetch.
+     */
+    where: EmployerRegistrationWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistration findFirst
+   */
+  export type EmployerRegistrationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistration to fetch.
+     */
+    where?: EmployerRegistrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployerRegistrations to fetch.
+     */
+    orderBy?: EmployerRegistrationOrderByWithRelationInput | EmployerRegistrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployerRegistrations.
+     */
+    cursor?: EmployerRegistrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployerRegistrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployerRegistrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployerRegistrations.
+     */
+    distinct?: EmployerRegistrationScalarFieldEnum | EmployerRegistrationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistration findFirstOrThrow
+   */
+  export type EmployerRegistrationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistration to fetch.
+     */
+    where?: EmployerRegistrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployerRegistrations to fetch.
+     */
+    orderBy?: EmployerRegistrationOrderByWithRelationInput | EmployerRegistrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployerRegistrations.
+     */
+    cursor?: EmployerRegistrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployerRegistrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployerRegistrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployerRegistrations.
+     */
+    distinct?: EmployerRegistrationScalarFieldEnum | EmployerRegistrationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistration findMany
+   */
+  export type EmployerRegistrationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrations to fetch.
+     */
+    where?: EmployerRegistrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployerRegistrations to fetch.
+     */
+    orderBy?: EmployerRegistrationOrderByWithRelationInput | EmployerRegistrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmployerRegistrations.
+     */
+    cursor?: EmployerRegistrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployerRegistrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployerRegistrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployerRegistrations.
+     */
+    distinct?: EmployerRegistrationScalarFieldEnum | EmployerRegistrationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistration create
+   */
+  export type EmployerRegistrationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmployerRegistration.
+     */
+    data: XOR<EmployerRegistrationCreateInput, EmployerRegistrationUncheckedCreateInput>
+  }
+
+  /**
+   * EmployerRegistration createMany
+   */
+  export type EmployerRegistrationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmployerRegistrations.
+     */
+    data: EmployerRegistrationCreateManyInput | EmployerRegistrationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployerRegistration createManyAndReturn
+   */
+  export type EmployerRegistrationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmployerRegistrations.
+     */
+    data: EmployerRegistrationCreateManyInput | EmployerRegistrationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployerRegistration update
+   */
+  export type EmployerRegistrationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmployerRegistration.
+     */
+    data: XOR<EmployerRegistrationUpdateInput, EmployerRegistrationUncheckedUpdateInput>
+    /**
+     * Choose, which EmployerRegistration to update.
+     */
+    where: EmployerRegistrationWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistration updateMany
+   */
+  export type EmployerRegistrationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmployerRegistrations.
+     */
+    data: XOR<EmployerRegistrationUpdateManyMutationInput, EmployerRegistrationUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployerRegistrations to update
+     */
+    where?: EmployerRegistrationWhereInput
+    /**
+     * Limit how many EmployerRegistrations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployerRegistration updateManyAndReturn
+   */
+  export type EmployerRegistrationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * The data used to update EmployerRegistrations.
+     */
+    data: XOR<EmployerRegistrationUpdateManyMutationInput, EmployerRegistrationUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployerRegistrations to update
+     */
+    where?: EmployerRegistrationWhereInput
+    /**
+     * Limit how many EmployerRegistrations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployerRegistration upsert
+   */
+  export type EmployerRegistrationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmployerRegistration to update in case it exists.
+     */
+    where: EmployerRegistrationWhereUniqueInput
+    /**
+     * In case the EmployerRegistration found by the `where` argument doesn't exist, create a new EmployerRegistration with this data.
+     */
+    create: XOR<EmployerRegistrationCreateInput, EmployerRegistrationUncheckedCreateInput>
+    /**
+     * In case the EmployerRegistration was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmployerRegistrationUpdateInput, EmployerRegistrationUncheckedUpdateInput>
+  }
+
+  /**
+   * EmployerRegistration delete
+   */
+  export type EmployerRegistrationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+    /**
+     * Filter which EmployerRegistration to delete.
+     */
+    where: EmployerRegistrationWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistration deleteMany
+   */
+  export type EmployerRegistrationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployerRegistrations to delete
+     */
+    where?: EmployerRegistrationWhereInput
+    /**
+     * Limit how many EmployerRegistrations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployerRegistration without action
+   */
+  export type EmployerRegistrationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistration
+     */
+    select?: EmployerRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistration
+     */
+    omit?: EmployerRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployerRegistrationInclude<ExtArgs> | null
+  }
+
 
   /**
    * Model Post
@@ -2113,6 +5257,11 @@ export namespace Prisma {
      * Skip the first `n` Posts.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Posts.
+     */
     distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
   }
 
@@ -2514,6 +5663,8 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
+    adminUsersCreated?: boolean | User$adminUsersCreatedArgs<ExtArgs>
+    adminUser?: boolean | User$adminUserArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2552,6 +5703,8 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
+    adminUsersCreated?: boolean | User$adminUsersCreatedArgs<ExtArgs>
+    adminUser?: boolean | User$adminUserArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2563,6 +5716,8 @@ export namespace Prisma {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
+      adminUsersCreated: Prisma.$AdminUserPayload<ExtArgs>[]
+      adminUser: Prisma.$AdminUserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2969,6 +6124,8 @@ export namespace Prisma {
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    adminUsersCreated<T extends User$adminUsersCreatedArgs<ExtArgs> = {}>(args?: Subset<T, User$adminUsersCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    adminUser<T extends User$adminUserArgs<ExtArgs> = {}>(args?: Subset<T, User$adminUserArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3201,6 +6358,11 @@ export namespace Prisma {
      * Skip the first `n` Users.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
@@ -3465,6 +6627,49 @@ export namespace Prisma {
   }
 
   /**
+   * User.adminUsersCreated
+   */
+  export type User$adminUsersCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    where?: AdminUserWhereInput
+    orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
+    cursor?: AdminUserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdminUserScalarFieldEnum | AdminUserScalarFieldEnum[]
+  }
+
+  /**
+   * User.adminUser
+   */
+  export type User$adminUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    where?: AdminUserWhereInput
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3480,6 +6685,1128 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AdminUser
+   */
+
+  export type AggregateAdminUser = {
+    _count: AdminUserCountAggregateOutputType | null
+    _min: AdminUserMinAggregateOutputType | null
+    _max: AdminUserMaxAggregateOutputType | null
+  }
+
+  export type AdminUserMinAggregateOutputType = {
+    id: string | null
+    email: string | null
+    createdAt: Date | null
+    role: $Enums.AdminRole | null
+    addedByUserId: string | null
+    userId: string | null
+  }
+
+  export type AdminUserMaxAggregateOutputType = {
+    id: string | null
+    email: string | null
+    createdAt: Date | null
+    role: $Enums.AdminRole | null
+    addedByUserId: string | null
+    userId: string | null
+  }
+
+  export type AdminUserCountAggregateOutputType = {
+    id: number
+    email: number
+    createdAt: number
+    role: number
+    addedByUserId: number
+    userId: number
+    _all: number
+  }
+
+
+  export type AdminUserMinAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+    role?: true
+    addedByUserId?: true
+    userId?: true
+  }
+
+  export type AdminUserMaxAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+    role?: true
+    addedByUserId?: true
+    userId?: true
+  }
+
+  export type AdminUserCountAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+    role?: true
+    addedByUserId?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type AdminUserAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminUser to aggregate.
+     */
+    where?: AdminUserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminUsers to fetch.
+     */
+    orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminUserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminUsers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminUsers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdminUsers
+    **/
+    _count?: true | AdminUserCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminUserMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminUserMaxAggregateInputType
+  }
+
+  export type GetAdminUserAggregateType<T extends AdminUserAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdminUser]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdminUser[P]>
+      : GetScalarType<T[P], AggregateAdminUser[P]>
+  }
+
+
+
+
+  export type AdminUserGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminUserWhereInput
+    orderBy?: AdminUserOrderByWithAggregationInput | AdminUserOrderByWithAggregationInput[]
+    by: AdminUserScalarFieldEnum[] | AdminUserScalarFieldEnum
+    having?: AdminUserScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminUserCountAggregateInputType | true
+    _min?: AdminUserMinAggregateInputType
+    _max?: AdminUserMaxAggregateInputType
+  }
+
+  export type AdminUserGroupByOutputType = {
+    id: string
+    email: string
+    createdAt: Date
+    role: $Enums.AdminRole
+    addedByUserId: string | null
+    userId: string | null
+    _count: AdminUserCountAggregateOutputType | null
+    _min: AdminUserMinAggregateOutputType | null
+    _max: AdminUserMaxAggregateOutputType | null
+  }
+
+  type GetAdminUserGroupByPayload<T extends AdminUserGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminUserGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminUserGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminUserGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminUserGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminUserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+    role?: boolean
+    addedByUserId?: boolean
+    userId?: boolean
+    addedBy?: boolean | AdminUser$addedByArgs<ExtArgs>
+    user?: boolean | AdminUser$userArgs<ExtArgs>
+  }, ExtArgs["result"]["adminUser"]>
+
+  export type AdminUserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+    role?: boolean
+    addedByUserId?: boolean
+    userId?: boolean
+    addedBy?: boolean | AdminUser$addedByArgs<ExtArgs>
+    user?: boolean | AdminUser$userArgs<ExtArgs>
+  }, ExtArgs["result"]["adminUser"]>
+
+  export type AdminUserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+    role?: boolean
+    addedByUserId?: boolean
+    userId?: boolean
+    addedBy?: boolean | AdminUser$addedByArgs<ExtArgs>
+    user?: boolean | AdminUser$userArgs<ExtArgs>
+  }, ExtArgs["result"]["adminUser"]>
+
+  export type AdminUserSelectScalar = {
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+    role?: boolean
+    addedByUserId?: boolean
+    userId?: boolean
+  }
+
+  export type AdminUserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "createdAt" | "role" | "addedByUserId" | "userId", ExtArgs["result"]["adminUser"]>
+  export type AdminUserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    addedBy?: boolean | AdminUser$addedByArgs<ExtArgs>
+    user?: boolean | AdminUser$userArgs<ExtArgs>
+  }
+  export type AdminUserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    addedBy?: boolean | AdminUser$addedByArgs<ExtArgs>
+    user?: boolean | AdminUser$userArgs<ExtArgs>
+  }
+  export type AdminUserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    addedBy?: boolean | AdminUser$addedByArgs<ExtArgs>
+    user?: boolean | AdminUser$userArgs<ExtArgs>
+  }
+
+  export type $AdminUserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdminUser"
+    objects: {
+      addedBy: Prisma.$UserPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      email: string
+      createdAt: Date
+      role: $Enums.AdminRole
+      addedByUserId: string | null
+      userId: string | null
+    }, ExtArgs["result"]["adminUser"]>
+    composites: {}
+  }
+
+  type AdminUserGetPayload<S extends boolean | null | undefined | AdminUserDefaultArgs> = $Result.GetResult<Prisma.$AdminUserPayload, S>
+
+  type AdminUserCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminUserFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminUserCountAggregateInputType | true
+    }
+
+  export interface AdminUserDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdminUser'], meta: { name: 'AdminUser' } }
+    /**
+     * Find zero or one AdminUser that matches the filter.
+     * @param {AdminUserFindUniqueArgs} args - Arguments to find a AdminUser
+     * @example
+     * // Get one AdminUser
+     * const adminUser = await prisma.adminUser.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminUserFindUniqueArgs>(args: SelectSubset<T, AdminUserFindUniqueArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AdminUser that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminUserFindUniqueOrThrowArgs} args - Arguments to find a AdminUser
+     * @example
+     * // Get one AdminUser
+     * const adminUser = await prisma.adminUser.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminUserFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminUserFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminUser that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUserFindFirstArgs} args - Arguments to find a AdminUser
+     * @example
+     * // Get one AdminUser
+     * const adminUser = await prisma.adminUser.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminUserFindFirstArgs>(args?: SelectSubset<T, AdminUserFindFirstArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminUser that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUserFindFirstOrThrowArgs} args - Arguments to find a AdminUser
+     * @example
+     * // Get one AdminUser
+     * const adminUser = await prisma.adminUser.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminUserFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminUserFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AdminUsers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUserFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdminUsers
+     * const adminUsers = await prisma.adminUser.findMany()
+     * 
+     * // Get first 10 AdminUsers
+     * const adminUsers = await prisma.adminUser.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminUserWithIdOnly = await prisma.adminUser.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminUserFindManyArgs>(args?: SelectSubset<T, AdminUserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AdminUser.
+     * @param {AdminUserCreateArgs} args - Arguments to create a AdminUser.
+     * @example
+     * // Create one AdminUser
+     * const AdminUser = await prisma.adminUser.create({
+     *   data: {
+     *     // ... data to create a AdminUser
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminUserCreateArgs>(args: SelectSubset<T, AdminUserCreateArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AdminUsers.
+     * @param {AdminUserCreateManyArgs} args - Arguments to create many AdminUsers.
+     * @example
+     * // Create many AdminUsers
+     * const adminUser = await prisma.adminUser.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminUserCreateManyArgs>(args?: SelectSubset<T, AdminUserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdminUsers and returns the data saved in the database.
+     * @param {AdminUserCreateManyAndReturnArgs} args - Arguments to create many AdminUsers.
+     * @example
+     * // Create many AdminUsers
+     * const adminUser = await prisma.adminUser.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdminUsers and only return the `id`
+     * const adminUserWithIdOnly = await prisma.adminUser.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminUserCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminUserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AdminUser.
+     * @param {AdminUserDeleteArgs} args - Arguments to delete one AdminUser.
+     * @example
+     * // Delete one AdminUser
+     * const AdminUser = await prisma.adminUser.delete({
+     *   where: {
+     *     // ... filter to delete one AdminUser
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminUserDeleteArgs>(args: SelectSubset<T, AdminUserDeleteArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AdminUser.
+     * @param {AdminUserUpdateArgs} args - Arguments to update one AdminUser.
+     * @example
+     * // Update one AdminUser
+     * const adminUser = await prisma.adminUser.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminUserUpdateArgs>(args: SelectSubset<T, AdminUserUpdateArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AdminUsers.
+     * @param {AdminUserDeleteManyArgs} args - Arguments to filter AdminUsers to delete.
+     * @example
+     * // Delete a few AdminUsers
+     * const { count } = await prisma.adminUser.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminUserDeleteManyArgs>(args?: SelectSubset<T, AdminUserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminUsers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUserUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdminUsers
+     * const adminUser = await prisma.adminUser.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminUserUpdateManyArgs>(args: SelectSubset<T, AdminUserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminUsers and returns the data updated in the database.
+     * @param {AdminUserUpdateManyAndReturnArgs} args - Arguments to update many AdminUsers.
+     * @example
+     * // Update many AdminUsers
+     * const adminUser = await prisma.adminUser.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AdminUsers and only return the `id`
+     * const adminUserWithIdOnly = await prisma.adminUser.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminUserUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminUserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AdminUser.
+     * @param {AdminUserUpsertArgs} args - Arguments to update or create a AdminUser.
+     * @example
+     * // Update or create a AdminUser
+     * const adminUser = await prisma.adminUser.upsert({
+     *   create: {
+     *     // ... data to create a AdminUser
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdminUser we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminUserUpsertArgs>(args: SelectSubset<T, AdminUserUpsertArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AdminUsers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUserCountArgs} args - Arguments to filter AdminUsers to count.
+     * @example
+     * // Count the number of AdminUsers
+     * const count = await prisma.adminUser.count({
+     *   where: {
+     *     // ... the filter for the AdminUsers we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminUserCountArgs>(
+      args?: Subset<T, AdminUserCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminUserCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdminUser.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUserAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminUserAggregateArgs>(args: Subset<T, AdminUserAggregateArgs>): Prisma.PrismaPromise<GetAdminUserAggregateType<T>>
+
+    /**
+     * Group by AdminUser.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUserGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminUserGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminUserGroupByArgs['orderBy'] }
+        : { orderBy?: AdminUserGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminUserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdminUser model
+   */
+  readonly fields: AdminUserFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdminUser.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminUserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    addedBy<T extends AdminUser$addedByArgs<ExtArgs> = {}>(args?: Subset<T, AdminUser$addedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends AdminUser$userArgs<ExtArgs> = {}>(args?: Subset<T, AdminUser$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdminUser model
+   */
+  interface AdminUserFieldRefs {
+    readonly id: FieldRef<"AdminUser", 'String'>
+    readonly email: FieldRef<"AdminUser", 'String'>
+    readonly createdAt: FieldRef<"AdminUser", 'DateTime'>
+    readonly role: FieldRef<"AdminUser", 'AdminRole'>
+    readonly addedByUserId: FieldRef<"AdminUser", 'String'>
+    readonly userId: FieldRef<"AdminUser", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdminUser findUnique
+   */
+  export type AdminUserFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminUser to fetch.
+     */
+    where: AdminUserWhereUniqueInput
+  }
+
+  /**
+   * AdminUser findUniqueOrThrow
+   */
+  export type AdminUserFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminUser to fetch.
+     */
+    where: AdminUserWhereUniqueInput
+  }
+
+  /**
+   * AdminUser findFirst
+   */
+  export type AdminUserFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminUser to fetch.
+     */
+    where?: AdminUserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminUsers to fetch.
+     */
+    orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminUsers.
+     */
+    cursor?: AdminUserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminUsers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminUsers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminUsers.
+     */
+    distinct?: AdminUserScalarFieldEnum | AdminUserScalarFieldEnum[]
+  }
+
+  /**
+   * AdminUser findFirstOrThrow
+   */
+  export type AdminUserFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminUser to fetch.
+     */
+    where?: AdminUserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminUsers to fetch.
+     */
+    orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminUsers.
+     */
+    cursor?: AdminUserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminUsers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminUsers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminUsers.
+     */
+    distinct?: AdminUserScalarFieldEnum | AdminUserScalarFieldEnum[]
+  }
+
+  /**
+   * AdminUser findMany
+   */
+  export type AdminUserFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * Filter, which AdminUsers to fetch.
+     */
+    where?: AdminUserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminUsers to fetch.
+     */
+    orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdminUsers.
+     */
+    cursor?: AdminUserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminUsers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminUsers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminUsers.
+     */
+    distinct?: AdminUserScalarFieldEnum | AdminUserScalarFieldEnum[]
+  }
+
+  /**
+   * AdminUser create
+   */
+  export type AdminUserCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AdminUser.
+     */
+    data: XOR<AdminUserCreateInput, AdminUserUncheckedCreateInput>
+  }
+
+  /**
+   * AdminUser createMany
+   */
+  export type AdminUserCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdminUsers.
+     */
+    data: AdminUserCreateManyInput | AdminUserCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminUser createManyAndReturn
+   */
+  export type AdminUserCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * The data used to create many AdminUsers.
+     */
+    data: AdminUserCreateManyInput | AdminUserCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AdminUser update
+   */
+  export type AdminUserUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AdminUser.
+     */
+    data: XOR<AdminUserUpdateInput, AdminUserUncheckedUpdateInput>
+    /**
+     * Choose, which AdminUser to update.
+     */
+    where: AdminUserWhereUniqueInput
+  }
+
+  /**
+   * AdminUser updateMany
+   */
+  export type AdminUserUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdminUsers.
+     */
+    data: XOR<AdminUserUpdateManyMutationInput, AdminUserUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminUsers to update
+     */
+    where?: AdminUserWhereInput
+    /**
+     * Limit how many AdminUsers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminUser updateManyAndReturn
+   */
+  export type AdminUserUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * The data used to update AdminUsers.
+     */
+    data: XOR<AdminUserUpdateManyMutationInput, AdminUserUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminUsers to update
+     */
+    where?: AdminUserWhereInput
+    /**
+     * Limit how many AdminUsers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AdminUser upsert
+   */
+  export type AdminUserUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AdminUser to update in case it exists.
+     */
+    where: AdminUserWhereUniqueInput
+    /**
+     * In case the AdminUser found by the `where` argument doesn't exist, create a new AdminUser with this data.
+     */
+    create: XOR<AdminUserCreateInput, AdminUserUncheckedCreateInput>
+    /**
+     * In case the AdminUser was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminUserUpdateInput, AdminUserUncheckedUpdateInput>
+  }
+
+  /**
+   * AdminUser delete
+   */
+  export type AdminUserDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
+    /**
+     * Filter which AdminUser to delete.
+     */
+    where: AdminUserWhereUniqueInput
+  }
+
+  /**
+   * AdminUser deleteMany
+   */
+  export type AdminUserDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminUsers to delete
+     */
+    where?: AdminUserWhereInput
+    /**
+     * Limit how many AdminUsers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminUser.addedBy
+   */
+  export type AdminUser$addedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AdminUser.user
+   */
+  export type AdminUser$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AdminUser without action
+   */
+  export type AdminUserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminUser
+     */
+    select?: AdminUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminUser
+     */
+    omit?: AdminUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminUserInclude<ExtArgs> | null
   }
 
 
@@ -4362,6 +8689,11 @@ export namespace Prisma {
      * Skip the first `n` Sessions.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sessions.
+     */
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
   }
 
@@ -5524,6 +9856,11 @@ export namespace Prisma {
      * Skip the first `n` Accounts.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Accounts.
+     */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
   }
 
@@ -6560,6 +10897,11 @@ export namespace Prisma {
      * Skip the first `n` Verifications.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Verifications.
+     */
     distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
   }
 
@@ -6764,6 +11106,73 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+  export const RegistrationAttemptScalarFieldEnum: {
+    id: 'id',
+    idempotencyKey: 'idempotencyKey',
+    formPayload: 'formPayload',
+    selectedPriceId: 'selectedPriceId',
+    stripeProductId: 'stripeProductId',
+    tierName: 'tierName',
+    confirmationTokenId: 'confirmationTokenId',
+    additionalRepPriceId: 'additionalRepPriceId',
+    additionalRepProductId: 'additionalRepProductId',
+    additionalRepCount: 'additionalRepCount',
+    additionalRepUnitAmount: 'additionalRepUnitAmount',
+    stripePaymentIntentId: 'stripePaymentIntentId',
+    amount: 'amount',
+    currency: 'currency',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RegistrationAttemptScalarFieldEnum = (typeof RegistrationAttemptScalarFieldEnum)[keyof typeof RegistrationAttemptScalarFieldEnum]
+
+
+  export const EmployerRegistrationScalarFieldEnum: {
+    id: 'id',
+    attemptId: 'attemptId',
+    companyName: 'companyName',
+    contactName: 'contactName',
+    title: 'title',
+    representativeCount: 'representativeCount',
+    addressCountry: 'addressCountry',
+    addressState: 'addressState',
+    addressPostalCode: 'addressPostalCode',
+    addressCity: 'addressCity',
+    addressStreet: 'addressStreet',
+    division: 'division',
+    phone: 'phone',
+    email: 'email',
+    fax: 'fax',
+    thirdPartyRecruiter: 'thirdPartyRecruiter',
+    alumni: 'alumni',
+    website: 'website',
+    overview: 'overview',
+    majorsRecruiting: 'majorsRecruiting',
+    workAuthorizations: 'workAuthorizations',
+    workAuthorizationOther: 'workAuthorizationOther',
+    degreeLevels: 'degreeLevels',
+    positionsAvailable: 'positionsAvailable',
+    tierName: 'tierName',
+    stripeProductId: 'stripeProductId',
+    stripePriceId: 'stripePriceId',
+    additionalRepPriceId: 'additionalRepPriceId',
+    additionalRepProductId: 'additionalRepProductId',
+    additionalRepCount: 'additionalRepCount',
+    additionalRepUnitAmount: 'additionalRepUnitAmount',
+    stripePaymentIntentId: 'stripePaymentIntentId',
+    amount: 'amount',
+    currency: 'currency',
+    paymentStatus: 'paymentStatus',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmployerRegistrationScalarFieldEnum = (typeof EmployerRegistrationScalarFieldEnum)[keyof typeof EmployerRegistrationScalarFieldEnum]
+
+
   export const PostScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -6786,6 +11195,18 @@ export namespace Prisma {
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const AdminUserScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    createdAt: 'createdAt',
+    role: 'role',
+    addedByUserId: 'addedByUserId',
+    userId: 'userId'
+  };
+
+  export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
 
 
   export const SessionScalarFieldEnum: {
@@ -6841,12 +11262,28 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   export const NullsOrder: {
@@ -6877,6 +11314,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'RegistrationAttemptStatus'
+   */
+  export type EnumRegistrationAttemptStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationAttemptStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'RegistrationAttemptStatus[]'
+   */
+  export type ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationAttemptStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -6898,21 +11377,388 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'RegistrationPaymentStatus'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type EnumRegistrationPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationPaymentStatus'>
     
 
 
   /**
-   * Reference to a field of type 'Int[]'
+   * Reference to a field of type 'RegistrationPaymentStatus[]'
    */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+  export type ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationPaymentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AdminRole'
+   */
+  export type EnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminRole'>
+    
+
+
+  /**
+   * Reference to a field of type 'AdminRole[]'
+   */
+  export type ListEnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminRole[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
    */
 
+
+  export type RegistrationAttemptWhereInput = {
+    AND?: RegistrationAttemptWhereInput | RegistrationAttemptWhereInput[]
+    OR?: RegistrationAttemptWhereInput[]
+    NOT?: RegistrationAttemptWhereInput | RegistrationAttemptWhereInput[]
+    id?: StringFilter<"RegistrationAttempt"> | string
+    idempotencyKey?: StringFilter<"RegistrationAttempt"> | string
+    formPayload?: JsonFilter<"RegistrationAttempt">
+    selectedPriceId?: StringFilter<"RegistrationAttempt"> | string
+    stripeProductId?: StringFilter<"RegistrationAttempt"> | string
+    tierName?: StringFilter<"RegistrationAttempt"> | string
+    confirmationTokenId?: StringFilter<"RegistrationAttempt"> | string
+    additionalRepPriceId?: StringFilter<"RegistrationAttempt"> | string
+    additionalRepProductId?: StringFilter<"RegistrationAttempt"> | string
+    additionalRepCount?: IntFilter<"RegistrationAttempt"> | number
+    additionalRepUnitAmount?: IntFilter<"RegistrationAttempt"> | number
+    stripePaymentIntentId?: StringNullableFilter<"RegistrationAttempt"> | string | null
+    amount?: IntFilter<"RegistrationAttempt"> | number
+    currency?: StringFilter<"RegistrationAttempt"> | string
+    status?: EnumRegistrationAttemptStatusFilter<"RegistrationAttempt"> | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeFilter<"RegistrationAttempt"> | Date | string
+    createdAt?: DateTimeFilter<"RegistrationAttempt"> | Date | string
+    updatedAt?: DateTimeFilter<"RegistrationAttempt"> | Date | string
+    registration?: XOR<EmployerRegistrationNullableScalarRelationFilter, EmployerRegistrationWhereInput> | null
+  }
+
+  export type RegistrationAttemptOrderByWithRelationInput = {
+    id?: SortOrder
+    idempotencyKey?: SortOrder
+    formPayload?: SortOrder
+    selectedPriceId?: SortOrder
+    stripeProductId?: SortOrder
+    tierName?: SortOrder
+    confirmationTokenId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    registration?: EmployerRegistrationOrderByWithRelationInput
+  }
+
+  export type RegistrationAttemptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    idempotencyKey?: string
+    stripePaymentIntentId?: string
+    AND?: RegistrationAttemptWhereInput | RegistrationAttemptWhereInput[]
+    OR?: RegistrationAttemptWhereInput[]
+    NOT?: RegistrationAttemptWhereInput | RegistrationAttemptWhereInput[]
+    formPayload?: JsonFilter<"RegistrationAttempt">
+    selectedPriceId?: StringFilter<"RegistrationAttempt"> | string
+    stripeProductId?: StringFilter<"RegistrationAttempt"> | string
+    tierName?: StringFilter<"RegistrationAttempt"> | string
+    confirmationTokenId?: StringFilter<"RegistrationAttempt"> | string
+    additionalRepPriceId?: StringFilter<"RegistrationAttempt"> | string
+    additionalRepProductId?: StringFilter<"RegistrationAttempt"> | string
+    additionalRepCount?: IntFilter<"RegistrationAttempt"> | number
+    additionalRepUnitAmount?: IntFilter<"RegistrationAttempt"> | number
+    amount?: IntFilter<"RegistrationAttempt"> | number
+    currency?: StringFilter<"RegistrationAttempt"> | string
+    status?: EnumRegistrationAttemptStatusFilter<"RegistrationAttempt"> | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeFilter<"RegistrationAttempt"> | Date | string
+    createdAt?: DateTimeFilter<"RegistrationAttempt"> | Date | string
+    updatedAt?: DateTimeFilter<"RegistrationAttempt"> | Date | string
+    registration?: XOR<EmployerRegistrationNullableScalarRelationFilter, EmployerRegistrationWhereInput> | null
+  }, "id" | "idempotencyKey" | "stripePaymentIntentId">
+
+  export type RegistrationAttemptOrderByWithAggregationInput = {
+    id?: SortOrder
+    idempotencyKey?: SortOrder
+    formPayload?: SortOrder
+    selectedPriceId?: SortOrder
+    stripeProductId?: SortOrder
+    tierName?: SortOrder
+    confirmationTokenId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RegistrationAttemptCountOrderByAggregateInput
+    _avg?: RegistrationAttemptAvgOrderByAggregateInput
+    _max?: RegistrationAttemptMaxOrderByAggregateInput
+    _min?: RegistrationAttemptMinOrderByAggregateInput
+    _sum?: RegistrationAttemptSumOrderByAggregateInput
+  }
+
+  export type RegistrationAttemptScalarWhereWithAggregatesInput = {
+    AND?: RegistrationAttemptScalarWhereWithAggregatesInput | RegistrationAttemptScalarWhereWithAggregatesInput[]
+    OR?: RegistrationAttemptScalarWhereWithAggregatesInput[]
+    NOT?: RegistrationAttemptScalarWhereWithAggregatesInput | RegistrationAttemptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    idempotencyKey?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    formPayload?: JsonWithAggregatesFilter<"RegistrationAttempt">
+    selectedPriceId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    stripeProductId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    tierName?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    confirmationTokenId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    additionalRepPriceId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    additionalRepProductId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    additionalRepCount?: IntWithAggregatesFilter<"RegistrationAttempt"> | number
+    additionalRepUnitAmount?: IntWithAggregatesFilter<"RegistrationAttempt"> | number
+    stripePaymentIntentId?: StringNullableWithAggregatesFilter<"RegistrationAttempt"> | string | null
+    amount?: IntWithAggregatesFilter<"RegistrationAttempt"> | number
+    currency?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    status?: EnumRegistrationAttemptStatusWithAggregatesFilter<"RegistrationAttempt"> | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeWithAggregatesFilter<"RegistrationAttempt"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"RegistrationAttempt"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RegistrationAttempt"> | Date | string
+  }
+
+  export type EmployerRegistrationWhereInput = {
+    AND?: EmployerRegistrationWhereInput | EmployerRegistrationWhereInput[]
+    OR?: EmployerRegistrationWhereInput[]
+    NOT?: EmployerRegistrationWhereInput | EmployerRegistrationWhereInput[]
+    id?: StringFilter<"EmployerRegistration"> | string
+    attemptId?: StringFilter<"EmployerRegistration"> | string
+    companyName?: StringFilter<"EmployerRegistration"> | string
+    contactName?: StringFilter<"EmployerRegistration"> | string
+    title?: StringNullableFilter<"EmployerRegistration"> | string | null
+    representativeCount?: IntFilter<"EmployerRegistration"> | number
+    addressCountry?: StringFilter<"EmployerRegistration"> | string
+    addressState?: StringFilter<"EmployerRegistration"> | string
+    addressPostalCode?: StringFilter<"EmployerRegistration"> | string
+    addressCity?: StringFilter<"EmployerRegistration"> | string
+    addressStreet?: StringFilter<"EmployerRegistration"> | string
+    division?: StringNullableFilter<"EmployerRegistration"> | string | null
+    phone?: StringFilter<"EmployerRegistration"> | string
+    email?: StringFilter<"EmployerRegistration"> | string
+    fax?: StringNullableFilter<"EmployerRegistration"> | string | null
+    thirdPartyRecruiter?: BoolFilter<"EmployerRegistration"> | boolean
+    alumni?: BoolNullableFilter<"EmployerRegistration"> | boolean | null
+    website?: StringNullableFilter<"EmployerRegistration"> | string | null
+    overview?: StringFilter<"EmployerRegistration"> | string
+    majorsRecruiting?: StringNullableListFilter<"EmployerRegistration">
+    workAuthorizations?: StringNullableListFilter<"EmployerRegistration">
+    workAuthorizationOther?: StringNullableFilter<"EmployerRegistration"> | string | null
+    degreeLevels?: StringNullableListFilter<"EmployerRegistration">
+    positionsAvailable?: StringNullableListFilter<"EmployerRegistration">
+    tierName?: StringFilter<"EmployerRegistration"> | string
+    stripeProductId?: StringFilter<"EmployerRegistration"> | string
+    stripePriceId?: StringFilter<"EmployerRegistration"> | string
+    additionalRepPriceId?: StringFilter<"EmployerRegistration"> | string
+    additionalRepProductId?: StringFilter<"EmployerRegistration"> | string
+    additionalRepCount?: IntFilter<"EmployerRegistration"> | number
+    additionalRepUnitAmount?: IntFilter<"EmployerRegistration"> | number
+    stripePaymentIntentId?: StringFilter<"EmployerRegistration"> | string
+    amount?: IntFilter<"EmployerRegistration"> | number
+    currency?: StringFilter<"EmployerRegistration"> | string
+    paymentStatus?: EnumRegistrationPaymentStatusFilter<"EmployerRegistration"> | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFilter<"EmployerRegistration"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployerRegistration"> | Date | string
+    attempt?: XOR<RegistrationAttemptScalarRelationFilter, RegistrationAttemptWhereInput>
+  }
+
+  export type EmployerRegistrationOrderByWithRelationInput = {
+    id?: SortOrder
+    attemptId?: SortOrder
+    companyName?: SortOrder
+    contactName?: SortOrder
+    title?: SortOrderInput | SortOrder
+    representativeCount?: SortOrder
+    addressCountry?: SortOrder
+    addressState?: SortOrder
+    addressPostalCode?: SortOrder
+    addressCity?: SortOrder
+    addressStreet?: SortOrder
+    division?: SortOrderInput | SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    fax?: SortOrderInput | SortOrder
+    thirdPartyRecruiter?: SortOrder
+    alumni?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    overview?: SortOrder
+    majorsRecruiting?: SortOrder
+    workAuthorizations?: SortOrder
+    workAuthorizationOther?: SortOrderInput | SortOrder
+    degreeLevels?: SortOrder
+    positionsAvailable?: SortOrder
+    tierName?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    attempt?: RegistrationAttemptOrderByWithRelationInput
+  }
+
+  export type EmployerRegistrationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    attemptId?: string
+    stripePaymentIntentId?: string
+    AND?: EmployerRegistrationWhereInput | EmployerRegistrationWhereInput[]
+    OR?: EmployerRegistrationWhereInput[]
+    NOT?: EmployerRegistrationWhereInput | EmployerRegistrationWhereInput[]
+    companyName?: StringFilter<"EmployerRegistration"> | string
+    contactName?: StringFilter<"EmployerRegistration"> | string
+    title?: StringNullableFilter<"EmployerRegistration"> | string | null
+    representativeCount?: IntFilter<"EmployerRegistration"> | number
+    addressCountry?: StringFilter<"EmployerRegistration"> | string
+    addressState?: StringFilter<"EmployerRegistration"> | string
+    addressPostalCode?: StringFilter<"EmployerRegistration"> | string
+    addressCity?: StringFilter<"EmployerRegistration"> | string
+    addressStreet?: StringFilter<"EmployerRegistration"> | string
+    division?: StringNullableFilter<"EmployerRegistration"> | string | null
+    phone?: StringFilter<"EmployerRegistration"> | string
+    email?: StringFilter<"EmployerRegistration"> | string
+    fax?: StringNullableFilter<"EmployerRegistration"> | string | null
+    thirdPartyRecruiter?: BoolFilter<"EmployerRegistration"> | boolean
+    alumni?: BoolNullableFilter<"EmployerRegistration"> | boolean | null
+    website?: StringNullableFilter<"EmployerRegistration"> | string | null
+    overview?: StringFilter<"EmployerRegistration"> | string
+    majorsRecruiting?: StringNullableListFilter<"EmployerRegistration">
+    workAuthorizations?: StringNullableListFilter<"EmployerRegistration">
+    workAuthorizationOther?: StringNullableFilter<"EmployerRegistration"> | string | null
+    degreeLevels?: StringNullableListFilter<"EmployerRegistration">
+    positionsAvailable?: StringNullableListFilter<"EmployerRegistration">
+    tierName?: StringFilter<"EmployerRegistration"> | string
+    stripeProductId?: StringFilter<"EmployerRegistration"> | string
+    stripePriceId?: StringFilter<"EmployerRegistration"> | string
+    additionalRepPriceId?: StringFilter<"EmployerRegistration"> | string
+    additionalRepProductId?: StringFilter<"EmployerRegistration"> | string
+    additionalRepCount?: IntFilter<"EmployerRegistration"> | number
+    additionalRepUnitAmount?: IntFilter<"EmployerRegistration"> | number
+    amount?: IntFilter<"EmployerRegistration"> | number
+    currency?: StringFilter<"EmployerRegistration"> | string
+    paymentStatus?: EnumRegistrationPaymentStatusFilter<"EmployerRegistration"> | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFilter<"EmployerRegistration"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployerRegistration"> | Date | string
+    attempt?: XOR<RegistrationAttemptScalarRelationFilter, RegistrationAttemptWhereInput>
+  }, "id" | "attemptId" | "stripePaymentIntentId">
+
+  export type EmployerRegistrationOrderByWithAggregationInput = {
+    id?: SortOrder
+    attemptId?: SortOrder
+    companyName?: SortOrder
+    contactName?: SortOrder
+    title?: SortOrderInput | SortOrder
+    representativeCount?: SortOrder
+    addressCountry?: SortOrder
+    addressState?: SortOrder
+    addressPostalCode?: SortOrder
+    addressCity?: SortOrder
+    addressStreet?: SortOrder
+    division?: SortOrderInput | SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    fax?: SortOrderInput | SortOrder
+    thirdPartyRecruiter?: SortOrder
+    alumni?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    overview?: SortOrder
+    majorsRecruiting?: SortOrder
+    workAuthorizations?: SortOrder
+    workAuthorizationOther?: SortOrderInput | SortOrder
+    degreeLevels?: SortOrder
+    positionsAvailable?: SortOrder
+    tierName?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmployerRegistrationCountOrderByAggregateInput
+    _avg?: EmployerRegistrationAvgOrderByAggregateInput
+    _max?: EmployerRegistrationMaxOrderByAggregateInput
+    _min?: EmployerRegistrationMinOrderByAggregateInput
+    _sum?: EmployerRegistrationSumOrderByAggregateInput
+  }
+
+  export type EmployerRegistrationScalarWhereWithAggregatesInput = {
+    AND?: EmployerRegistrationScalarWhereWithAggregatesInput | EmployerRegistrationScalarWhereWithAggregatesInput[]
+    OR?: EmployerRegistrationScalarWhereWithAggregatesInput[]
+    NOT?: EmployerRegistrationScalarWhereWithAggregatesInput | EmployerRegistrationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    attemptId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    companyName?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    contactName?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    title?: StringNullableWithAggregatesFilter<"EmployerRegistration"> | string | null
+    representativeCount?: IntWithAggregatesFilter<"EmployerRegistration"> | number
+    addressCountry?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    addressState?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    addressPostalCode?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    addressCity?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    addressStreet?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    division?: StringNullableWithAggregatesFilter<"EmployerRegistration"> | string | null
+    phone?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    email?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    fax?: StringNullableWithAggregatesFilter<"EmployerRegistration"> | string | null
+    thirdPartyRecruiter?: BoolWithAggregatesFilter<"EmployerRegistration"> | boolean
+    alumni?: BoolNullableWithAggregatesFilter<"EmployerRegistration"> | boolean | null
+    website?: StringNullableWithAggregatesFilter<"EmployerRegistration"> | string | null
+    overview?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    majorsRecruiting?: StringNullableListFilter<"EmployerRegistration">
+    workAuthorizations?: StringNullableListFilter<"EmployerRegistration">
+    workAuthorizationOther?: StringNullableWithAggregatesFilter<"EmployerRegistration"> | string | null
+    degreeLevels?: StringNullableListFilter<"EmployerRegistration">
+    positionsAvailable?: StringNullableListFilter<"EmployerRegistration">
+    tierName?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    stripeProductId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    stripePriceId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    additionalRepPriceId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    additionalRepProductId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    additionalRepCount?: IntWithAggregatesFilter<"EmployerRegistration"> | number
+    additionalRepUnitAmount?: IntWithAggregatesFilter<"EmployerRegistration"> | number
+    stripePaymentIntentId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    amount?: IntWithAggregatesFilter<"EmployerRegistration"> | number
+    currency?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    paymentStatus?: EnumRegistrationPaymentStatusWithAggregatesFilter<"EmployerRegistration"> | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeWithAggregatesFilter<"EmployerRegistration"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmployerRegistration"> | Date | string
+  }
 
   export type PostWhereInput = {
     AND?: PostWhereInput | PostWhereInput[]
@@ -6983,6 +11829,8 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     posts?: PostListRelationFilter
+    adminUsersCreated?: AdminUserListRelationFilter
+    adminUser?: XOR<AdminUserNullableScalarRelationFilter, AdminUserWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -6996,6 +11844,8 @@ export namespace Prisma {
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
+    adminUsersCreated?: AdminUserOrderByRelationAggregateInput
+    adminUser?: AdminUserOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -7012,6 +11862,8 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     posts?: PostListRelationFilter
+    adminUsersCreated?: AdminUserListRelationFilter
+    adminUser?: XOR<AdminUserNullableScalarRelationFilter, AdminUserWhereInput> | null
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -7038,6 +11890,69 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type AdminUserWhereInput = {
+    AND?: AdminUserWhereInput | AdminUserWhereInput[]
+    OR?: AdminUserWhereInput[]
+    NOT?: AdminUserWhereInput | AdminUserWhereInput[]
+    id?: StringFilter<"AdminUser"> | string
+    email?: StringFilter<"AdminUser"> | string
+    createdAt?: DateTimeFilter<"AdminUser"> | Date | string
+    role?: EnumAdminRoleFilter<"AdminUser"> | $Enums.AdminRole
+    addedByUserId?: StringNullableFilter<"AdminUser"> | string | null
+    userId?: StringNullableFilter<"AdminUser"> | string | null
+    addedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type AdminUserOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    role?: SortOrder
+    addedByUserId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    addedBy?: UserOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    email?: string
+    userId?: string
+    AND?: AdminUserWhereInput | AdminUserWhereInput[]
+    OR?: AdminUserWhereInput[]
+    NOT?: AdminUserWhereInput | AdminUserWhereInput[]
+    createdAt?: DateTimeFilter<"AdminUser"> | Date | string
+    role?: EnumAdminRoleFilter<"AdminUser"> | $Enums.AdminRole
+    addedByUserId?: StringNullableFilter<"AdminUser"> | string | null
+    addedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "email" | "userId">
+
+  export type AdminUserOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    role?: SortOrder
+    addedByUserId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    _count?: AdminUserCountOrderByAggregateInput
+    _max?: AdminUserMaxOrderByAggregateInput
+    _min?: AdminUserMinOrderByAggregateInput
+  }
+
+  export type AdminUserScalarWhereWithAggregatesInput = {
+    AND?: AdminUserScalarWhereWithAggregatesInput | AdminUserScalarWhereWithAggregatesInput[]
+    OR?: AdminUserScalarWhereWithAggregatesInput[]
+    NOT?: AdminUserScalarWhereWithAggregatesInput | AdminUserScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdminUser"> | string
+    email?: StringWithAggregatesFilter<"AdminUser"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AdminUser"> | Date | string
+    role?: EnumAdminRoleWithAggregatesFilter<"AdminUser"> | $Enums.AdminRole
+    addedByUserId?: StringNullableWithAggregatesFilter<"AdminUser"> | string | null
+    userId?: StringNullableWithAggregatesFilter<"AdminUser"> | string | null
   }
 
   export type SessionWhereInput = {
@@ -7262,6 +12177,436 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Verification"> | Date | string
   }
 
+  export type RegistrationAttemptCreateInput = {
+    id?: string
+    idempotencyKey: string
+    formPayload: JsonNullValueInput | InputJsonValue
+    selectedPriceId: string
+    stripeProductId: string
+    tierName: string
+    confirmationTokenId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId?: string | null
+    amount: number
+    currency: string
+    status?: $Enums.RegistrationAttemptStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    registration?: EmployerRegistrationCreateNestedOneWithoutAttemptInput
+  }
+
+  export type RegistrationAttemptUncheckedCreateInput = {
+    id?: string
+    idempotencyKey: string
+    formPayload: JsonNullValueInput | InputJsonValue
+    selectedPriceId: string
+    stripeProductId: string
+    tierName: string
+    confirmationTokenId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId?: string | null
+    amount: number
+    currency: string
+    status?: $Enums.RegistrationAttemptStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    registration?: EmployerRegistrationUncheckedCreateNestedOneWithoutAttemptInput
+  }
+
+  export type RegistrationAttemptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    formPayload?: JsonNullValueInput | InputJsonValue
+    selectedPriceId?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    tierName?: StringFieldUpdateOperationsInput | string
+    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: EnumRegistrationAttemptStatusFieldUpdateOperationsInput | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    registration?: EmployerRegistrationUpdateOneWithoutAttemptNestedInput
+  }
+
+  export type RegistrationAttemptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    formPayload?: JsonNullValueInput | InputJsonValue
+    selectedPriceId?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    tierName?: StringFieldUpdateOperationsInput | string
+    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: EnumRegistrationAttemptStatusFieldUpdateOperationsInput | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    registration?: EmployerRegistrationUncheckedUpdateOneWithoutAttemptNestedInput
+  }
+
+  export type RegistrationAttemptCreateManyInput = {
+    id?: string
+    idempotencyKey: string
+    formPayload: JsonNullValueInput | InputJsonValue
+    selectedPriceId: string
+    stripeProductId: string
+    tierName: string
+    confirmationTokenId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId?: string | null
+    amount: number
+    currency: string
+    status?: $Enums.RegistrationAttemptStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RegistrationAttemptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    formPayload?: JsonNullValueInput | InputJsonValue
+    selectedPriceId?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    tierName?: StringFieldUpdateOperationsInput | string
+    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: EnumRegistrationAttemptStatusFieldUpdateOperationsInput | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RegistrationAttemptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    formPayload?: JsonNullValueInput | InputJsonValue
+    selectedPriceId?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    tierName?: StringFieldUpdateOperationsInput | string
+    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: EnumRegistrationAttemptStatusFieldUpdateOperationsInput | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationCreateInput = {
+    id?: string
+    companyName: string
+    contactName: string
+    title?: string | null
+    representativeCount: number
+    addressCountry: string
+    addressState: string
+    addressPostalCode: string
+    addressCity: string
+    addressStreet: string
+    division?: string | null
+    phone: string
+    email: string
+    fax?: string | null
+    thirdPartyRecruiter: boolean
+    alumni?: boolean | null
+    website?: string | null
+    overview: string
+    majorsRecruiting?: EmployerRegistrationCreatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationCreateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: string | null
+    degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
+    tierName: string
+    stripeProductId: string
+    stripePriceId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: string
+    amount: number
+    currency: string
+    paymentStatus: $Enums.RegistrationPaymentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attempt: RegistrationAttemptCreateNestedOneWithoutRegistrationInput
+  }
+
+  export type EmployerRegistrationUncheckedCreateInput = {
+    id?: string
+    attemptId: string
+    companyName: string
+    contactName: string
+    title?: string | null
+    representativeCount: number
+    addressCountry: string
+    addressState: string
+    addressPostalCode: string
+    addressCity: string
+    addressStreet: string
+    division?: string | null
+    phone: string
+    email: string
+    fax?: string | null
+    thirdPartyRecruiter: boolean
+    alumni?: boolean | null
+    website?: string | null
+    overview: string
+    majorsRecruiting?: EmployerRegistrationCreatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationCreateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: string | null
+    degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
+    tierName: string
+    stripeProductId: string
+    stripePriceId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: string
+    amount: number
+    currency: string
+    paymentStatus: $Enums.RegistrationPaymentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    contactName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    representativeCount?: IntFieldUpdateOperationsInput | number
+    addressCountry?: StringFieldUpdateOperationsInput | string
+    addressState?: StringFieldUpdateOperationsInput | string
+    addressPostalCode?: StringFieldUpdateOperationsInput | string
+    addressCity?: StringFieldUpdateOperationsInput | string
+    addressStreet?: StringFieldUpdateOperationsInput | string
+    division?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fax?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyRecruiter?: BoolFieldUpdateOperationsInput | boolean
+    alumni?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    overview?: StringFieldUpdateOperationsInput | string
+    majorsRecruiting?: EmployerRegistrationUpdatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationUpdateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: NullableStringFieldUpdateOperationsInput | string | null
+    degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
+    tierName?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    stripePriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: EnumRegistrationPaymentStatusFieldUpdateOperationsInput | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attempt?: RegistrationAttemptUpdateOneRequiredWithoutRegistrationNestedInput
+  }
+
+  export type EmployerRegistrationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    attemptId?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    contactName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    representativeCount?: IntFieldUpdateOperationsInput | number
+    addressCountry?: StringFieldUpdateOperationsInput | string
+    addressState?: StringFieldUpdateOperationsInput | string
+    addressPostalCode?: StringFieldUpdateOperationsInput | string
+    addressCity?: StringFieldUpdateOperationsInput | string
+    addressStreet?: StringFieldUpdateOperationsInput | string
+    division?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fax?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyRecruiter?: BoolFieldUpdateOperationsInput | boolean
+    alumni?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    overview?: StringFieldUpdateOperationsInput | string
+    majorsRecruiting?: EmployerRegistrationUpdatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationUpdateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: NullableStringFieldUpdateOperationsInput | string | null
+    degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
+    tierName?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    stripePriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: EnumRegistrationPaymentStatusFieldUpdateOperationsInput | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationCreateManyInput = {
+    id?: string
+    attemptId: string
+    companyName: string
+    contactName: string
+    title?: string | null
+    representativeCount: number
+    addressCountry: string
+    addressState: string
+    addressPostalCode: string
+    addressCity: string
+    addressStreet: string
+    division?: string | null
+    phone: string
+    email: string
+    fax?: string | null
+    thirdPartyRecruiter: boolean
+    alumni?: boolean | null
+    website?: string | null
+    overview: string
+    majorsRecruiting?: EmployerRegistrationCreatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationCreateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: string | null
+    degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
+    tierName: string
+    stripeProductId: string
+    stripePriceId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: string
+    amount: number
+    currency: string
+    paymentStatus: $Enums.RegistrationPaymentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    contactName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    representativeCount?: IntFieldUpdateOperationsInput | number
+    addressCountry?: StringFieldUpdateOperationsInput | string
+    addressState?: StringFieldUpdateOperationsInput | string
+    addressPostalCode?: StringFieldUpdateOperationsInput | string
+    addressCity?: StringFieldUpdateOperationsInput | string
+    addressStreet?: StringFieldUpdateOperationsInput | string
+    division?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fax?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyRecruiter?: BoolFieldUpdateOperationsInput | boolean
+    alumni?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    overview?: StringFieldUpdateOperationsInput | string
+    majorsRecruiting?: EmployerRegistrationUpdatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationUpdateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: NullableStringFieldUpdateOperationsInput | string | null
+    degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
+    tierName?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    stripePriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: EnumRegistrationPaymentStatusFieldUpdateOperationsInput | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    attemptId?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    contactName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    representativeCount?: IntFieldUpdateOperationsInput | number
+    addressCountry?: StringFieldUpdateOperationsInput | string
+    addressState?: StringFieldUpdateOperationsInput | string
+    addressPostalCode?: StringFieldUpdateOperationsInput | string
+    addressCity?: StringFieldUpdateOperationsInput | string
+    addressStreet?: StringFieldUpdateOperationsInput | string
+    division?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fax?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyRecruiter?: BoolFieldUpdateOperationsInput | boolean
+    alumni?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    overview?: StringFieldUpdateOperationsInput | string
+    majorsRecruiting?: EmployerRegistrationUpdatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationUpdateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: NullableStringFieldUpdateOperationsInput | string | null
+    degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
+    tierName?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    stripePriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: EnumRegistrationPaymentStatusFieldUpdateOperationsInput | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PostCreateInput = {
     id?: string
     name: string
@@ -7328,6 +12673,8 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
+    adminUsersCreated?: AdminUserCreateNestedManyWithoutAddedByInput
+    adminUser?: AdminUserCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7341,6 +12688,8 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    adminUsersCreated?: AdminUserUncheckedCreateNestedManyWithoutAddedByInput
+    adminUser?: AdminUserUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -7354,6 +12703,8 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
+    adminUsersCreated?: AdminUserUpdateManyWithoutAddedByNestedInput
+    adminUser?: AdminUserUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -7367,6 +12718,8 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    adminUsersCreated?: AdminUserUncheckedUpdateManyWithoutAddedByNestedInput
+    adminUser?: AdminUserUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -7397,6 +12750,67 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminUserCreateInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    role?: $Enums.AdminRole
+    addedBy?: UserCreateNestedOneWithoutAdminUsersCreatedInput
+    user?: UserCreateNestedOneWithoutAdminUserInput
+  }
+
+  export type AdminUserUncheckedCreateInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    role?: $Enums.AdminRole
+    addedByUserId?: string | null
+    userId?: string | null
+  }
+
+  export type AdminUserUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    addedBy?: UserUpdateOneWithoutAdminUsersCreatedNestedInput
+    user?: UserUpdateOneWithoutAdminUserNestedInput
+  }
+
+  export type AdminUserUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AdminUserCreateManyInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    role?: $Enums.AdminRole
+    addedByUserId?: string | null
+    userId?: string | null
+  }
+
+  export type AdminUserUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  }
+
+  export type AdminUserUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SessionCreateInput = {
@@ -7663,6 +13077,62 @@ export namespace Prisma {
     mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
   }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type EnumRegistrationAttemptStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.RegistrationAttemptStatus | EnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RegistrationAttemptStatus[] | ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RegistrationAttemptStatus[] | ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRegistrationAttemptStatusFilter<$PrismaModel> | $Enums.RegistrationAttemptStatus
+  }
 
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -7673,6 +13143,373 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type EmployerRegistrationNullableScalarRelationFilter = {
+    is?: EmployerRegistrationWhereInput | null
+    isNot?: EmployerRegistrationWhereInput | null
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type RegistrationAttemptCountOrderByAggregateInput = {
+    id?: SortOrder
+    idempotencyKey?: SortOrder
+    formPayload?: SortOrder
+    selectedPriceId?: SortOrder
+    stripeProductId?: SortOrder
+    tierName?: SortOrder
+    confirmationTokenId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RegistrationAttemptAvgOrderByAggregateInput = {
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type RegistrationAttemptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    idempotencyKey?: SortOrder
+    selectedPriceId?: SortOrder
+    stripeProductId?: SortOrder
+    tierName?: SortOrder
+    confirmationTokenId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RegistrationAttemptMinOrderByAggregateInput = {
+    id?: SortOrder
+    idempotencyKey?: SortOrder
+    selectedPriceId?: SortOrder
+    stripeProductId?: SortOrder
+    tierName?: SortOrder
+    confirmationTokenId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RegistrationAttemptSumOrderByAggregateInput = {
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumRegistrationAttemptStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RegistrationAttemptStatus | EnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RegistrationAttemptStatus[] | ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RegistrationAttemptStatus[] | ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRegistrationAttemptStatusWithAggregatesFilter<$PrismaModel> | $Enums.RegistrationAttemptStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRegistrationAttemptStatusFilter<$PrismaModel>
+    _max?: NestedEnumRegistrationAttemptStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type EnumRegistrationPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.RegistrationPaymentStatus | EnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RegistrationPaymentStatus[] | ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RegistrationPaymentStatus[] | ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRegistrationPaymentStatusFilter<$PrismaModel> | $Enums.RegistrationPaymentStatus
+  }
+
+  export type RegistrationAttemptScalarRelationFilter = {
+    is?: RegistrationAttemptWhereInput
+    isNot?: RegistrationAttemptWhereInput
+  }
+
+  export type EmployerRegistrationCountOrderByAggregateInput = {
+    id?: SortOrder
+    attemptId?: SortOrder
+    companyName?: SortOrder
+    contactName?: SortOrder
+    title?: SortOrder
+    representativeCount?: SortOrder
+    addressCountry?: SortOrder
+    addressState?: SortOrder
+    addressPostalCode?: SortOrder
+    addressCity?: SortOrder
+    addressStreet?: SortOrder
+    division?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    fax?: SortOrder
+    thirdPartyRecruiter?: SortOrder
+    alumni?: SortOrder
+    website?: SortOrder
+    overview?: SortOrder
+    majorsRecruiting?: SortOrder
+    workAuthorizations?: SortOrder
+    workAuthorizationOther?: SortOrder
+    degreeLevels?: SortOrder
+    positionsAvailable?: SortOrder
+    tierName?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationAvgOrderByAggregateInput = {
+    representativeCount?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type EmployerRegistrationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    attemptId?: SortOrder
+    companyName?: SortOrder
+    contactName?: SortOrder
+    title?: SortOrder
+    representativeCount?: SortOrder
+    addressCountry?: SortOrder
+    addressState?: SortOrder
+    addressPostalCode?: SortOrder
+    addressCity?: SortOrder
+    addressStreet?: SortOrder
+    division?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    fax?: SortOrder
+    thirdPartyRecruiter?: SortOrder
+    alumni?: SortOrder
+    website?: SortOrder
+    overview?: SortOrder
+    workAuthorizationOther?: SortOrder
+    tierName?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationMinOrderByAggregateInput = {
+    id?: SortOrder
+    attemptId?: SortOrder
+    companyName?: SortOrder
+    contactName?: SortOrder
+    title?: SortOrder
+    representativeCount?: SortOrder
+    addressCountry?: SortOrder
+    addressState?: SortOrder
+    addressPostalCode?: SortOrder
+    addressCity?: SortOrder
+    addressStreet?: SortOrder
+    division?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    fax?: SortOrder
+    thirdPartyRecruiter?: SortOrder
+    alumni?: SortOrder
+    website?: SortOrder
+    overview?: SortOrder
+    workAuthorizationOther?: SortOrder
+    tierName?: SortOrder
+    stripeProductId?: SortOrder
+    stripePriceId?: SortOrder
+    additionalRepPriceId?: SortOrder
+    additionalRepProductId?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    stripePaymentIntentId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationSumOrderByAggregateInput = {
+    representativeCount?: SortOrder
+    additionalRepCount?: SortOrder
+    additionalRepUnitAmount?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type EnumRegistrationPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RegistrationPaymentStatus | EnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RegistrationPaymentStatus[] | ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RegistrationPaymentStatus[] | ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRegistrationPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.RegistrationPaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRegistrationPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumRegistrationPaymentStatusFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -7704,58 +13541,6 @@ export namespace Prisma {
     createdById?: SortOrder
   }
 
-  export type StringWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -7774,9 +13559,15 @@ export namespace Prisma {
     none?: PostWhereInput
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
+  export type AdminUserListRelationFilter = {
+    every?: AdminUserWhereInput
+    some?: AdminUserWhereInput
+    none?: AdminUserWhereInput
+  }
+
+  export type AdminUserNullableScalarRelationFilter = {
+    is?: AdminUserWhereInput | null
+    isNot?: AdminUserWhereInput | null
   }
 
   export type SessionOrderByRelationAggregateInput = {
@@ -7788,6 +13579,10 @@ export namespace Prisma {
   }
 
   export type PostOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AdminUserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -7821,30 +13616,53 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+  export type EnumAdminRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdminRole | EnumAdminRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.AdminRole[] | ListEnumAdminRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AdminRole[] | ListEnumAdminRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumAdminRoleFilter<$PrismaModel> | $Enums.AdminRole
   }
 
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type AdminUserCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    role?: SortOrder
+    addedByUserId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type AdminUserMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    role?: SortOrder
+    addedByUserId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type AdminUserMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    role?: SortOrder
+    addedByUserId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type EnumAdminRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdminRole | EnumAdminRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.AdminRole[] | ListEnumAdminRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AdminRole[] | ListEnumAdminRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumAdminRoleWithAggregatesFilter<$PrismaModel> | $Enums.AdminRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAdminRoleFilter<$PrismaModel>
+    _max?: NestedEnumAdminRoleFilter<$PrismaModel>
   }
 
   export type SessionCountOrderByAggregateInput = {
@@ -7980,18 +13798,128 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type UserCreateNestedOneWithoutPostsInput = {
-    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
-    connect?: UserWhereUniqueInput
+  export type EmployerRegistrationCreateNestedOneWithoutAttemptInput = {
+    create?: XOR<EmployerRegistrationCreateWithoutAttemptInput, EmployerRegistrationUncheckedCreateWithoutAttemptInput>
+    connectOrCreate?: EmployerRegistrationCreateOrConnectWithoutAttemptInput
+    connect?: EmployerRegistrationWhereUniqueInput
+  }
+
+  export type EmployerRegistrationUncheckedCreateNestedOneWithoutAttemptInput = {
+    create?: XOR<EmployerRegistrationCreateWithoutAttemptInput, EmployerRegistrationUncheckedCreateWithoutAttemptInput>
+    connectOrCreate?: EmployerRegistrationCreateOrConnectWithoutAttemptInput
+    connect?: EmployerRegistrationWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type EnumRegistrationAttemptStatusFieldUpdateOperationsInput = {
+    set?: $Enums.RegistrationAttemptStatus
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type EmployerRegistrationUpdateOneWithoutAttemptNestedInput = {
+    create?: XOR<EmployerRegistrationCreateWithoutAttemptInput, EmployerRegistrationUncheckedCreateWithoutAttemptInput>
+    connectOrCreate?: EmployerRegistrationCreateOrConnectWithoutAttemptInput
+    upsert?: EmployerRegistrationUpsertWithoutAttemptInput
+    disconnect?: EmployerRegistrationWhereInput | boolean
+    delete?: EmployerRegistrationWhereInput | boolean
+    connect?: EmployerRegistrationWhereUniqueInput
+    update?: XOR<XOR<EmployerRegistrationUpdateToOneWithWhereWithoutAttemptInput, EmployerRegistrationUpdateWithoutAttemptInput>, EmployerRegistrationUncheckedUpdateWithoutAttemptInput>
+  }
+
+  export type EmployerRegistrationUncheckedUpdateOneWithoutAttemptNestedInput = {
+    create?: XOR<EmployerRegistrationCreateWithoutAttemptInput, EmployerRegistrationUncheckedCreateWithoutAttemptInput>
+    connectOrCreate?: EmployerRegistrationCreateOrConnectWithoutAttemptInput
+    upsert?: EmployerRegistrationUpsertWithoutAttemptInput
+    disconnect?: EmployerRegistrationWhereInput | boolean
+    delete?: EmployerRegistrationWhereInput | boolean
+    connect?: EmployerRegistrationWhereUniqueInput
+    update?: XOR<XOR<EmployerRegistrationUpdateToOneWithWhereWithoutAttemptInput, EmployerRegistrationUpdateWithoutAttemptInput>, EmployerRegistrationUncheckedUpdateWithoutAttemptInput>
+  }
+
+  export type EmployerRegistrationCreatemajorsRecruitingInput = {
+    set: string[]
+  }
+
+  export type EmployerRegistrationCreateworkAuthorizationsInput = {
+    set: string[]
+  }
+
+  export type EmployerRegistrationCreatedegreeLevelsInput = {
+    set: string[]
+  }
+
+  export type EmployerRegistrationCreatepositionsAvailableInput = {
+    set: string[]
+  }
+
+  export type RegistrationAttemptCreateNestedOneWithoutRegistrationInput = {
+    create?: XOR<RegistrationAttemptCreateWithoutRegistrationInput, RegistrationAttemptUncheckedCreateWithoutRegistrationInput>
+    connectOrCreate?: RegistrationAttemptCreateOrConnectWithoutRegistrationInput
+    connect?: RegistrationAttemptWhereUniqueInput
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
+  export type EmployerRegistrationUpdatemajorsRecruitingInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type EmployerRegistrationUpdateworkAuthorizationsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type EmployerRegistrationUpdatedegreeLevelsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type EmployerRegistrationUpdatepositionsAvailableInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type EnumRegistrationPaymentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.RegistrationPaymentStatus
+  }
+
+  export type RegistrationAttemptUpdateOneRequiredWithoutRegistrationNestedInput = {
+    create?: XOR<RegistrationAttemptCreateWithoutRegistrationInput, RegistrationAttemptUncheckedCreateWithoutRegistrationInput>
+    connectOrCreate?: RegistrationAttemptCreateOrConnectWithoutRegistrationInput
+    upsert?: RegistrationAttemptUpsertWithoutRegistrationInput
+    connect?: RegistrationAttemptWhereUniqueInput
+    update?: XOR<XOR<RegistrationAttemptUpdateToOneWithWhereWithoutRegistrationInput, RegistrationAttemptUpdateWithoutRegistrationInput>, RegistrationAttemptUncheckedUpdateWithoutRegistrationInput>
+  }
+
+  export type UserCreateNestedOneWithoutPostsInput = {
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
+    connect?: UserWhereUniqueInput
   }
 
   export type UserUpdateOneRequiredWithoutPostsNestedInput = {
@@ -8023,6 +13951,19 @@ export namespace Prisma {
     connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
   }
 
+  export type AdminUserCreateNestedManyWithoutAddedByInput = {
+    create?: XOR<AdminUserCreateWithoutAddedByInput, AdminUserUncheckedCreateWithoutAddedByInput> | AdminUserCreateWithoutAddedByInput[] | AdminUserUncheckedCreateWithoutAddedByInput[]
+    connectOrCreate?: AdminUserCreateOrConnectWithoutAddedByInput | AdminUserCreateOrConnectWithoutAddedByInput[]
+    createMany?: AdminUserCreateManyAddedByInputEnvelope
+    connect?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+  }
+
+  export type AdminUserCreateNestedOneWithoutUserInput = {
+    create?: XOR<AdminUserCreateWithoutUserInput, AdminUserUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminUserCreateOrConnectWithoutUserInput
+    connect?: AdminUserWhereUniqueInput
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -8044,12 +13985,17 @@ export namespace Prisma {
     connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type AdminUserUncheckedCreateNestedManyWithoutAddedByInput = {
+    create?: XOR<AdminUserCreateWithoutAddedByInput, AdminUserUncheckedCreateWithoutAddedByInput> | AdminUserCreateWithoutAddedByInput[] | AdminUserUncheckedCreateWithoutAddedByInput[]
+    connectOrCreate?: AdminUserCreateOrConnectWithoutAddedByInput | AdminUserCreateOrConnectWithoutAddedByInput[]
+    createMany?: AdminUserCreateManyAddedByInputEnvelope
+    connect?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
+  export type AdminUserUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<AdminUserCreateWithoutUserInput, AdminUserUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminUserCreateOrConnectWithoutUserInput
+    connect?: AdminUserWhereUniqueInput
   }
 
   export type SessionUpdateManyWithoutUserNestedInput = {
@@ -8094,6 +14040,30 @@ export namespace Prisma {
     deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
   }
 
+  export type AdminUserUpdateManyWithoutAddedByNestedInput = {
+    create?: XOR<AdminUserCreateWithoutAddedByInput, AdminUserUncheckedCreateWithoutAddedByInput> | AdminUserCreateWithoutAddedByInput[] | AdminUserUncheckedCreateWithoutAddedByInput[]
+    connectOrCreate?: AdminUserCreateOrConnectWithoutAddedByInput | AdminUserCreateOrConnectWithoutAddedByInput[]
+    upsert?: AdminUserUpsertWithWhereUniqueWithoutAddedByInput | AdminUserUpsertWithWhereUniqueWithoutAddedByInput[]
+    createMany?: AdminUserCreateManyAddedByInputEnvelope
+    set?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+    disconnect?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+    delete?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+    connect?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+    update?: AdminUserUpdateWithWhereUniqueWithoutAddedByInput | AdminUserUpdateWithWhereUniqueWithoutAddedByInput[]
+    updateMany?: AdminUserUpdateManyWithWhereWithoutAddedByInput | AdminUserUpdateManyWithWhereWithoutAddedByInput[]
+    deleteMany?: AdminUserScalarWhereInput | AdminUserScalarWhereInput[]
+  }
+
+  export type AdminUserUpdateOneWithoutUserNestedInput = {
+    create?: XOR<AdminUserCreateWithoutUserInput, AdminUserUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminUserCreateOrConnectWithoutUserInput
+    upsert?: AdminUserUpsertWithoutUserInput
+    disconnect?: AdminUserWhereInput | boolean
+    delete?: AdminUserWhereInput | boolean
+    connect?: AdminUserWhereUniqueInput
+    update?: XOR<XOR<AdminUserUpdateToOneWithWhereWithoutUserInput, AdminUserUpdateWithoutUserInput>, AdminUserUncheckedUpdateWithoutUserInput>
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -8134,6 +14104,66 @@ export namespace Prisma {
     update?: PostUpdateWithWhereUniqueWithoutCreatedByInput | PostUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: PostUpdateManyWithWhereWithoutCreatedByInput | PostUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  }
+
+  export type AdminUserUncheckedUpdateManyWithoutAddedByNestedInput = {
+    create?: XOR<AdminUserCreateWithoutAddedByInput, AdminUserUncheckedCreateWithoutAddedByInput> | AdminUserCreateWithoutAddedByInput[] | AdminUserUncheckedCreateWithoutAddedByInput[]
+    connectOrCreate?: AdminUserCreateOrConnectWithoutAddedByInput | AdminUserCreateOrConnectWithoutAddedByInput[]
+    upsert?: AdminUserUpsertWithWhereUniqueWithoutAddedByInput | AdminUserUpsertWithWhereUniqueWithoutAddedByInput[]
+    createMany?: AdminUserCreateManyAddedByInputEnvelope
+    set?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+    disconnect?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+    delete?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+    connect?: AdminUserWhereUniqueInput | AdminUserWhereUniqueInput[]
+    update?: AdminUserUpdateWithWhereUniqueWithoutAddedByInput | AdminUserUpdateWithWhereUniqueWithoutAddedByInput[]
+    updateMany?: AdminUserUpdateManyWithWhereWithoutAddedByInput | AdminUserUpdateManyWithWhereWithoutAddedByInput[]
+    deleteMany?: AdminUserScalarWhereInput | AdminUserScalarWhereInput[]
+  }
+
+  export type AdminUserUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<AdminUserCreateWithoutUserInput, AdminUserUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminUserCreateOrConnectWithoutUserInput
+    upsert?: AdminUserUpsertWithoutUserInput
+    disconnect?: AdminUserWhereInput | boolean
+    delete?: AdminUserWhereInput | boolean
+    connect?: AdminUserWhereUniqueInput
+    update?: XOR<XOR<AdminUserUpdateToOneWithWhereWithoutUserInput, AdminUserUpdateWithoutUserInput>, AdminUserUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserCreateNestedOneWithoutAdminUsersCreatedInput = {
+    create?: XOR<UserCreateWithoutAdminUsersCreatedInput, UserUncheckedCreateWithoutAdminUsersCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminUsersCreatedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAdminUserInput = {
+    create?: XOR<UserCreateWithoutAdminUserInput, UserUncheckedCreateWithoutAdminUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminUserInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumAdminRoleFieldUpdateOperationsInput = {
+    set?: $Enums.AdminRole
+  }
+
+  export type UserUpdateOneWithoutAdminUsersCreatedNestedInput = {
+    create?: XOR<UserCreateWithoutAdminUsersCreatedInput, UserUncheckedCreateWithoutAdminUsersCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminUsersCreatedInput
+    upsert?: UserUpsertWithoutAdminUsersCreatedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAdminUsersCreatedInput, UserUpdateWithoutAdminUsersCreatedInput>, UserUncheckedUpdateWithoutAdminUsersCreatedInput>
+  }
+
+  export type UserUpdateOneWithoutAdminUserNestedInput = {
+    create?: XOR<UserCreateWithoutAdminUserInput, UserUncheckedCreateWithoutAdminUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminUserInput
+    upsert?: UserUpsertWithoutAdminUserInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAdminUserInput, UserUpdateWithoutAdminUserInput>, UserUncheckedUpdateWithoutAdminUserInput>
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -8182,6 +14212,38 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumRegistrationAttemptStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.RegistrationAttemptStatus | EnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RegistrationAttemptStatus[] | ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RegistrationAttemptStatus[] | ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRegistrationAttemptStatusFilter<$PrismaModel> | $Enums.RegistrationAttemptStatus
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -8209,8 +14271,31 @@ export namespace Prisma {
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
   }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
 
-  export type NestedIntFilter<$PrismaModel = never> = {
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
     notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -8218,48 +14303,23 @@ export namespace Prisma {
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8290,6 +14350,90 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumRegistrationAttemptStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RegistrationAttemptStatus | EnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RegistrationAttemptStatus[] | ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RegistrationAttemptStatus[] | ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRegistrationAttemptStatusWithAggregatesFilter<$PrismaModel> | $Enums.RegistrationAttemptStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRegistrationAttemptStatusFilter<$PrismaModel>
+    _max?: NestedEnumRegistrationAttemptStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedEnumRegistrationPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.RegistrationPaymentStatus | EnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RegistrationPaymentStatus[] | ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RegistrationPaymentStatus[] | ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRegistrationPaymentStatusFilter<$PrismaModel> | $Enums.RegistrationPaymentStatus
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRegistrationPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RegistrationPaymentStatus | EnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RegistrationPaymentStatus[] | ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RegistrationPaymentStatus[] | ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRegistrationPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.RegistrationPaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRegistrationPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumRegistrationPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAdminRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdminRole | EnumAdminRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.AdminRole[] | ListEnumAdminRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AdminRole[] | ListEnumAdminRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumAdminRoleFilter<$PrismaModel> | $Enums.AdminRole
+  }
+
+  export type NestedEnumAdminRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdminRole | EnumAdminRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.AdminRole[] | ListEnumAdminRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AdminRole[] | ListEnumAdminRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumAdminRoleWithAggregatesFilter<$PrismaModel> | $Enums.AdminRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAdminRoleFilter<$PrismaModel>
+    _max?: NestedEnumAdminRoleFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -8315,6 +14459,278 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type EmployerRegistrationCreateWithoutAttemptInput = {
+    id?: string
+    companyName: string
+    contactName: string
+    title?: string | null
+    representativeCount: number
+    addressCountry: string
+    addressState: string
+    addressPostalCode: string
+    addressCity: string
+    addressStreet: string
+    division?: string | null
+    phone: string
+    email: string
+    fax?: string | null
+    thirdPartyRecruiter: boolean
+    alumni?: boolean | null
+    website?: string | null
+    overview: string
+    majorsRecruiting?: EmployerRegistrationCreatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationCreateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: string | null
+    degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
+    tierName: string
+    stripeProductId: string
+    stripePriceId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: string
+    amount: number
+    currency: string
+    paymentStatus: $Enums.RegistrationPaymentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationUncheckedCreateWithoutAttemptInput = {
+    id?: string
+    companyName: string
+    contactName: string
+    title?: string | null
+    representativeCount: number
+    addressCountry: string
+    addressState: string
+    addressPostalCode: string
+    addressCity: string
+    addressStreet: string
+    division?: string | null
+    phone: string
+    email: string
+    fax?: string | null
+    thirdPartyRecruiter: boolean
+    alumni?: boolean | null
+    website?: string | null
+    overview: string
+    majorsRecruiting?: EmployerRegistrationCreatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationCreateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: string | null
+    degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
+    tierName: string
+    stripeProductId: string
+    stripePriceId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId: string
+    amount: number
+    currency: string
+    paymentStatus: $Enums.RegistrationPaymentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationCreateOrConnectWithoutAttemptInput = {
+    where: EmployerRegistrationWhereUniqueInput
+    create: XOR<EmployerRegistrationCreateWithoutAttemptInput, EmployerRegistrationUncheckedCreateWithoutAttemptInput>
+  }
+
+  export type EmployerRegistrationUpsertWithoutAttemptInput = {
+    update: XOR<EmployerRegistrationUpdateWithoutAttemptInput, EmployerRegistrationUncheckedUpdateWithoutAttemptInput>
+    create: XOR<EmployerRegistrationCreateWithoutAttemptInput, EmployerRegistrationUncheckedCreateWithoutAttemptInput>
+    where?: EmployerRegistrationWhereInput
+  }
+
+  export type EmployerRegistrationUpdateToOneWithWhereWithoutAttemptInput = {
+    where?: EmployerRegistrationWhereInput
+    data: XOR<EmployerRegistrationUpdateWithoutAttemptInput, EmployerRegistrationUncheckedUpdateWithoutAttemptInput>
+  }
+
+  export type EmployerRegistrationUpdateWithoutAttemptInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    contactName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    representativeCount?: IntFieldUpdateOperationsInput | number
+    addressCountry?: StringFieldUpdateOperationsInput | string
+    addressState?: StringFieldUpdateOperationsInput | string
+    addressPostalCode?: StringFieldUpdateOperationsInput | string
+    addressCity?: StringFieldUpdateOperationsInput | string
+    addressStreet?: StringFieldUpdateOperationsInput | string
+    division?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fax?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyRecruiter?: BoolFieldUpdateOperationsInput | boolean
+    alumni?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    overview?: StringFieldUpdateOperationsInput | string
+    majorsRecruiting?: EmployerRegistrationUpdatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationUpdateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: NullableStringFieldUpdateOperationsInput | string | null
+    degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
+    tierName?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    stripePriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: EnumRegistrationPaymentStatusFieldUpdateOperationsInput | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationUncheckedUpdateWithoutAttemptInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    contactName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    representativeCount?: IntFieldUpdateOperationsInput | number
+    addressCountry?: StringFieldUpdateOperationsInput | string
+    addressState?: StringFieldUpdateOperationsInput | string
+    addressPostalCode?: StringFieldUpdateOperationsInput | string
+    addressCity?: StringFieldUpdateOperationsInput | string
+    addressStreet?: StringFieldUpdateOperationsInput | string
+    division?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fax?: NullableStringFieldUpdateOperationsInput | string | null
+    thirdPartyRecruiter?: BoolFieldUpdateOperationsInput | boolean
+    alumni?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    overview?: StringFieldUpdateOperationsInput | string
+    majorsRecruiting?: EmployerRegistrationUpdatemajorsRecruitingInput | string[]
+    workAuthorizations?: EmployerRegistrationUpdateworkAuthorizationsInput | string[]
+    workAuthorizationOther?: NullableStringFieldUpdateOperationsInput | string | null
+    degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
+    positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
+    tierName?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    stripePriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: EnumRegistrationPaymentStatusFieldUpdateOperationsInput | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RegistrationAttemptCreateWithoutRegistrationInput = {
+    id?: string
+    idempotencyKey: string
+    formPayload: JsonNullValueInput | InputJsonValue
+    selectedPriceId: string
+    stripeProductId: string
+    tierName: string
+    confirmationTokenId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId?: string | null
+    amount: number
+    currency: string
+    status?: $Enums.RegistrationAttemptStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RegistrationAttemptUncheckedCreateWithoutRegistrationInput = {
+    id?: string
+    idempotencyKey: string
+    formPayload: JsonNullValueInput | InputJsonValue
+    selectedPriceId: string
+    stripeProductId: string
+    tierName: string
+    confirmationTokenId: string
+    additionalRepPriceId: string
+    additionalRepProductId: string
+    additionalRepCount: number
+    additionalRepUnitAmount: number
+    stripePaymentIntentId?: string | null
+    amount: number
+    currency: string
+    status?: $Enums.RegistrationAttemptStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RegistrationAttemptCreateOrConnectWithoutRegistrationInput = {
+    where: RegistrationAttemptWhereUniqueInput
+    create: XOR<RegistrationAttemptCreateWithoutRegistrationInput, RegistrationAttemptUncheckedCreateWithoutRegistrationInput>
+  }
+
+  export type RegistrationAttemptUpsertWithoutRegistrationInput = {
+    update: XOR<RegistrationAttemptUpdateWithoutRegistrationInput, RegistrationAttemptUncheckedUpdateWithoutRegistrationInput>
+    create: XOR<RegistrationAttemptCreateWithoutRegistrationInput, RegistrationAttemptUncheckedCreateWithoutRegistrationInput>
+    where?: RegistrationAttemptWhereInput
+  }
+
+  export type RegistrationAttemptUpdateToOneWithWhereWithoutRegistrationInput = {
+    where?: RegistrationAttemptWhereInput
+    data: XOR<RegistrationAttemptUpdateWithoutRegistrationInput, RegistrationAttemptUncheckedUpdateWithoutRegistrationInput>
+  }
+
+  export type RegistrationAttemptUpdateWithoutRegistrationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    formPayload?: JsonNullValueInput | InputJsonValue
+    selectedPriceId?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    tierName?: StringFieldUpdateOperationsInput | string
+    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: EnumRegistrationAttemptStatusFieldUpdateOperationsInput | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RegistrationAttemptUncheckedUpdateWithoutRegistrationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    formPayload?: JsonNullValueInput | InputJsonValue
+    selectedPriceId?: StringFieldUpdateOperationsInput | string
+    stripeProductId?: StringFieldUpdateOperationsInput | string
+    tierName?: StringFieldUpdateOperationsInput | string
+    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    additionalRepPriceId?: StringFieldUpdateOperationsInput | string
+    additionalRepProductId?: StringFieldUpdateOperationsInput | string
+    additionalRepCount?: IntFieldUpdateOperationsInput | number
+    additionalRepUnitAmount?: IntFieldUpdateOperationsInput | number
+    stripePaymentIntentId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    status?: EnumRegistrationAttemptStatusFieldUpdateOperationsInput | $Enums.RegistrationAttemptStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateWithoutPostsInput = {
     id: string
     name: string
@@ -8325,6 +14741,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    adminUsersCreated?: AdminUserCreateNestedManyWithoutAddedByInput
+    adminUser?: AdminUserCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -8337,6 +14755,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    adminUsersCreated?: AdminUserUncheckedCreateNestedManyWithoutAddedByInput
+    adminUser?: AdminUserUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -8365,6 +14785,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    adminUsersCreated?: AdminUserUpdateManyWithoutAddedByNestedInput
+    adminUser?: AdminUserUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -8377,6 +14799,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    adminUsersCreated?: AdminUserUncheckedUpdateManyWithoutAddedByNestedInput
+    adminUser?: AdminUserUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -8473,6 +14897,53 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AdminUserCreateWithoutAddedByInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    role?: $Enums.AdminRole
+    user?: UserCreateNestedOneWithoutAdminUserInput
+  }
+
+  export type AdminUserUncheckedCreateWithoutAddedByInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    role?: $Enums.AdminRole
+    userId?: string | null
+  }
+
+  export type AdminUserCreateOrConnectWithoutAddedByInput = {
+    where: AdminUserWhereUniqueInput
+    create: XOR<AdminUserCreateWithoutAddedByInput, AdminUserUncheckedCreateWithoutAddedByInput>
+  }
+
+  export type AdminUserCreateManyAddedByInputEnvelope = {
+    data: AdminUserCreateManyAddedByInput | AdminUserCreateManyAddedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AdminUserCreateWithoutUserInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    role?: $Enums.AdminRole
+    addedBy?: UserCreateNestedOneWithoutAdminUsersCreatedInput
+  }
+
+  export type AdminUserUncheckedCreateWithoutUserInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    role?: $Enums.AdminRole
+    addedByUserId?: string | null
+  }
+
+  export type AdminUserCreateOrConnectWithoutUserInput = {
+    where: AdminUserWhereUniqueInput
+    create: XOR<AdminUserCreateWithoutUserInput, AdminUserUncheckedCreateWithoutUserInput>
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -8565,6 +15036,205 @@ export namespace Prisma {
     createdById?: StringFilter<"Post"> | string
   }
 
+  export type AdminUserUpsertWithWhereUniqueWithoutAddedByInput = {
+    where: AdminUserWhereUniqueInput
+    update: XOR<AdminUserUpdateWithoutAddedByInput, AdminUserUncheckedUpdateWithoutAddedByInput>
+    create: XOR<AdminUserCreateWithoutAddedByInput, AdminUserUncheckedCreateWithoutAddedByInput>
+  }
+
+  export type AdminUserUpdateWithWhereUniqueWithoutAddedByInput = {
+    where: AdminUserWhereUniqueInput
+    data: XOR<AdminUserUpdateWithoutAddedByInput, AdminUserUncheckedUpdateWithoutAddedByInput>
+  }
+
+  export type AdminUserUpdateManyWithWhereWithoutAddedByInput = {
+    where: AdminUserScalarWhereInput
+    data: XOR<AdminUserUpdateManyMutationInput, AdminUserUncheckedUpdateManyWithoutAddedByInput>
+  }
+
+  export type AdminUserScalarWhereInput = {
+    AND?: AdminUserScalarWhereInput | AdminUserScalarWhereInput[]
+    OR?: AdminUserScalarWhereInput[]
+    NOT?: AdminUserScalarWhereInput | AdminUserScalarWhereInput[]
+    id?: StringFilter<"AdminUser"> | string
+    email?: StringFilter<"AdminUser"> | string
+    createdAt?: DateTimeFilter<"AdminUser"> | Date | string
+    role?: EnumAdminRoleFilter<"AdminUser"> | $Enums.AdminRole
+    addedByUserId?: StringNullableFilter<"AdminUser"> | string | null
+    userId?: StringNullableFilter<"AdminUser"> | string | null
+  }
+
+  export type AdminUserUpsertWithoutUserInput = {
+    update: XOR<AdminUserUpdateWithoutUserInput, AdminUserUncheckedUpdateWithoutUserInput>
+    create: XOR<AdminUserCreateWithoutUserInput, AdminUserUncheckedCreateWithoutUserInput>
+    where?: AdminUserWhereInput
+  }
+
+  export type AdminUserUpdateToOneWithWhereWithoutUserInput = {
+    where?: AdminUserWhereInput
+    data: XOR<AdminUserUpdateWithoutUserInput, AdminUserUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AdminUserUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    addedBy?: UserUpdateOneWithoutAdminUsersCreatedNestedInput
+  }
+
+  export type AdminUserUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    addedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserCreateWithoutAdminUsersCreatedInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    adminUser?: AdminUserCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAdminUsersCreatedInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    adminUser?: AdminUserUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAdminUsersCreatedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAdminUsersCreatedInput, UserUncheckedCreateWithoutAdminUsersCreatedInput>
+  }
+
+  export type UserCreateWithoutAdminUserInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    adminUsersCreated?: AdminUserCreateNestedManyWithoutAddedByInput
+  }
+
+  export type UserUncheckedCreateWithoutAdminUserInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    adminUsersCreated?: AdminUserUncheckedCreateNestedManyWithoutAddedByInput
+  }
+
+  export type UserCreateOrConnectWithoutAdminUserInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAdminUserInput, UserUncheckedCreateWithoutAdminUserInput>
+  }
+
+  export type UserUpsertWithoutAdminUsersCreatedInput = {
+    update: XOR<UserUpdateWithoutAdminUsersCreatedInput, UserUncheckedUpdateWithoutAdminUsersCreatedInput>
+    create: XOR<UserCreateWithoutAdminUsersCreatedInput, UserUncheckedCreateWithoutAdminUsersCreatedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAdminUsersCreatedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAdminUsersCreatedInput, UserUncheckedUpdateWithoutAdminUsersCreatedInput>
+  }
+
+  export type UserUpdateWithoutAdminUsersCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    adminUser?: AdminUserUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAdminUsersCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    adminUser?: AdminUserUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutAdminUserInput = {
+    update: XOR<UserUpdateWithoutAdminUserInput, UserUncheckedUpdateWithoutAdminUserInput>
+    create: XOR<UserCreateWithoutAdminUserInput, UserUncheckedCreateWithoutAdminUserInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAdminUserInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAdminUserInput, UserUncheckedUpdateWithoutAdminUserInput>
+  }
+
+  export type UserUpdateWithoutAdminUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    adminUsersCreated?: AdminUserUpdateManyWithoutAddedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAdminUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    adminUsersCreated?: AdminUserUncheckedUpdateManyWithoutAddedByNestedInput
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id: string
     name: string
@@ -8575,6 +15245,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
+    adminUsersCreated?: AdminUserCreateNestedManyWithoutAddedByInput
+    adminUser?: AdminUserCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -8587,6 +15259,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    adminUsersCreated?: AdminUserUncheckedCreateNestedManyWithoutAddedByInput
+    adminUser?: AdminUserUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -8615,6 +15289,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
+    adminUsersCreated?: AdminUserUpdateManyWithoutAddedByNestedInput
+    adminUser?: AdminUserUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -8627,6 +15303,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    adminUsersCreated?: AdminUserUncheckedUpdateManyWithoutAddedByNestedInput
+    adminUser?: AdminUserUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -8639,6 +15317,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
+    adminUsersCreated?: AdminUserCreateNestedManyWithoutAddedByInput
+    adminUser?: AdminUserCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -8651,6 +15331,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    adminUsersCreated?: AdminUserUncheckedCreateNestedManyWithoutAddedByInput
+    adminUser?: AdminUserUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -8679,6 +15361,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
+    adminUsersCreated?: AdminUserUpdateManyWithoutAddedByNestedInput
+    adminUser?: AdminUserUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -8691,6 +15375,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    adminUsersCreated?: AdminUserUncheckedUpdateManyWithoutAddedByNestedInput
+    adminUser?: AdminUserUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -8723,6 +15409,14 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type AdminUserCreateManyAddedByInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+    role?: $Enums.AdminRole
+    userId?: string | null
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -8819,6 +15513,30 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminUserUpdateWithoutAddedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    user?: UserUpdateOneWithoutAdminUserNestedInput
+  }
+
+  export type AdminUserUncheckedUpdateWithoutAddedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AdminUserUncheckedUpdateManyWithoutAddedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

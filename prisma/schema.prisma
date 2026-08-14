@@ -6,13 +6,97 @@ generator client {
   output   = "../generated/prisma"
 }
 
-// NOTE: When using mysql or sqlserver, uncomment the //@db.Text annotations in model Account below
+// NOTE: When using mysql or sqlserver, uncomment the annotations in model Account below
 // Further reading:
 // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+enum RegistrationAttemptStatus {
+  PENDING
+  REQUIRES_ACTION
+  PROCESSING
+  SUCCEEDED
+  FAILED
+}
+
+enum RegistrationPaymentStatus {
+  PROCESSING
+  SUCCEEDED
+  FAILED
+}
+
+model RegistrationAttempt {
+  id                      String                    @id @default(cuid())
+  idempotencyKey          String                    @unique
+  formPayload             Json
+  selectedPriceId         String
+  stripeProductId         String
+  tierName                String
+  confirmationTokenId     String
+  additionalRepPriceId    String
+  additionalRepProductId  String
+  additionalRepCount      Int
+  additionalRepUnitAmount Int
+  stripePaymentIntentId   String?                   @unique
+  amount                  Int
+  currency                String
+  status                  RegistrationAttemptStatus @default(PENDING)
+  expiresAt               DateTime
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+
+  registration EmployerRegistration?
+
+  @@index([expiresAt])
+  @@index([status])
+}
+
+model EmployerRegistration {
+  id                      String                    @id @default(cuid())
+  attemptId               String                    @unique
+  attempt                 RegistrationAttempt       @relation(fields: [attemptId], references: [id])
+  companyName             String
+  contactName             String
+  title                   String?
+  representativeCount     Int
+  addressCountry          String
+  addressState            String
+  addressPostalCode       String
+  addressCity             String
+  addressStreet           String
+  division                String?
+  phone                   String
+  email                   String
+  fax                     String?
+  thirdPartyRecruiter     Boolean
+  alumni                  Boolean?
+  website                 String?
+  overview                String
+  majorsRecruiting        String[]
+  workAuthorizations      String[]
+  workAuthorizationOther  String?
+  degreeLevels            String[]
+  positionsAvailable      String[]
+  tierName                String
+  stripeProductId         String
+  stripePriceId           String
+  additionalRepPriceId    String
+  additionalRepProductId  String
+  additionalRepCount      Int
+  additionalRepUnitAmount Int
+  stripePaymentIntentId   String                    @unique
+  amount                  Int
+  currency                String
+  paymentStatus           RegistrationPaymentStatus
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+
+  @@index([companyName])
+  @@index([email])
+  @@index([paymentStatus])
 }
 
 model Post {
@@ -28,19 +112,40 @@ model Post {
 }
 
 model User {
-  id            String    @id
-  name          String //@db.Text
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String? //@db.Text
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  posts         Post[]
+  id                String      @id
+  name              String
+  email             String
+  emailVerified     Boolean     @default(false)
+  image             String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @default(now()) @updatedAt
+  sessions          Session[]
+  accounts          Account[]
+  posts             Post[]
+  adminUsersCreated AdminUser[] @relation("AdminUserAddedBy")
+  adminUser         AdminUser?  @relation("AdminUserAccount")
 
   @@unique([email])
   @@map("user")
+}
+
+enum AdminRole {
+  ADMIN
+  OFFICER
+}
+
+model AdminUser {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  createdAt     DateTime  @default(now())
+  role          AdminRole @default(OFFICER)
+  addedByUserId String?
+  addedBy       User?     @relation("AdminUserAddedBy", fields: [addedByUserId], references: [id], onDelete: SetNull)
+  userId        String?   @unique
+  user          User?     @relation("AdminUserAccount", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([addedByUserId])
+  @@map("adminUsers")
 }
 
 model Session {
@@ -49,8 +154,8 @@ model Session {
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  ipAddress String? //@db.Text
-  userAgent String? //@db.Text
+  ipAddress String?
+  userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -60,17 +165,17 @@ model Session {
 
 model Account {
   id                    String    @id
-  accountId             String //@db.Text
-  providerId            String //@db.Text
+  accountId             String
+  providerId            String
   userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String? //@db.Text
-  refreshToken          String? //@db.Text
-  idToken               String? //@db.Text
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
-  scope                 String? //@db.Text
-  password              String? //@db.Text
+  scope                 String?
+  password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -79,8 +184,8 @@ model Account {
 
 model Verification {
   id         String   @id
-  identifier String //@db.Text
-  value      String //@db.Text
+  identifier String
+  value      String
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt

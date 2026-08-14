@@ -93,6 +93,67 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.RegistrationAttemptScalarFieldEnum = {
+  id: 'id',
+  idempotencyKey: 'idempotencyKey',
+  formPayload: 'formPayload',
+  selectedPriceId: 'selectedPriceId',
+  stripeProductId: 'stripeProductId',
+  tierName: 'tierName',
+  confirmationTokenId: 'confirmationTokenId',
+  additionalRepPriceId: 'additionalRepPriceId',
+  additionalRepProductId: 'additionalRepProductId',
+  additionalRepCount: 'additionalRepCount',
+  additionalRepUnitAmount: 'additionalRepUnitAmount',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmployerRegistrationScalarFieldEnum = {
+  id: 'id',
+  attemptId: 'attemptId',
+  companyName: 'companyName',
+  contactName: 'contactName',
+  title: 'title',
+  representativeCount: 'representativeCount',
+  addressCountry: 'addressCountry',
+  addressState: 'addressState',
+  addressPostalCode: 'addressPostalCode',
+  addressCity: 'addressCity',
+  addressStreet: 'addressStreet',
+  division: 'division',
+  phone: 'phone',
+  email: 'email',
+  fax: 'fax',
+  thirdPartyRecruiter: 'thirdPartyRecruiter',
+  alumni: 'alumni',
+  website: 'website',
+  overview: 'overview',
+  majorsRecruiting: 'majorsRecruiting',
+  workAuthorizations: 'workAuthorizations',
+  workAuthorizationOther: 'workAuthorizationOther',
+  degreeLevels: 'degreeLevels',
+  positionsAvailable: 'positionsAvailable',
+  tierName: 'tierName',
+  stripeProductId: 'stripeProductId',
+  stripePriceId: 'stripePriceId',
+  additionalRepPriceId: 'additionalRepPriceId',
+  additionalRepProductId: 'additionalRepProductId',
+  additionalRepCount: 'additionalRepCount',
+  additionalRepUnitAmount: 'additionalRepUnitAmount',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  amount: 'amount',
+  currency: 'currency',
+  paymentStatus: 'paymentStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.PostScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -152,18 +213,42 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.RegistrationAttemptStatus = exports.$Enums.RegistrationAttemptStatus = {
+  PENDING: 'PENDING',
+  REQUIRES_ACTION: 'REQUIRES_ACTION',
+  PROCESSING: 'PROCESSING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+};
 
+exports.RegistrationPaymentStatus = exports.$Enums.RegistrationPaymentStatus = {
+  PROCESSING: 'PROCESSING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+};
 
 exports.Prisma.ModelName = {
+  RegistrationAttempt: 'RegistrationAttempt',
+  EmployerRegistration: 'EmployerRegistration',
   Post: 'Post',
   User: 'User',
   Session: 'Session',
@@ -181,7 +266,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/jussy/git/uncc-bmes-website/generated/prisma",
+      "value": "/home/jussy/bmes-website/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -190,12 +275,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "debian-openssl-1.1.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/jussy/git/uncc-bmes-website/prisma/schema.prisma",
+    "sourceFilePath": "/home/jussy/bmes-website/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -218,13 +303,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// Prisma schema for Better Auth\n// learn more: https://better-auth.com/docs/concepts/database\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\n// NOTE: When using mysql or sqlserver, uncomment the //@db.Text annotations in model Account below\n// Further reading:\n// https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Post {\n  id        String   @id @default(cuid())\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  createdBy   User   @relation(fields: [createdById], references: [id])\n  createdById String\n\n  @@index([name])\n}\n\nmodel User {\n  id            String    @id\n  name          String //@db.Text\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String? //@db.Text\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @default(now()) @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n  posts         Post[]\n\n  @@unique([email])\n  @@map(\"user\")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String? //@db.Text\n  userAgent String? //@db.Text\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@map(\"session\")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String //@db.Text\n  providerId            String //@db.Text\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String? //@db.Text\n  refreshToken          String? //@db.Text\n  idToken               String? //@db.Text\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String? //@db.Text\n  password              String? //@db.Text\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@map(\"account\")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String //@db.Text\n  value      String //@db.Text\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @default(now()) @updatedAt\n\n  @@map(\"verification\")\n}\n",
-  "inlineSchemaHash": "13b811a21e98325911952479534b19039c5183588e791c7b9235c4279bb03147",
+  "inlineSchema": "// Prisma schema for Better Auth\n// learn more: https://better-auth.com/docs/concepts/database\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\n// NOTE: When using mysql or sqlserver, uncomment the //@db.Text annotations in model Account below\n// Further reading:\n// https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum RegistrationAttemptStatus {\n  PENDING\n  REQUIRES_ACTION\n  PROCESSING\n  SUCCEEDED\n  FAILED\n}\n\nenum RegistrationPaymentStatus {\n  PROCESSING\n  SUCCEEDED\n  FAILED\n}\n\nmodel RegistrationAttempt {\n  id                      String                    @id @default(cuid())\n  idempotencyKey          String                    @unique\n  formPayload             Json\n  selectedPriceId         String\n  stripeProductId         String\n  tierName                String\n  confirmationTokenId     String\n  additionalRepPriceId    String\n  additionalRepProductId  String\n  additionalRepCount      Int\n  additionalRepUnitAmount Int\n  stripePaymentIntentId   String?                   @unique\n  amount                  Int\n  currency                String\n  status                  RegistrationAttemptStatus @default(PENDING)\n  expiresAt               DateTime\n  createdAt               DateTime                  @default(now())\n  updatedAt               DateTime                  @updatedAt\n\n  registration EmployerRegistration?\n\n  @@index([expiresAt])\n  @@index([status])\n}\n\nmodel EmployerRegistration {\n  id                      String                    @id @default(cuid())\n  attemptId               String                    @unique\n  attempt                 RegistrationAttempt       @relation(fields: [attemptId], references: [id])\n  companyName             String\n  contactName             String\n  title                   String?\n  representativeCount     Int\n  addressCountry          String\n  addressState            String\n  addressPostalCode       String\n  addressCity             String\n  addressStreet           String\n  division                String?\n  phone                   String\n  email                   String\n  fax                     String?\n  thirdPartyRecruiter     Boolean\n  alumni                  Boolean?\n  website                 String?\n  overview                String\n  majorsRecruiting        String[]\n  workAuthorizations      String[]\n  workAuthorizationOther  String?\n  degreeLevels            String[]\n  positionsAvailable      String[]\n  tierName                String\n  stripeProductId         String\n  stripePriceId           String\n  additionalRepPriceId    String\n  additionalRepProductId  String\n  additionalRepCount      Int\n  additionalRepUnitAmount Int\n  stripePaymentIntentId   String                    @unique\n  amount                  Int\n  currency                String\n  paymentStatus           RegistrationPaymentStatus\n  createdAt               DateTime                  @default(now())\n  updatedAt               DateTime                  @updatedAt\n\n  @@index([companyName])\n  @@index([email])\n  @@index([paymentStatus])\n}\n\nmodel Post {\n  id        String   @id @default(cuid())\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  createdBy   User   @relation(fields: [createdById], references: [id])\n  createdById String\n\n  @@index([name])\n}\n\nmodel User {\n  id            String    @id\n  name          String //@db.Text\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String? //@db.Text\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @default(now()) @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n  posts         Post[]\n\n  @@unique([email])\n  @@map(\"user\")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String? //@db.Text\n  userAgent String? //@db.Text\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@map(\"session\")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String //@db.Text\n  providerId            String //@db.Text\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String? //@db.Text\n  refreshToken          String? //@db.Text\n  idToken               String? //@db.Text\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String? //@db.Text\n  password              String? //@db.Text\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@map(\"account\")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String //@db.Text\n  value      String //@db.Text\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @default(now()) @updatedAt\n\n  @@map(\"verification\")\n}\n",
+  "inlineSchemaHash": "09d5dd438dd3a3feaa8a3016e96374b7bec540a965377664400cf3f7bac0cc11",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Post\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PostToUser\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"posts\",\"kind\":\"object\",\"type\":\"Post\",\"relationName\":\"PostToUser\"}],\"dbName\":\"user\"},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":\"session\"},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"account\"},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"verification\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"RegistrationAttempt\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idempotencyKey\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"formPayload\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"selectedPriceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stripeProductId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tierName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"confirmationTokenId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"additionalRepPriceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"additionalRepProductId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"additionalRepCount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"additionalRepUnitAmount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"stripePaymentIntentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"currency\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"RegistrationAttemptStatus\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"registration\",\"kind\":\"object\",\"type\":\"EmployerRegistration\",\"relationName\":\"EmployerRegistrationToRegistrationAttempt\"}],\"dbName\":null},\"EmployerRegistration\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attemptId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attempt\",\"kind\":\"object\",\"type\":\"RegistrationAttempt\",\"relationName\":\"EmployerRegistrationToRegistrationAttempt\"},{\"name\":\"companyName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"contactName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"representativeCount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"addressCountry\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"addressState\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"addressPostalCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"addressCity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"addressStreet\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"division\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fax\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"thirdPartyRecruiter\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"alumni\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"website\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"overview\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"majorsRecruiting\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"workAuthorizations\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"workAuthorizationOther\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"degreeLevels\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"positionsAvailable\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tierName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stripeProductId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stripePriceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"additionalRepPriceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"additionalRepProductId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"additionalRepCount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"additionalRepUnitAmount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"stripePaymentIntentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"currency\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"paymentStatus\",\"kind\":\"enum\",\"type\":\"RegistrationPaymentStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Post\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PostToUser\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"posts\",\"kind\":\"object\",\"type\":\"Post\",\"relationName\":\"PostToUser\"}],\"dbName\":\"user\"},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":\"session\"},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"account\"},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"verification\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

@@ -11,6 +11,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import { AdminRole } from "../../../generated/prisma";
 import { auth } from "@/server/better-auth";
 import { db } from "@/server/db";
 
@@ -132,3 +133,34 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+/**
+ * Officer-only procedure
+ *
+ * Requires both an authenticated session and a current admin-user entry.
+ */
+export const officerProcedure = protectedProcedure.use(
+  async ({ ctx, next }) => {
+    const adminUser = ctx.session.user.emailVerified
+      ? ctx.session.user.adminUser
+      : null;
+
+    if (!adminUser) {
+      throw new TRPCError({ code: "FORBIDDEN" });
+    }
+
+    return next({
+      ctx: {
+        adminUser,
+      },
+    });
+  },
+);
+
+export const adminProcedure = officerProcedure.use(({ ctx, next }) => {
+  if (ctx.adminUser.role !== AdminRole.ADMIN) {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+
+  return next({ ctx });
+});
