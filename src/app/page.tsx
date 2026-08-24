@@ -1,17 +1,15 @@
+import { CarouselAutoAdvance } from "@/app/_components/carousel-auto-advance";
 import { Container } from "@/app/_components/container";
+import { HighlightCard } from "@/app/_components/highlight-card";
 import { Typography } from "@/app/_components/typography";
-import "tailwindcss";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Fragment } from "react";
 
 /**
  * Home page.
@@ -28,13 +26,14 @@ export default function HomePage() {
       heroContent={
         <Typography variant="h3">Biomedical Engineering Society</Typography>
       }
+      contentClassName="space-y-8"
     >
-      <section className="space-y-5">
-        <Typography variant="h1">Purpose</Typography>
+      <Typography variant="h1">Purpose</Typography>
+      <section className="space-y-4">
         <Typography variant="h2">
-          UNCC Biomedical Engineering Society
+          UNC Charlotte Biomedical Engineering Society
         </Typography>
-        <Typography variant="h6">
+        <Typography>
           The Biomedical Engineering Society at UNC Charlotte is dedicated to
           advancing the field by building a supportive, inclusive community that
           empowers the next generation of engineers. We foster innovation and
@@ -42,146 +41,141 @@ export default function HomePage() {
           development opportunities, and community outreach that bridge the gap
           between academic theory and real-world engineering application.
         </Typography>
-        <div className="gap flex flex-wrap"></div>
       </section>
-      <section className="space-y-3.5">
-        <div className="gap flex flex-wrap"></div>
+      <section className="space-y-4">
         <Typography variant="h2">Mini BEE and Community Impact</Typography>
-        <Typography variant="h6">
+        <Typography>
           Develop your technical toolkit through our specialized workshop series
-          and the "Mini-BEE" events designed to build core engineering and
-          professional skills.
+          and the &quot;Mini-BEE&quot; events designed to build core engineering
+          and professional skills.
         </Typography>
-        <section className="space-y-3.5">
-          <div className="gap flex flex-wrap"></div>
-          <Typography variant="h2">BMES Projects</Typography>
-          <Typography variant="h6">
-            We compete annually in the prestigious Medtronic Medical Design
-            Competition at the National BMES Conference. Our members gain
-            hands-on engineering experience in the Super Fab Lab, where we are
-            currently building an advanced prosthetic arm and a companion robot
-            named Art-E.
-          </Typography>
-        </section>
+      </section>
+      <section className="space-y-4">
+        <Typography variant="h2">BMES Projects</Typography>
+        <Typography>
+          We compete annually in the prestigious Medtronic Medical Design
+          Competition at the National BMES Conference. Our members gain hands-on
+          engineering experience in the Super Fab Lab, where we are currently
+          building an advanced prosthetic arm and a companion robot named Art-E.
+        </Typography>
+      </section>
+      <section className="space-y-4">
         <Typography variant="h2">
           Networking & Interdisciplinary Events
         </Typography>
-        <Typography variant="h6">
+        <Typography>
           Expand your network by engaging with peers and industry professionals
           through cross-club collaborations and joint professional development
           sessions.
         </Typography>
-        <div className="gap flex flex-wrap"></div>
-        <Card>
-          <CardContent className="space-y-3 pt-8">
-            <Typography variant="h2">Our Highlights</Typography>
-            <Typography variant="h3">Projects</Typography>
-            <div className="flex items-start gap-3">
-              <img
-                src="home-page/BMES-Project.png"
-                alt="BMES Projects Photo"
-                width="205"
-                height="205"
-                loading="auto"
-                align="left"
-              />
+      </section>
 
-              <ul className="list-inside list-disc">
-                <font size="4">
-                  <li>
-                    National Design Competition: We compete annually in the
-                    prestigious Medtronic Medical Design Competition at the
-                    National BMES Conference.
-                  </li>
-                </font>
-                <font size="4">
-                  <li>
-                    Current Builds: We are actively engineering a prosthetic arm
-                    and a companion robot named Art-E.
-                  </li>
-                </font>
-                <font size="4">
-                  <li>
-                    Where We Meet: Catch us in the Super Fab Lab! (TIME AND DATE
-                    TO BE DETERMINED LATER IN THE FALL)
-                  </li>
-                </font>
-              </ul>
+      <section aria-labelledby="highlights-heading" className="space-y-4">
+        <Carousel
+          opts={{ align: "center", loop: true }}
+          className="relative left-1/2 w-dvw -translate-x-1/2"
+        >
+          <CarouselAutoAdvance delay={7500} />
+          <div className="mx-auto mb-4 flex w-full max-w-6xl justify-between gap-2 px-4 sm:px-6 lg:px-8">
+            <Typography id="highlights-heading" variant="h2">
+              Our highlights
+            </Typography>
+            <div className="space-x-2">
+              <CarouselPrevious className="static" />
+              <CarouselNext className="static" />
             </div>
+          </div>
+          <div className="relative">
+            <CarouselContent className="ml-0 gap-4 px-4">
+              {Array.from({ length: 2 }, (_, setIndex) => (
+                <Fragment key={setIndex}>
+                  <CarouselItem className="max-w-3xl basis-[calc(100dvw-2rem)] pl-0">
+                    <HighlightCard
+                      title="Projects"
+                      image="/home-page/BMES-Project.png"
+                      alt="BMES members working on a design project in the lab"
+                    >
+                      <p>
+                        We compete each year in the Medtronic Medical Design
+                        Competition at the National BMES Conference.
+                      </p>
+                      <p>
+                        Our current builds include a prosthetic arm and a
+                        companion robot named Art-E.
+                      </p>
+                      <p>
+                        Join us in the Super Fab Lab. Fall meeting details are
+                        coming soon.
+                      </p>
+                    </HighlightCard>
+                  </CarouselItem>
 
-            <div className="gap flex flex-wrap"></div>
-            <Typography variant="h3">Mini BEE (Outreach)</Typography>
-            <div className="flex items-start gap-3">
-              <img
-                src="home-page/mini-bee-photo.png"
-                alt="Mini BEE and Community Impact Photo"
-                width="205"
-                height="205"
-                loading="auto"
-                align="left"
-              />
-              <ul className="list-inside list-disc">
-                <font size="4">
-                  <li>
-                    The Mission: Launched in partnership with Honeywell, our
-                    signature program introduces K-12 students to the incredible
-                    world of biomedical engineering through hands-on kits and
-                    activities.
-                  </li>
-                </font>
-                <font size="4">
-                  <li>
-                    Our Partners: We proudly collaborate with the Charlotte
-                    Mecklenburg Library, SWE (Society of Women Engineers), and
-                    the Discovery Place Museum.
-                  </li>
-                </font>
-                <font size="4">
-                  <li>
-                    The Goal: To positively educate, nurture, and give back to
-                    our local community.
-                  </li>
-                </font>
-              </ul>
-            </div>
+                  <CarouselItem className="max-w-3xl basis-[calc(100dvw-2rem)] pl-0">
+                    <HighlightCard
+                      title="Mini BEE outreach"
+                      image="/home-page/mini-bee-photo.png"
+                      alt="Students taking part in a Mini BEE hands-on activity"
+                    >
+                      <p>
+                        Created with Honeywell, Mini BEE introduces K-12
+                        students to biomedical engineering through hands-on kits
+                        and activities.
+                      </p>
+                      <p>
+                        We work with the Charlotte Mecklenburg Library, Society
+                        of Women Engineers, and Discovery Place.
+                      </p>
+                      <p>
+                        The program gives local students an approachable first
+                        look at engineering.
+                      </p>
+                    </HighlightCard>
+                  </CarouselItem>
 
-            <div className="gap flex flex-wrap"></div>
-            <Typography variant="h3">Professional Development</Typography>
-            <div className="flex items-start gap-3">
-              <img
-                src="home-page/Networking & Interdisciplinary Events.png"
-                alt="Mini BEE and Community Impact Photo"
-                width="205"
-                height="205"
-                loading="auto"
-                align="left"
-              />
-              <ul className="list-inside list-disc">
-                <font size="4">
-                  <li>
-                    Strategic Partnerships: We collaborate with Alumni, industry
-                    professionals, the College of Engineering, and the Office of
-                    Undergraduate Research (OUR).
-                  </li>
-                </font>
-                <font size="4">
-                  <li>
-                    Networking & Events: We connect our members to exclusive
-                    professional engineering opportunities and networking
-                    events, both on and off campus.
-                  </li>
-                </font>
-                <font size="4">
-                  <li>
-                    Future Prep: Our goal is to fully prepare members for
-                    post-grad careers and future endeavors in biomedical
-                    engineering and overlapping fields.
-                  </li>
-                </font>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+                  <CarouselItem className="max-w-3xl basis-[calc(100dvw-2rem)] pl-0">
+                    <HighlightCard
+                      title="Professional development"
+                      image="/home-page/Networking & Interdisciplinary Events.png"
+                      alt="BMES members at a professional networking event"
+                    >
+                      <p>
+                        We work with alumni, industry professionals, the College
+                        of Engineering, and the Office of Undergraduate
+                        Research.
+                      </p>
+                      <p>
+                        Members get access to engineering and networking events
+                        on and off campus.
+                      </p>
+                      <p>
+                        These connections help members prepare for careers in
+                        biomedical engineering and related fields.
+                      </p>
+                    </HighlightCard>
+                  </CarouselItem>
+                </Fragment>
+              ))}
+            </CarouselContent>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 left-0 z-10"
+              style={{
+                width: "max(0px, calc((100dvw - 72rem) / 2))",
+                background:
+                  "linear-gradient(to right, var(--background), transparent)",
+              }}
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 z-10"
+              style={{
+                width: "max(0px, calc((100dvw - 72rem) / 2))",
+                background:
+                  "linear-gradient(to left, var(--background), transparent)",
+              }}
+            />
+          </div>
+        </Carousel>
       </section>
     </Container>
   );

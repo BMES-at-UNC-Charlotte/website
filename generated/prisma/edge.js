@@ -181,7 +181,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\lilli\\Websites\\website\\generated\\prisma",
+      "value": "/home/jussy/git/bmes-website/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -190,16 +190,17 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-1.1.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\lilli\\Websites\\website\\prisma\\schema.prisma",
+    "sourceFilePath": "/home/jussy/git/bmes-website/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
   "clientVersion": "6.19.3",
