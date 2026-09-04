@@ -1,36 +1,3 @@
-/*import { Container } from "@/app/_components/container";
-import { Typography } from "@/app/_components/typography";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-export default function AboutPage() {
-  return (
-    <Container>
-      <Typography variant="h1">About Us </Typography>
-      <Card className="inline-block max-w-sm">
-        <CardHeader>This is a test</CardHeader>
-        <CardContent>
-          <img src="/about/lillian-cain.jpg" alt="Lillian Cain" />
-        </CardContent>
-        <CardDescription>I am Lillian Cain</CardDescription>
-      </Card>
-      <Card className="inline-block max-w-sm">
-        <CardHeader>This is a test</CardHeader>
-        <CardContent>
-          <img src="/about/lillian-cain.jpg" alt="Lillian Cain" />
-        </CardContent>
-        <CardDescription>I am Lillian Cain</CardDescription>
-      </Card>
-    </Container>
-  );
-}
-*/
 import { Container } from "@/app/_components/container";
 import { Typography } from "@/app/_components/typography";
 import { Card, CardContent } from "@/components/ui/card";
