@@ -12,7 +12,7 @@ const navigationItems = [
   { title: "Home", href: "/" },
   { title: "About", href: "/about" },
   { title: "Gallery", href: "/gallery" },
-  { title: "Sponsors", href: "/sponsors" },
+  { title: "Sponsor Us", href: "/sponsors" },
   // Only include dev link in development environment
   ...(process.env.NODE_ENV === "development"
     ? [{ title: "Dev", href: "/dev" }]
