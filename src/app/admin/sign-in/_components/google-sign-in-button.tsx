@@ -35,7 +35,7 @@ export function GoogleSignInButton() {
   return (
     <>
       <Button
-        className="w-full"
+        className="w-full gap-3"
         disabled={isSigningIn}
         onClick={signIn}
         size="lg"
@@ -43,7 +43,7 @@ export function GoogleSignInButton() {
         variant="outline"
       >
         {isSigningIn ? <Spinner /> : <GoogleLogo />}
-        Continue with Google
+        <span>Continue with Google</span>
       </Button>
       {error ? (
         <Alert variant="destructive">

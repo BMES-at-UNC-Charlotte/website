@@ -9,7 +9,7 @@ export function GoogleLogo() {
       aria-hidden="true"
       width={20}
       height={20}
-      className="size-5 shrink-0 object-contain"
+      className="size-[1.15em] shrink-0 object-contain"
     />
   );
 }
