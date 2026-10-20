@@ -1,3 +1,4 @@
+import { AdminRole } from "../../../generated/prisma";
 /**
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1).
@@ -132,3 +133,34 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+/**
+ * Officer-only procedure
+ *
+ * Requires both an authenticated session and a current admin-user entry.
+ */
+export const officerProcedure = protectedProcedure.use(
+  async ({ ctx, next }) => {
+    const adminUser = ctx.session.user.emailVerified
+      ? ctx.session.user.adminUser
+      : null;
+
+    if (!adminUser) {
+      throw new TRPCError({ code: "FORBIDDEN" });
+    }
+
+    return next({
+      ctx: {
+        adminUser,
+      },
+    });
+  },
+);
+
+export const adminProcedure = officerProcedure.use(({ ctx, next }) => {
+  if (ctx.adminUser.role !== AdminRole.ADMIN) {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+
+  return next({ ctx });
+});
