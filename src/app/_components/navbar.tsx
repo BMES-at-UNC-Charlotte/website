@@ -33,6 +33,7 @@ const mainNavigationItems: NavigationItem[] = [
 const adminNavigationItems: NavigationItem[] = [
   { title: "Dashboard", href: "/admin" },
   { title: "Surveys", href: "/admin/surveys" },
+  { title: "Sponsorships", href: "/admin/sponsorship" },
   { title: "Main Site", href: "/" },
 ];
 
