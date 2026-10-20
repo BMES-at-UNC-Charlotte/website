@@ -60,7 +60,7 @@ export default async function SurveyPage({
           className="text-foreground mr-auto translate-y-1.5"
         >
           {survey.closesOn
-            ? `Open through ${formatSurveyDate(survey.closesOn)} at 11:59 PM (Charlotte time).`
+            ? `Open through ${formatSurveyDate(survey.closesOn)} at 11:59 PM EST.`
             : "Having trouble with the form?"}
         </Typography>
         <Button

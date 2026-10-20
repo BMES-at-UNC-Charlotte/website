@@ -207,9 +207,9 @@ export function SurveyEditor({
                     )}
                   </div>
                   <FieldDescription id="survey-date-help">
-                    Open through 11:59 PM on this day in Charlotte time. When
-                    expired, the link turns off and the date clears. Leave blank
-                    to keep it open until you turn it off.
+                    Open through 11:59 PM on this day in EST. When expired, the
+                    link turns off and the date clears. Leave blank to keep it
+                    open until you turn it off.
                   </FieldDescription>
                   <FieldError id="survey-date-error">
                     {errors.closesOn?.[0]}

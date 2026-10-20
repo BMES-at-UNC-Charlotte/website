@@ -127,7 +127,7 @@ export function SurveyManager() {
                   )}
                   <Typography variant="caption">
                     {survey.closesOn
-                      ? `Closes ${formatSurveyDate(survey.closesOn)} at 11:59 PM (Charlotte time)`
+                      ? `Closes ${formatSurveyDate(survey.closesOn)} at 11:59 PM EST`
                       : "No close date"}
                   </Typography>
                 </ItemContent>
@@ -218,7 +218,7 @@ export function SurveyManager() {
               <DialogTitle>Delete survey?</DialogTitle>
               <DialogDescription>
                 Delete “/s/{removing.path}”? Its short link and QR code will
-                stop working. Responses in your form provider will remain there.
+                stop working. Responses in the form will remain there.
               </DialogDescription>
             </DialogHeader>
             {remove.error && (
