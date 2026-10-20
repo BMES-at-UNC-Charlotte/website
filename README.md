@@ -54,7 +54,8 @@ rechecks the configured Price ID before starting a payment.
 
 Set `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `SITE_URL` to the public site
 origin in the deployment environment. Use a test key for development. Existing
-officer authentication configuration stays the same as main.
+officer authentication configuration stays the same as main. Stripe configuration
+is required when starting checkout, not for building or using the officer portal.
 
 Apply the committed Prisma migrations and generate the client:
 
