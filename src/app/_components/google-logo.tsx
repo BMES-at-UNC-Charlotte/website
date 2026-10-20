@@ -7,9 +7,9 @@ export function GoogleLogo() {
       src="/logo/google-g.png"
       alt=""
       aria-hidden="true"
-      width={28}
-      height={28}
-      className="size-7 shrink-0 rounded-full bg-white object-contain p-1"
+      width={20}
+      height={20}
+      className="size-5 shrink-0 object-contain"
     />
   );
 }
