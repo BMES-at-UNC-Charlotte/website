@@ -28,16 +28,18 @@ model Post {
 }
 
 model User {
-  id            String    @id
-  name          String //@db.Text
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String? //@db.Text
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  posts         Post[]
+  id                String      @id
+  name              String //@db.Text
+  email             String
+  emailVerified     Boolean     @default(false)
+  image             String? //@db.Text
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @default(now()) @updatedAt
+  sessions          Session[]
+  accounts          Account[]
+  posts             Post[]
+  adminUsersCreated AdminUser[] @relation("AdminUserAddedBy")
+  adminUser         AdminUser?  @relation("AdminUserAccount")
 
   @@unique([email])
   @@map("user")
@@ -86,4 +88,37 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+enum AdminRole {
+  ADMIN
+  OFFICER
+}
+
+model AdminUser {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  createdAt     DateTime  @default(now())
+  role          AdminRole @default(OFFICER)
+  addedByUserId String?
+  addedBy       User?     @relation("AdminUserAddedBy", fields: [addedByUserId], references: [id], onDelete: SetNull)
+  userId        String?   @unique
+  user          User?     @relation("AdminUserAccount", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([addedByUserId])
+  @@map("adminUsers")
+}
+
+model Survey {
+  id        String   @id @default(cuid())
+  comment   String   @default("") @map("description")
+  path      String   @unique @db.VarChar(64)
+  formUrl   String
+  live      Boolean  @default(false)
+  // A calendar date in America/New_York, inclusive through 11:59:59 PM.
+  closesOn  String?  @db.VarChar(10)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([closesOn])
 }
