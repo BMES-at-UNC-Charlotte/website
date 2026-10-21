@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import Image from "next/image";
 import { Container } from "@/app/_components/container";
 import { Typography } from "@/app/_components/typography";
 import { DonationForm } from "./_components/donation-form";
@@ -63,6 +64,30 @@ export default async function SponsorsPage({
           <SponsorshipContact />
         </div>
         <SponsorshipPicker tiers={catalog.tiers} />
+      </section>
+      <Separator />
+      <section aria-labelledby="our-sponsors-heading" className="space-y-8">
+        <Typography variant="h2" id="our-sponsors-heading">
+          Our Sponsors
+        </Typography>
+        <div className="grid items-center gap-10 sm:grid-cols-2">
+          <Image
+            src="/sponsors/honeywell.png"
+            alt="Honeywell"
+            width={800}
+            height={147}
+            sizes="(min-width: 640px) 384px, calc(100vw - 2rem)"
+            className="mx-auto h-auto w-full max-w-sm"
+          />
+          <Image
+            src="/sponsors/solidworks.png"
+            alt="Dassault Systèmes SOLIDWORKS"
+            width={1280}
+            height={263}
+            sizes="(min-width: 640px) 384px, calc(100vw - 2rem)"
+            className="mx-auto h-auto w-full max-w-sm"
+          />
+        </div>
       </section>
     </Container>
   );
