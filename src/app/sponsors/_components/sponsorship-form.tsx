@@ -150,7 +150,7 @@ export function SponsorshipForm({
       try {
         sessionStorage.setItem(
           SPONSOR_DRAFT_KEY,
-          JSON.stringify({ value, logo }),
+          JSON.stringify({ value, logo, idempotencyKey: request.current.key }),
         );
       } catch {
         /* Checkout can proceed if browser storage is unavailable. */
@@ -173,7 +173,11 @@ export function SponsorshipForm({
     try {
       const stored = sessionStorage.getItem(SPONSOR_DRAFT_KEY);
       if (!stored) return;
-      const draft = JSON.parse(stored) as { value?: unknown; logo?: unknown };
+      const draft = JSON.parse(stored) as {
+        value?: unknown;
+        logo?: unknown;
+        idempotencyKey?: unknown;
+      };
       const parsed = sponsorshipFormSchema.safeParse(draft.value);
       if (!parsed.success) return;
       form.reset({
@@ -182,8 +186,24 @@ export function SponsorshipForm({
           ? parsed.data.tier
           : initialTier,
       });
-      const checked = logoSchema.safeParse(draft.logo);
-      if (checked.success) setLogo(checked.data);
+      const checked = logoSchema.optional().safeParse(draft.logo);
+      if (!checked.success) return;
+      setLogo(checked.data);
+      if (
+        typeof draft.idempotencyKey === "string" &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          draft.idempotencyKey,
+        )
+      )
+        request.current = {
+          key: draft.idempotencyKey,
+          payload: JSON.stringify({
+            kind: "sponsorship",
+            priceId: parsed.data.tier,
+            sponsor: sponsorRegistrationSchema.parse(parsed.data),
+            logo: checked.data,
+          }),
+        };
     } catch {
       /* A missing or invalid draft leaves the form ready for a new registration. */
     }

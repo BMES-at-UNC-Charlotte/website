@@ -110,6 +110,10 @@ export async function createDonationCheckout(
     );
     if (previous.status === "open" && previous.url)
       return { url: previous.url };
+    if (previous.status === "complete")
+      return {
+        url: `${origin}/sponsors/confirmation?session_id=${previous.id}`,
+      };
     throw new TRPCError({
       code: "CONFLICT",
       message:
@@ -169,6 +173,8 @@ export async function createDonationCheckout(
     where: { id: attempt.id },
     data: { stripeCheckoutSessionId: session.id },
   });
+  if (session.status === "complete")
+    return { url: `${origin}/sponsors/confirmation?session_id=${session.id}` };
   if (session.status !== "open" || !session.url)
     throw new TRPCError({
       code: "CONFLICT",

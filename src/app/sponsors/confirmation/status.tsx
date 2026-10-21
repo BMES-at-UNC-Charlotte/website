@@ -27,9 +27,13 @@ export function ContributionStatus({ sessionId }: { sessionId?: string }) {
   );
   const paid = payment.data?.status === "SUCCEEDED";
   useEffect(() => {
-    if (!paid || payment.data?.kind !== "sponsorship") return;
+    if (!paid) return;
     try {
-      sessionStorage.removeItem("bmes-sponsor-registration");
+      sessionStorage.removeItem(
+        payment.data?.kind === "sponsorship"
+          ? "bmes-sponsor-registration"
+          : "bmes-individual-checkout",
+      );
     } catch {
       /* Browser storage may be unavailable. */
     }

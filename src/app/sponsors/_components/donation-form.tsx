@@ -21,11 +21,13 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import {
   createCheckoutKey,
+  donationCheckoutInput,
   formatDonationUsd,
   parseDonationCents,
 } from "@/lib/donation";
 import { api } from "@/trpc/react";
 
+const DONATION_CHECKOUT_KEY = "bmes-individual-checkout";
 const PRESET_DONATION_DOLLARS = [10, 20, 50, 100, 500] as const;
 
 export function DonationForm({ canceled = false }: { canceled?: boolean }) {
@@ -43,6 +45,19 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
   const busy = createCheckout.isPending || redirecting;
 
   useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(DONATION_CHECKOUT_KEY);
+      const parsed = donationCheckoutInput.safeParse(
+        saved ? JSON.parse(saved) : null,
+      );
+      if (parsed.success && parsed.data.kind === "individual")
+        request.current = {
+          amount: parsed.data.amountCents,
+          key: parsed.data.idempotencyKey,
+        };
+    } catch {
+      /* Browser storage may be unavailable. */
+    }
     function restore(event: PageTransitionEvent) {
       if (!event.persisted) return;
       inFlight.current = false;
@@ -57,12 +72,18 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
     inFlight.current = true;
     if (request.current?.amount !== cents)
       request.current = { amount: cents, key: createCheckoutKey() };
+    const input = {
+      kind: "individual" as const,
+      amountCents: cents,
+      idempotencyKey: request.current.key,
+    };
     try {
-      const { url } = await createCheckout.mutateAsync({
-        kind: "individual",
-        amountCents: cents,
-        idempotencyKey: request.current.key,
-      });
+      sessionStorage.setItem(DONATION_CHECKOUT_KEY, JSON.stringify(input));
+    } catch {
+      /* The current page still retains its checkout key. */
+    }
+    try {
+      const { url } = await createCheckout.mutateAsync(input);
       setRedirecting(true);
       window.location.assign(url);
     } catch {
