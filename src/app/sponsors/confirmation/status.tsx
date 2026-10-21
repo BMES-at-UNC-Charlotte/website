@@ -64,8 +64,8 @@ export function ContributionStatus({ sessionId }: { sessionId?: string }) {
             </Button>
           </Alert>
         ) : paid ? (
-          <div className="space-y-3">
-            <CheckCircle2 aria-hidden="true" />
+          <div className="flex items-start gap-3">
+            <CheckCircle2 aria-hidden="true" className="shrink-0" />
             <Typography>
               Your {formatDonationUsd(payment.data.amount)}{" "}
               {payment.data?.kind === "sponsorship"
