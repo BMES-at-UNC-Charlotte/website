@@ -353,7 +353,7 @@ export function SponsorshipForm({
                       <FieldDescription id="logo-help">
                         PNG, JPEG, or WebP, up to 5 MB.{" "}
                         {readingLogo
-                          ? "Reading logo…"
+                          ? "Loading…"
                           : logo
                             ? `Selected: ${logo.name}`
                             : "We'll use your logo to coordinate sponsor recognition."}
@@ -469,11 +469,9 @@ export function SponsorshipForm({
                       size="lg"
                       className="w-full"
                       disabled={busy || readingLogo || Boolean(logoError)}
-                      pending="Opening secure checkout"
+                      pending="Loading…"
                     >
-                      {redirecting
-                        ? "Opening secure checkout"
-                        : "Continue to payment"}
+                      {redirecting ? "Loading…" : "Continue to payment"}
                     </form.SubmitButton>
                   </CardContent>
                   <CardFooter>

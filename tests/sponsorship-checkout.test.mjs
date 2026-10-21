@@ -149,6 +149,8 @@ const { getSponsorshipCatalog } =
   await import("../src/server/sponsorship-prices.ts");
 const { sponsorshipRouter } =
   await import("../src/server/api/routers/sponsorship.ts");
+const { donationRouter } =
+  await import("../src/server/api/routers/donation.ts");
 const { donationCheckoutInput, sponsorDefaults } =
   await import("../src/lib/donation.ts");
 const sponsor = {
@@ -304,6 +306,7 @@ test("admin rejects Product IDs and legacy product configuration payloads before
 
 test("the complete payment disclaimer fits Stripe's custom submit text limit", () => {
   assert.ok(PAYMENT_DISCLAIMER.length > 0 && PAYMENT_DISCLAIMER.length <= 1200);
+  assert.doesNotMatch(PAYMENT_DISCLAIMER, /stripe/i);
   assert.match(
     PAYMENT_DISCLAIMER,
     /This is not an official University of North Carolina at Charlotte/,
@@ -445,4 +448,55 @@ test("package links open the product in the matching Stripe test or live mode", 
     state.stripe.prices.retrieve = original;
   }
   assert.equal(dbWrites, 0);
+});
+
+test("public checkout errors hide provider and configuration details", async (t) => {
+  t.mock.method(console, "error", () => {});
+  const original = state.stripe.prices.retrieve;
+  state.stripe.prices.retrieve = async () => {
+    throw new Error("Stripe account unavailable: price_Sponsor");
+  };
+  try {
+    const client = donationRouter.createCaller({
+      db: state.db,
+      headers,
+      session: null,
+    });
+    await assert.rejects(client.createCheckoutSession(input()), (error) => {
+      assert.equal(error.code, "PRECONDITION_FAILED");
+      assert.doesNotMatch(error.message, /stripe|price_|account|test mode/i);
+      assert.match(error.message, /package.*unavailable/i);
+      return true;
+    });
+    const catalog = await caller("ADMIN").configuration();
+    assert.match(catalog.errors[0].message, /Stripe account unavailable/);
+  } finally {
+    state.stripe.prices.retrieve = original;
+  }
+  assert.equal(createdSessions, 0);
+});
+
+test("public payment status failures offer support without suggesting another payment", async (t) => {
+  t.mock.method(console, "error", () => {});
+  const original = state.stripe.checkout.sessions.retrieve;
+  state.stripe.checkout.sessions.retrieve = async () => {
+    throw new Error("Stripe service unavailable");
+  };
+  try {
+    const client = donationRouter.createCaller({
+      db: state.db,
+      headers,
+      session: null,
+    });
+    await assert.rejects(
+      client.paymentStatus({ sessionId: "cs_test_mock" }),
+      (error) => {
+        assert.doesNotMatch(error.message, /stripe|another payment/i);
+        assert.match(error.message, /contact us for help/);
+        return true;
+      },
+    );
+  } finally {
+    state.stripe.checkout.sessions.retrieve = original;
+  }
 });

@@ -154,7 +154,7 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
               <Button type="submit" size="lg" disabled={busy}>
                 {busy ? <Spinner /> : null}
                 {busy
-                  ? "Opening Stripe"
+                  ? "Loading…"
                   : amount
                     ? `Donate ${formatDonationUsd(amount)}`
                     : "Donate"}
@@ -164,7 +164,7 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
           {busy && !custom ? (
             <div role="status" className="flex items-center gap-2">
               <Spinner />
-              Opening Stripe
+              Loading…
             </div>
           ) : null}
           {createCheckout.error ? (

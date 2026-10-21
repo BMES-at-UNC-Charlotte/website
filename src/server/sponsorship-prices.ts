@@ -65,7 +65,16 @@ export async function getSponsorshipTier(priceId: string) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message:
-        "This sponsorship price is unavailable. Choose a package from the sponsorship page.",
+        "This sponsorship package is unavailable. Choose a package from the sponsorship page.",
     });
-  return retrieveSponsorshipPrice(priceId);
+  try {
+    return await retrieveSponsorshipPrice(priceId);
+  } catch (error) {
+    console.error("Sponsorship price could not be loaded", error);
+    throw new TRPCError({
+      code: "PRECONDITION_FAILED",
+      message:
+        "This sponsorship package is currently unavailable. Choose another package or contact us for help.",
+    });
+  }
 }

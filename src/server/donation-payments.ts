@@ -21,7 +21,8 @@ function siteOrigin(headers: Headers) {
   if (process.env.NODE_ENV === "production") {
     throw new TRPCError({
       code: "PRECONDITION_FAILED",
-      message: "Donation checkout is not configured yet.",
+      message:
+        "Contributions are currently unavailable. Please contact us for help.",
     });
   }
   const host =
@@ -101,7 +102,7 @@ export async function createDonationCheckout(
     throw new TRPCError({
       code: "CONFLICT",
       message:
-        "The registration changed. Refresh this page before starting a new checkout.",
+        "Your registration has changed. Refresh the page and review your details.",
     });
   }
   if (attempt.stripeCheckoutSessionId) {
@@ -113,7 +114,7 @@ export async function createDonationCheckout(
     throw new TRPCError({
       code: "CONFLICT",
       message:
-        "This checkout has already completed or expired. Refresh the page to start a new contribution.",
+        "This checkout is no longer available. Check your receipt or contact us for help.",
     });
   }
   const productName =

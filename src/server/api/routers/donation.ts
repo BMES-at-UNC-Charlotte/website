@@ -41,7 +41,7 @@ export const donationRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message:
-            "We couldn't verify your payment yet. Check your Stripe receipt before trying another payment.",
+            "We couldn't confirm your payment status. Check your receipt or contact us for help.",
         });
       }
     }),

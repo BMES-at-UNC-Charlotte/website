@@ -45,19 +45,20 @@ export function ContributionStatus({ sessionId }: { sessionId?: string }) {
       <CardContent className="space-y-6">
         {!valid ? (
           <Alert variant="destructive">
-            <AlertTitle>No payment to verify</AlertTitle>
+            <AlertTitle>No contribution to display</AlertTitle>
             <AlertDescription>
-              Return here from Stripe checkout to check your contribution.
+              Your contribution details will appear here after checkout. Contact
+              us if you need help.
             </AlertDescription>
           </Alert>
         ) : payment.isPending ? (
           <div className="flex items-center gap-3">
             <Spinner />
-            <Typography>Checking your payment…</Typography>
+            <Typography>Loading…</Typography>
           </div>
         ) : payment.error ? (
           <Alert variant="destructive">
-            <AlertTitle>Payment verification unavailable</AlertTitle>
+            <AlertTitle>Unable to confirm your payment</AlertTitle>
             <AlertDescription>{payment.error.message}</AlertDescription>
             <Button variant="outline" onClick={() => void payment.refetch()}>
               Check again
@@ -77,9 +78,8 @@ export function ContributionStatus({ sessionId }: { sessionId?: string }) {
           <Alert>
             <AlertTitle>Payment processing</AlertTitle>
             <AlertDescription>
-              Your payment is still processing. This page will check for
-              updates. Please wait for confirmation before making another
-              payment.
+              Your payment is being processed. Your confirmation will appear
+              here when it&apos;s complete.
             </AlertDescription>
           </Alert>
         ) : (
@@ -92,7 +92,7 @@ export function ContributionStatus({ sessionId }: { sessionId?: string }) {
                 : payment.data?.status === "FAILED"
                   ? "unsuccessful"
                   : "incomplete"}
-              . Check your Stripe receipt before starting another payment.
+              . Check your receipt or contact us if you need help.
             </AlertDescription>
           </Alert>
         )}
