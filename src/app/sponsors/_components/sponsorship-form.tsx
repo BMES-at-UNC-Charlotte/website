@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { revalidateLogic, useSelector } from "@tanstack/react-form";
 import { focusFirstInvalidField, useAppForm } from "@/app/_components/form";
 import { type RadioCardOption } from "@/app/_components/form/radio-card-field";
@@ -502,13 +501,6 @@ export function SponsorshipForm({
               )}
             </Card>
             {selected ? <SponsorshipContact /> : null}
-            <Button
-              variant="outline"
-              render={<Link href="/sponsors" />}
-              nativeButton={false}
-            >
-              Back to donation options
-            </Button>
           </aside>
         </div>
       </form>
