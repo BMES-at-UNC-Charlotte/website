@@ -40,7 +40,7 @@ export default async function SponsorsPage({
         aria-labelledby="individual-heading"
         className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12"
       >
-        <div className="space-y-5">
+        <div className="space-y-5 lg:order-last">
           <Typography variant="h2" id="individual-heading">
             Individual Supporter Donation
           </Typography>
@@ -53,7 +53,7 @@ export default async function SponsorsPage({
         aria-labelledby="sponsorship-heading"
         className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12"
       >
-        <div className="space-y-10">
+        <div className="space-y-10 lg:order-last">
           <div className="space-y-5">
             <Typography variant="h2" id="sponsorship-heading">
               Employer &amp; Corporate Sponsorship
