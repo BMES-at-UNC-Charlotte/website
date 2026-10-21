@@ -66,26 +66,29 @@ export default async function SponsorsPage({
         <SponsorshipPicker tiers={catalog.tiers} />
       </section>
       <Separator />
-      <section aria-labelledby="our-sponsors-heading" className="space-y-8">
+      <section
+        aria-labelledby="our-sponsors-heading"
+        className="space-y-8 text-center"
+      >
         <Typography variant="h2" id="our-sponsors-heading">
           Our Sponsors
         </Typography>
-        <div className="grid items-center gap-10 sm:grid-cols-2">
+        <div className="mx-auto grid max-w-3xl items-center justify-items-center gap-10 sm:grid-cols-2">
           <Image
             src="/sponsors/honeywell.png"
             alt="Honeywell"
             width={800}
             height={147}
-            sizes="(min-width: 640px) 384px, calc(100vw - 2rem)"
-            className="mx-auto h-auto w-full max-w-sm"
+            sizes="(min-width: 640px) 350px, calc(100vw - 2rem)"
+            className="h-16 w-auto max-w-full object-contain"
           />
           <Image
             src="/sponsors/solidworks.png"
             alt="Dassault Systèmes SOLIDWORKS"
             width={1280}
             height={263}
-            sizes="(min-width: 640px) 384px, calc(100vw - 2rem)"
-            className="mx-auto h-auto w-full max-w-sm"
+            sizes="(min-width: 640px) 350px, calc(100vw - 2rem)"
+            className="h-16 w-auto max-w-full object-contain"
           />
         </div>
       </section>
