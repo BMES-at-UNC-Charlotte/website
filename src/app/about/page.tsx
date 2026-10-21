@@ -29,11 +29,6 @@ const leadership = [
     image: "/about/deepu.png",
   },
   {
-    name: "Joshua Matherson",
-    role: "Research Co-Chair",
-    image: "/about/joshua.png",
-  },
-  {
     name: "Camryn Wheaton",
     role: "Professional Development Chair",
   },

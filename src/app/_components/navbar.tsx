@@ -105,7 +105,7 @@ export function NavBar() {
                     render={<Link href={item.href} />}
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      isActive(item.href) && "bg-muted/50",
+                      isActive(item.href) && "bg-muted",
                     )}
                   >
                     {item.title}
@@ -183,6 +183,7 @@ function MobileNavMenu({
                       variant: isActive(item.href) ? "secondary" : "ghost",
                     }),
                     "w-full justify-start",
+                    isActive(item.href) && "hover:bg-secondary",
                   )}
                 >
                   {item.title}
