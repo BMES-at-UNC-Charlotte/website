@@ -1,6 +1,7 @@
 "use client";
 
 import { SignOutButton } from "@/app/admin/_components/sign-out-button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -8,11 +9,22 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { authClient } from "@/server/better-auth/client";
 import { cn } from "@/lib/utils";
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState, type ReactNode } from "react";
 
 type NavigationItem = {
   title: string;
@@ -50,12 +62,19 @@ export function NavBar() {
       ? pathname === href
       : pathname.startsWith(`${href}/`) || pathname === href;
 
+  const actions =
+    isAdminPage && session?.user ? (
+      <SignOutButton
+        user={{ image: session.user.image, name: session.user.name }}
+      />
+    ) : null;
+
   return (
     <header className="bg-background/95 fixed z-50 w-full border-b">
       <nav
         aria-label="Main navigation"
         className={cn(
-          "flex items-center justify-between gap-4 overflow-x-auto px-4 sm:px-6",
+          "flex items-center justify-between gap-4 px-4 sm:px-6",
           isSurveyPage ? "h-12" : "h-16",
         )}
       >
@@ -66,17 +85,17 @@ export function NavBar() {
           aria-label={isAdminPage ? "Officer dashboard" : "Charlotte BMES home"}
         >
           <Image
-            src="/logo/text-white.png"
+            src="/logo/horizontal-alt/horizontal-alt-white.png"
             alt="Charlotte Biomedical Engineering Society"
-            width={1256}
-            height={441}
+            width={1369}
+            height={502}
             className={cn("w-auto", isSurveyPage ? "h-7" : "h-9")}
             priority
           />
         </Link>
 
         {/* Navigation menu */}
-        <div className="flex items-center gap-4">
+        <div className="hidden items-center gap-4 md:flex">
           <NavigationMenu>
             <NavigationMenuList className="space-x-2">
               {navigationItems.map((item) => (
@@ -93,16 +112,87 @@ export function NavBar() {
               ))}
             </NavigationMenuList>
           </NavigationMenu>
-          {isAdminPage && session?.user ? (
-            <SignOutButton
-              user={{
-                image: session.user.image,
-                name: session.user.name,
-              }}
-            />
-          ) : null}
+          {actions}
         </div>
+        <MobileNavMenu
+          key={pathname}
+          items={navigationItems}
+          isActive={isActive}
+          isAdminPage={isAdminPage}
+          actions={actions}
+        />
       </nav>
     </header>
+  );
+}
+
+function MobileNavMenu({
+  items,
+  isActive,
+  isAdminPage,
+  actions,
+}: {
+  items: NavigationItem[];
+  isActive: (href: string) => boolean;
+  isAdminPage: boolean;
+  actions: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 48rem)");
+    const closeOnDesktop = () => {
+      if (desktop.matches) setOpen(false);
+    };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger
+        render={<Button variant="ghost" className="md:hidden" />}
+        aria-label="Open menu"
+      >
+        Menu <Menu />
+      </SheetTrigger>
+      <SheetContent side="right">
+        <SheetHeader>
+          <SheetTitle>Menu</SheetTitle>
+          <SheetDescription>
+            {isAdminPage ? "Officer navigation" : "Charlotte BMES navigation"}
+          </SheetDescription>
+        </SheetHeader>
+        <nav
+          aria-label={
+            isAdminPage ? "Mobile officer navigation" : "Mobile navigation"
+          }
+          className="min-h-0 flex-1 overflow-y-auto px-6 pb-6"
+        >
+          <ul className="flex flex-col gap-2">
+            {items.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={cn(
+                    buttonVariants({
+                      variant: isActive(item.href) ? "secondary" : "ghost",
+                    }),
+                    "w-full justify-start",
+                  )}
+                >
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        {actions ? (
+          <SheetFooter className="border-t">{actions}</SheetFooter>
+        ) : null}
+      </SheetContent>
+    </Sheet>
   );
 }

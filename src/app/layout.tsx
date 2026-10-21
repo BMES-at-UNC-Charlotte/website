@@ -21,7 +21,9 @@ const crimsonText = Crimson_Text({
 export const metadata: Metadata = {
   title: "Charlotte BMES",
   description: "Biomedical Engineering Society at UNC Charlotte.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [
+    { rel: "icon", url: "/logo/icon/icon-green-gold.png", type: "image/png" },
+  ],
 };
 
 /**
