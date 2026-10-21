@@ -1,9 +1,9 @@
 import { type Metadata } from "next";
-import { redirect } from "next/navigation";
 import { Container } from "@/app/_components/container";
 import { Typography } from "@/app/_components/typography";
 import { SponsorshipForm } from "../_components/sponsorship-form";
 import { SponsorshipContact } from "../_components/sponsorship-contact";
+import { CUSTOM_SPONSORSHIP } from "@/lib/donation";
 import { getSponsorshipCatalog } from "@/server/sponsorship-prices";
 
 export const metadata: Metadata = {
@@ -20,8 +20,12 @@ export default async function SponsorRegistrationPage({
     searchParams,
     getSponsorshipCatalog(),
   ]);
-  if (tier === "custom") redirect("/sponsors#sponsorship-heading");
-  const selected = catalog.tiers.find((item) => item.priceId === tier);
+  const initialTier =
+    tier === CUSTOM_SPONSORSHIP
+      ? CUSTOM_SPONSORSHIP
+      : tier
+        ? catalog.tiers.find((item) => item.priceId === tier)?.priceId
+        : (catalog.tiers[0]?.priceId ?? CUSTOM_SPONSORSHIP);
   return (
     <Container contentClassName="space-y-8">
       <header className="max-w-3xl space-y-4">
@@ -31,9 +35,9 @@ export default async function SponsorRegistrationPage({
           Charlotte BMES.
         </Typography>
       </header>
-      {catalog.tiers.length && (!tier || selected) ? (
+      {initialTier ? (
         <SponsorshipForm
-          initialTier={selected?.priceId ?? catalog.tiers[0]!.priceId}
+          initialTier={initialTier}
           tiers={catalog.tiers}
           canceled={status === "canceled"}
         />

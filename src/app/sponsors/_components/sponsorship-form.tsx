@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { revalidateLogic } from "@tanstack/react-form";
+import { revalidateLogic, useSelector } from "@tanstack/react-form";
 import { focusFirstInvalidField, useAppForm } from "@/app/_components/form";
+import { type RadioCardOption } from "@/app/_components/form/radio-card-field";
 import { PaymentDisclaimer } from "@/app/_components/payment-disclaimer";
 import { Typography } from "@/app/_components/typography";
 import { SponsorshipContact } from "./sponsorship-contact";
@@ -28,6 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   donationCheckoutInput,
   createCheckoutKey,
+  CUSTOM_SPONSORSHIP,
   formatDonationUsd,
   MAX_LOGO_BYTES,
   PARTNERSHIP_INTERESTS,
@@ -35,12 +37,35 @@ import {
   sponsorRegistrationSchema,
   SPONSORSHIP_PREFERENCES,
   sponsorshipFormSchema,
+  sponsorshipSelectionFormSchema,
   type SponsorLogo,
 } from "@/lib/donation";
-import { type SponsorshipTier } from "@/lib/sponsorship";
+import {
+  CUSTOM_SPONSORSHIP_MAILTO,
+  SPONSORSHIP_EMAIL,
+  type SponsorshipTier,
+} from "@/lib/sponsorship";
 import { api } from "@/trpc/react";
 
 export const SPONSOR_DRAFT_KEY = "bmes-sponsor-registration";
+
+export function sponsorshipOptions(
+  tiers: SponsorshipTier[],
+): RadioCardOption[] {
+  return [
+    ...tiers.map((tier) => ({
+      value: tier.priceId,
+      title: tier.name,
+      description: tier.description,
+      action: formatDonationUsd(tier.amount),
+    })),
+    {
+      value: CUSTOM_SPONSORSHIP,
+      title: "Custom sponsorship",
+      description: "A different amount or partnership, arranged by email.",
+    },
+  ];
+}
 
 async function readLogo(file: File): Promise<SponsorLogo> {
   if (
@@ -96,7 +121,7 @@ export function SponsorshipForm({
       mode: "blur",
       modeAfterSubmission: "change",
     }),
-    validators: { onDynamic: sponsorshipFormSchema },
+    validators: { onDynamic: sponsorshipSelectionFormSchema },
     onSubmitInvalid: ({ formApi }) => {
       setInvalidNotice(true);
       void formApi
@@ -105,6 +130,7 @@ export function SponsorshipForm({
     },
     onSubmit: async ({ value }) => {
       if (busy || readingLogo || logoError) return;
+      if (value.tier === CUSTOM_SPONSORSHIP) return;
       setInvalidNotice(false);
       const sponsor = sponsorRegistrationSchema.parse(value);
       const selected = tiers.find((tier) => tier.priceId === value.tier);
@@ -164,6 +190,9 @@ export function SponsorshipForm({
     }
   }, [canceled, form, tiers]);
 
+  const tier = useSelector(form.store, (state) => state.values.tier);
+  const selected = tiers.find((item) => item.priceId === tier);
+
   return (
     <form.AppForm>
       <form
@@ -186,267 +215,293 @@ export function SponsorshipForm({
                 </AlertDescription>
               </Alert>
             ) : null}
-            <form.AppField name="tier">
-              {(field) => (
-                <field.RadioCardField
-                  label="Sponsorship package"
-                  required
-                  options={tiers.map((tier) => ({
-                    value: tier.priceId,
-                    title: tier.name,
-                    description: tier.description,
-                    action: formatDonationUsd(tier.amount),
-                  }))}
-                />
-              )}
-            </form.AppField>
-            <Separator />
-            <section aria-labelledby="company-heading" className="space-y-6">
-              <Typography variant="h2" id="company-heading">
-                Company contact
+            <section aria-labelledby="package-heading" className="space-y-6">
+              <Typography variant="h4" as="h2" id="package-heading">
+                Sponsorship package
               </Typography>
-              <FieldGroup>
-                <form.AppField name="companyName">
-                  {(field) => (
-                    <field.TextField
-                      label="Company or organization name"
-                      required
-                      autoComplete="organization"
-                      maxLength={200}
-                    />
-                  )}
-                </form.AppField>
-                <div className="grid gap-7 sm:grid-cols-2">
-                  <form.AppField name="contactName">
-                    {(field) => (
-                      <field.TextField
-                        label="Contact name"
-                        required
-                        autoComplete="name"
-                        maxLength={200}
-                      />
-                    )}
-                  </form.AppField>
-                  <form.AppField name="phone">
-                    {(field) => (
-                      <field.TextField
-                        label="Phone number"
-                        required
-                        type="tel"
-                        autoComplete="tel"
-                        maxLength={50}
-                      />
-                    )}
-                  </form.AppField>
-                </div>
-                <form.AppField name="email">
-                  {(field) => (
-                    <field.TextField
-                      label="Contact email"
-                      required
-                      type="email"
-                      autoComplete="email"
-                      maxLength={254}
-                    />
-                  )}
-                </form.AppField>
-                <form.AppField name="website">
-                  {(field) => (
-                    <field.TextField
-                      label="Company website (optional)"
-                      type="url"
-                      placeholder="https://example.com"
-                      maxLength={500}
-                    />
-                  )}
-                </form.AppField>
-              </FieldGroup>
-            </section>
-            <Separator />
-            <section
-              aria-labelledby="preferences-heading"
-              className="space-y-6"
-            >
-              <Typography variant="h2" id="preferences-heading">
-                Sponsorship preferences
-              </Typography>
-              <FieldGroup>
-                <form.AppField name="preferences">
-                  {(field) => (
-                    <field.CheckboxGroupField
-                      label="Which benefits interest you? (optional)"
-                      options={SPONSORSHIP_PREFERENCES.map((value) => ({
-                        value,
-                        label: value,
-                      }))}
-                    />
-                  )}
-                </form.AppField>
-                <Field data-invalid={Boolean(logoError)}>
-                  <FieldLabel htmlFor="sponsor-logo">
-                    Company logo (optional)
-                  </FieldLabel>
-                  <Input
-                    ref={logoInput}
-                    id="sponsor-logo"
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    disabled={readingLogo}
-                    aria-invalid={Boolean(logoError)}
-                    aria-describedby={logoError ? "logo-error" : "logo-help"}
-                    onChange={async (event) => {
-                      const file = event.target.files?.[0];
-                      setLogo(undefined);
-                      setLogoError("");
-                      if (!file) return;
-                      setReadingLogo(true);
-                      try {
-                        setLogo(await readLogo(file));
-                      } catch (error) {
-                        setLogoError(
-                          error instanceof Error
-                            ? error.message
-                            : "The logo could not be read.",
-                        );
-                      } finally {
-                        setReadingLogo(false);
-                      }
-                    }}
+              <form.AppField name="tier">
+                {(field) => (
+                  <field.RadioCardField
+                    label="Choose a package"
+                    required
+                    options={sponsorshipOptions(tiers)}
                   />
-                  <FieldDescription id="logo-help">
-                    PNG, JPEG, or WebP, up to 2 MB.{" "}
-                    {readingLogo
-                      ? "Reading logo…"
-                      : logo
-                        ? `Selected: ${logo.name}`
-                        : "We'll use your logo to coordinate sponsor recognition."}
-                  </FieldDescription>
-                  {logoError ? (
-                    <FieldError id="logo-error">{logoError}</FieldError>
-                  ) : null}
-                  {logo || logoError ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setLogo(undefined);
-                        setLogoError("");
-                        if (logoInput.current) logoInput.current.value = "";
-                      }}
-                    >
-                      Remove logo
-                    </Button>
-                  ) : null}
-                </Field>
-              </FieldGroup>
+                )}
+              </form.AppField>
             </section>
-            <Separator />
-            <section aria-labelledby="recruiting-heading" className="space-y-6">
-              <Typography variant="h2" id="recruiting-heading">
-                Recruiting &amp; partnership
-              </Typography>
-              <FieldGroup>
-                <form.AppField name="recruitingOpportunities">
-                  {(field) => (
-                    <field.TextareaField
-                      label="Recruiting opportunities (optional)"
-                      description="Share internships, open roles, desired skills, or ways you'd like to meet students."
-                      maxLength={4000}
-                    />
-                  )}
-                </form.AppField>
-                <form.AppField name="recruitingUrl">
-                  {(field) => (
-                    <field.TextField
-                      label="Careers or job posting link (optional)"
-                      type="url"
-                      placeholder="https://example.com/careers"
-                      maxLength={500}
-                    />
-                  )}
-                </form.AppField>
-                <form.AppField name="partnershipInterests">
-                  {(field) => (
-                    <field.CheckboxGroupField
-                      label="Partnership interests (optional)"
-                      options={PARTNERSHIP_INTERESTS.map((value) => ({
-                        value,
-                        label: value,
-                      }))}
-                    />
-                  )}
-                </form.AppField>
-                <form.AppField name="notes">
-                  {(field) => (
-                    <field.TextareaField
-                      label="Partnership details or special requests (optional)"
-                      maxLength={4000}
-                    />
-                  )}
-                </form.AppField>
-              </FieldGroup>
-            </section>
+            {selected ? (
+              <>
+                <Separator />
+                <section
+                  aria-labelledby="company-heading"
+                  className="space-y-6"
+                >
+                  <Typography variant="h4" as="h2" id="company-heading">
+                    Company contact
+                  </Typography>
+                  <FieldGroup>
+                    <form.AppField name="companyName">
+                      {(field) => (
+                        <field.TextField
+                          label="Company or organization name"
+                          required
+                          autoComplete="organization"
+                          maxLength={200}
+                        />
+                      )}
+                    </form.AppField>
+                    <div className="grid gap-7 sm:grid-cols-2">
+                      <form.AppField name="contactName">
+                        {(field) => (
+                          <field.TextField
+                            label="Contact name"
+                            required
+                            autoComplete="name"
+                            maxLength={200}
+                          />
+                        )}
+                      </form.AppField>
+                      <form.AppField name="email">
+                        {(field) => (
+                          <field.TextField
+                            label="Contact email"
+                            required
+                            type="email"
+                            autoComplete="email"
+                            maxLength={254}
+                          />
+                        )}
+                      </form.AppField>
+                    </div>
+                    <div className="grid gap-7 sm:grid-cols-2">
+                      <form.AppField name="phone">
+                        {(field) => (
+                          <field.TextField
+                            label="Phone number"
+                            required
+                            type="tel"
+                            autoComplete="tel"
+                            maxLength={50}
+                          />
+                        )}
+                      </form.AppField>
+                      <form.AppField name="website">
+                        {(field) => (
+                          <field.TextField
+                            label="Company website (optional)"
+                            type="url"
+                            placeholder="https://example.com"
+                            maxLength={500}
+                          />
+                        )}
+                      </form.AppField>
+                    </div>
+                  </FieldGroup>
+                </section>
+                <Separator />
+                <section
+                  aria-labelledby="preferences-heading"
+                  className="space-y-6"
+                >
+                  <Typography variant="h4" as="h2" id="preferences-heading">
+                    Sponsorship preferences
+                  </Typography>
+                  <FieldGroup>
+                    <form.AppField name="preferences">
+                      {(field) => (
+                        <field.CheckboxGroupField
+                          label="Which benefits interest you? (optional)"
+                          options={SPONSORSHIP_PREFERENCES.map((value) => ({
+                            value,
+                            label: value,
+                          }))}
+                        />
+                      )}
+                    </form.AppField>
+                    <Field data-invalid={Boolean(logoError)}>
+                      <FieldLabel htmlFor="sponsor-logo">
+                        Company logo (optional)
+                      </FieldLabel>
+                      <Input
+                        ref={logoInput}
+                        id="sponsor-logo"
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        disabled={readingLogo}
+                        aria-invalid={Boolean(logoError)}
+                        aria-describedby={
+                          logoError ? "logo-error" : "logo-help"
+                        }
+                        onChange={async (event) => {
+                          const file = event.target.files?.[0];
+                          setLogo(undefined);
+                          setLogoError("");
+                          if (!file) return;
+                          setReadingLogo(true);
+                          try {
+                            setLogo(await readLogo(file));
+                          } catch (error) {
+                            setLogoError(
+                              error instanceof Error
+                                ? error.message
+                                : "The logo could not be read.",
+                            );
+                          } finally {
+                            setReadingLogo(false);
+                          }
+                        }}
+                      />
+                      <FieldDescription id="logo-help">
+                        PNG, JPEG, or WebP, up to 2 MB.{" "}
+                        {readingLogo
+                          ? "Reading logo…"
+                          : logo
+                            ? `Selected: ${logo.name}`
+                            : "We'll use your logo to coordinate sponsor recognition."}
+                      </FieldDescription>
+                      {logoError ? (
+                        <FieldError id="logo-error">{logoError}</FieldError>
+                      ) : null}
+                      {logo || logoError ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setLogo(undefined);
+                            setLogoError("");
+                            if (logoInput.current) logoInput.current.value = "";
+                          }}
+                        >
+                          Remove logo
+                        </Button>
+                      ) : null}
+                    </Field>
+                  </FieldGroup>
+                </section>
+                <Separator />
+                <section
+                  aria-labelledby="recruiting-heading"
+                  className="space-y-6"
+                >
+                  <Typography variant="h4" as="h2" id="recruiting-heading">
+                    Recruiting &amp; partnership
+                  </Typography>
+                  <FieldGroup>
+                    <form.AppField name="recruitingOpportunities">
+                      {(field) => (
+                        <field.TextareaField
+                          label="Recruiting opportunities (optional)"
+                          description="Share internships, open roles, desired skills, or ways you'd like to meet students."
+                          maxLength={4000}
+                        />
+                      )}
+                    </form.AppField>
+                    <form.AppField name="recruitingUrl">
+                      {(field) => (
+                        <field.TextField
+                          label="Careers or job posting link (optional)"
+                          type="url"
+                          placeholder="https://example.com/careers"
+                          maxLength={500}
+                        />
+                      )}
+                    </form.AppField>
+                    <form.AppField name="partnershipInterests">
+                      {(field) => (
+                        <field.CheckboxGroupField
+                          label="Partnership interests (optional)"
+                          options={PARTNERSHIP_INTERESTS.map((value) => ({
+                            value,
+                            label: value,
+                          }))}
+                        />
+                      )}
+                    </form.AppField>
+                    <form.AppField name="notes">
+                      {(field) => (
+                        <field.TextareaField
+                          label="Partnership details or special requests (optional)"
+                          maxLength={4000}
+                        />
+                      )}
+                    </form.AppField>
+                  </FieldGroup>
+                </section>
+              </>
+            ) : null}
           </fieldset>
-          <aside className="space-y-5 lg:sticky lg:top-24">
+          <aside className="space-y-8 lg:sticky lg:top-24">
             <Card>
               <CardHeader>
                 <CardTitle>Your sponsorship</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-5">
-                <form.Subscribe selector={(state) => state.values.tier}>
-                  {(tier) => {
-                    const selected = tiers.find(
-                      (item) => item.priceId === tier,
-                    );
-                    if (!selected) return null;
-                    return (
-                      <div className="space-y-3">
-                        <Typography variant="h3">{selected.name}</Typography>
-                        <Typography>{selected.description}</Typography>
-                        <Separator />
-                        <div className="flex justify-between gap-4">
-                          <Typography>Total (USD)</Typography>
-                          <Typography>
-                            {formatDonationUsd(selected.amount)}
-                          </Typography>
-                        </div>
+              {selected ? (
+                <>
+                  <CardContent className="space-y-5">
+                    <div className="space-y-3">
+                      <Typography variant="h3">{selected.name}</Typography>
+                      <Separator />
+                      <div className="flex justify-between gap-4">
+                        <Typography>Total (USD)</Typography>
+                        <Typography>
+                          {formatDonationUsd(selected.amount)}
+                        </Typography>
                       </div>
-                    );
-                  }}
-                </form.Subscribe>
-                {invalidNotice ? (
-                  <Alert variant="destructive">
-                    <AlertTitle>Check your registration</AlertTitle>
-                    <AlertDescription>
-                      Complete the required fields and correct the errors above.
-                    </AlertDescription>
-                  </Alert>
-                ) : null}
-                {createCheckout.error ? (
-                  <Alert variant="destructive">
-                    <AlertTitle>Checkout unavailable</AlertTitle>
-                    <AlertDescription>
-                      {createCheckout.error.message}
-                    </AlertDescription>
-                  </Alert>
-                ) : null}
-                <form.SubmitButton
-                  size="lg"
-                  className="w-full"
-                  disabled={busy || readingLogo || Boolean(logoError)}
-                  pending="Opening secure checkout"
-                >
-                  {redirecting
-                    ? "Opening secure checkout"
-                    : "Continue to payment"}
-                </form.SubmitButton>
-              </CardContent>
-              <CardFooter>
-                <PaymentDisclaimer />
-              </CardFooter>
+                    </div>
+                    {invalidNotice ? (
+                      <Alert variant="destructive">
+                        <AlertTitle>Check your registration</AlertTitle>
+                        <AlertDescription>
+                          Complete the required fields and correct the errors
+                          above.
+                        </AlertDescription>
+                      </Alert>
+                    ) : null}
+                    {createCheckout.error ? (
+                      <Alert variant="destructive">
+                        <AlertTitle>Checkout unavailable</AlertTitle>
+                        <AlertDescription>
+                          {createCheckout.error.message}
+                        </AlertDescription>
+                      </Alert>
+                    ) : null}
+                    <form.SubmitButton
+                      size="lg"
+                      className="w-full"
+                      disabled={busy || readingLogo || Boolean(logoError)}
+                      pending="Opening secure checkout"
+                    >
+                      {redirecting
+                        ? "Opening secure checkout"
+                        : "Continue to payment"}
+                    </form.SubmitButton>
+                  </CardContent>
+                  <CardFooter>
+                    <PaymentDisclaimer />
+                  </CardFooter>
+                </>
+              ) : (
+                <CardContent className="space-y-5">
+                  <div className="space-y-3">
+                    <Typography variant="h3">Custom sponsorship</Typography>
+                    <Typography>
+                      We&apos;ll work out the amount and benefits with you by
+                      email.
+                    </Typography>
+                  </div>
+                  <Button
+                    size="lg"
+                    className="w-full"
+                    render={<a href={CUSTOM_SPONSORSHIP_MAILTO} />}
+                    nativeButton={false}
+                  >
+                    Email {SPONSORSHIP_EMAIL}
+                  </Button>
+                </CardContent>
+              )}
             </Card>
-            <SponsorshipContact />
+            {selected ? <SponsorshipContact /> : null}
             <Button
               variant="outline"
               render={<Link href="/sponsors" />}

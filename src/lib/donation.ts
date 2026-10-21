@@ -12,6 +12,7 @@ export const SPONSORSHIP_DESCRIPTION =
 export const sponsorshipTierSchema = z
   .string()
   .regex(/^price_[a-zA-Z0-9]+$/, "Choose a sponsorship package");
+export const CUSTOM_SPONSORSHIP = "custom";
 
 export const SPONSORSHIP_PREFERENCES = [
   "Company recognition",
@@ -64,6 +65,15 @@ export const sponsorshipFormSchema = sponsorRegistrationSchema.extend({
   tier: sponsorshipTierSchema,
 });
 export type SponsorshipFormValues = z.infer<typeof sponsorshipFormSchema>;
+// Custom sponsorships are arranged by email, so only paid tiers need registration details.
+export const sponsorshipSelectionFormSchema = z
+  .custom<SponsorshipFormValues>()
+  .superRefine((value, ctx) => {
+    if (value?.tier === CUSTOM_SPONSORSHIP) return;
+    const result = sponsorshipFormSchema.safeParse(value);
+    if (!result.success)
+      for (const issue of result.error.issues) ctx.addIssue(issue);
+  });
 export const sponsorDefaults: SponsorshipFormValues = {
   tier: "",
   companyName: "",

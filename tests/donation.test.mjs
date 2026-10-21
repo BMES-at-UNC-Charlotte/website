@@ -5,6 +5,7 @@ import {
   donationCheckoutInput,
   parseDonationCents,
   sponsorshipFormSchema,
+  sponsorshipSelectionFormSchema,
   sponsorDefaults,
 } from "../src/lib/donation.ts";
 
@@ -106,5 +107,39 @@ test("checkout keys remain valid UUIDs on HTTP development previews", () => {
     assert.match(
       value,
       /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
+});
+
+test("custom selection needs no registration while paid selections remain strict", () => {
+  assert.equal(
+    sponsorshipSelectionFormSchema.safeParse({
+      ...sponsorDefaults,
+      tier: "custom",
+    }).success,
+    true,
+  );
+  assert.equal(
+    sponsorshipSelectionFormSchema.safeParse({
+      ...sponsorDefaults,
+      tier: "price_Sponsor",
+    }).success,
+    false,
+  );
+  assert.equal(
+    sponsorshipSelectionFormSchema.safeParse({
+      ...sponsor,
+      tier: "price_Sponsor",
+    }).success,
+    true,
+  );
+  for (const value of [
+    null,
+    undefined,
+    {},
+    { ...sponsor, tier: "prod_Sponsor" },
+  ])
+    assert.equal(
+      sponsorshipSelectionFormSchema.safeParse(value).success,
+      false,
     );
 });
