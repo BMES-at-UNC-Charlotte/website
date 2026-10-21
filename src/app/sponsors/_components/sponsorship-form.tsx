@@ -71,7 +71,7 @@ async function readLogo(file: File): Promise<SponsorLogo> {
     file.size > MAX_LOGO_BYTES ||
     !["image/png", "image/jpeg", "image/webp"].includes(file.type)
   )
-    throw new Error("Choose a PNG, JPEG, or WebP logo smaller than 2 MB.");
+    throw new Error("Choose a PNG, JPEG, or WebP logo up to 5 MB.");
   const base64 = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () =>
@@ -351,7 +351,7 @@ export function SponsorshipForm({
                         }}
                       />
                       <FieldDescription id="logo-help">
-                        PNG, JPEG, or WebP, up to 2 MB.{" "}
+                        PNG, JPEG, or WebP, up to 5 MB.{" "}
                         {readingLogo
                           ? "Reading logo…"
                           : logo

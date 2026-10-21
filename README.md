@@ -47,7 +47,7 @@ database; it does not create or edit Stripe products, prices, or account setting
 Paid packages lead to `/sponsors/register?tier=price_...` for company registration,
 then Stripe Checkout. Registration collects company contact information,
 sponsorship preferences, recruiting opportunities, partnership interests, and an
-optional PNG, JPEG, or WebP logo up to 2 MB. Card details stay on Stripe. Checkout
+optional PNG, JPEG, or WebP logo up to 5 MB. Card details stay on Stripe. Checkout
 rechecks the configured Price ID before starting a payment.
 
 ### Deployment

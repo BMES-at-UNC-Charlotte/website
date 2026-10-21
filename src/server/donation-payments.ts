@@ -55,7 +55,7 @@ function logoBytes(logo: SponsorLogo | undefined) {
   ) {
     throw new TRPCError({
       code: "BAD_REQUEST",
-      message: "Choose a PNG, JPEG, or WebP logo smaller than 2 MB.",
+      message: "Choose a PNG, JPEG, or WebP logo up to 5 MB.",
     });
   }
   return bytes;

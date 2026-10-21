@@ -3,7 +3,7 @@ import { z } from "zod";
 export const PRESET_DONATION_DOLLARS = [10, 20, 50, 100, 500] as const;
 export const MIN_DONATION_CENTS = 100;
 export const MAX_DONATION_CENTS = 1_000_000;
-export const MAX_LOGO_BYTES = 2 * 1024 * 1024;
+export const MAX_LOGO_BYTES = 5 * 1024 * 1024;
 
 export const INDIVIDUAL_DESCRIPTION =
   "A charitable contribution for parents, families, alumni, friends, and community members who would like to support our organization. Donations help fund student programs, educational activities, outreach events, professional development, supplies, and other organization initiatives.";
