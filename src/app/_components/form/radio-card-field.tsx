@@ -23,12 +23,14 @@ export type RadioCardOption = {
 
 export function RadioCardField({
   label,
+  hideLabel = false,
   description,
   options,
   required = false,
   empty,
 }: {
   label: ReactNode;
+  hideLabel?: boolean;
   description?: ReactNode;
   options: RadioCardOption[];
   required?: boolean;
@@ -41,6 +43,7 @@ export function RadioCardField({
     <FieldSet data-invalid={invalid}>
       <FormFieldLegend
         label={label}
+        hideLabel={hideLabel}
         description={description}
         required={required}
       />

@@ -33,6 +33,7 @@ export function SponsorshipPicker({ tiers }: { tiers: SponsorshipTier[] }) {
           {(field) => (
             <field.RadioCardField
               label="Sponsorship package"
+              hideLabel
               options={sponsorshipOptions(tiers)}
             />
           )}

@@ -45,14 +45,19 @@ export function FormFieldLegend({
   label,
   description,
   required = false,
+  hideLabel = false,
 }: {
   label: ReactNode;
   description?: ReactNode;
   required?: boolean;
+  hideLabel?: boolean;
 }) {
   return (
     <>
-      <FieldLegend variant="label">
+      <FieldLegend
+        variant="label"
+        className={hideLabel ? "sr-only" : undefined}
+      >
         {label}
         <RequiredMark required={required} />
       </FieldLegend>
