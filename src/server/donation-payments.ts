@@ -1,3 +1,4 @@
+import { PAYMENT_DISCLAIMER } from "@/lib/payment-disclaimer";
 import "server-only";
 
 import { createHash } from "node:crypto";
@@ -130,6 +131,7 @@ export async function createDonationCheckout(
       mode: "payment",
       submit_type: input.kind === "individual" ? "donate" : "pay",
       payment_method_types: ["card"],
+      custom_text: { submit: { message: PAYMENT_DISCLAIMER } },
       customer_email:
         input.kind === "sponsorship" ? input.sponsor.email : undefined,
       success_url: `${origin}/sponsors/confirmation?session_id={CHECKOUT_SESSION_ID}`,

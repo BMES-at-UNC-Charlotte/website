@@ -76,6 +76,10 @@ Create a Stripe webhook endpoint at `/api/stripe/webhook` for:
 - `checkout.session.async_payment_failed`
 - `checkout.session.expired`
 
+The shared payment disclaimer is available on the donation form, every paid
+sponsorship card, and the registration payment summary. New Stripe Checkout
+sessions also display the complete disclaimer beside the payment button.
+
 Individual donations create a one-time line item and a Stripe product record.
 Sponsorships use the configured existing prices. The return page and signed
 webhooks verify Stripe's current payment status. Duplicate or late events cannot

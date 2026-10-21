@@ -1,6 +1,7 @@
 import { type Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/app/_components/container";
+import { PaymentDisclaimer } from "@/app/_components/payment-disclaimer";
 import { Typography } from "@/app/_components/typography";
 import { DonationForm } from "./_components/donation-form";
 import { SponsorshipContact } from "./_components/sponsorship-contact";
@@ -79,7 +80,7 @@ export default async function SponsorsPage({
                   <Typography>{tier.description}</Typography>
                 </CardContent>
               ) : null}
-              <CardFooter className="mt-auto">
+              <CardFooter className="mt-auto flex-col gap-4">
                 <Button
                   variant="outline"
                   className="w-full"
@@ -90,6 +91,7 @@ export default async function SponsorsPage({
                 >
                   Choose {tier.name}
                 </Button>
+                <PaymentDisclaimer />
               </CardFooter>
             </Card>
           ))}

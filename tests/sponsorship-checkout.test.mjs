@@ -1,3 +1,4 @@
+import { PAYMENT_DISCLAIMER } from "../src/lib/payment-disclaimer.ts";
 // Run the real payment and configuration code against in-memory Stripe/database
 // adapters. No network requests or Stripe records are created.
 import assert from "node:assert/strict";
@@ -173,6 +174,7 @@ test("checkout uses configured Stripe price and ignores a client-supplied amount
   assert.deepEqual(sessionParams.line_items, [
     { quantity: 1, price: "price_Sponsor" },
   ]);
+  assert.equal(sessionParams.custom_text.submit.message, PAYMENT_DISCLAIMER);
   assert.equal([...attempts.values()][0].amount, 25000);
   assert.equal([...attempts.values()][0].tier, "prod_Sponsor");
   assert.equal(
@@ -220,6 +222,7 @@ test("preset and decimal donations pass their exact cents to Stripe", async () =
     );
     assert.equal(sessionParams.line_items[0].price_data.unit_amount, cents);
     assert.equal(sessionParams.submit_type, "donate");
+    assert.equal(sessionParams.custom_text.submit.message, PAYMENT_DISCLAIMER);
   }
 });
 
@@ -270,4 +273,13 @@ test("admin rejects Product IDs and legacy product configuration payloads before
     );
     assert.deepEqual(saved, ["price_Sponsor"]);
   }
+});
+
+test("the complete payment disclaimer fits Stripe's custom submit text limit", () => {
+  assert.ok(PAYMENT_DISCLAIMER.length > 0 && PAYMENT_DISCLAIMER.length <= 1200);
+  assert.match(
+    PAYMENT_DISCLAIMER,
+    /This is not an official University of North Carolina at Charlotte/,
+  );
+  assert.match(PAYMENT_DISCLAIMER, /The University does not review/);
 });
