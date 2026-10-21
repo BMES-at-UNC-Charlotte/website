@@ -2,11 +2,13 @@ import { Typography } from "@/app/_components/typography";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { User2 } from "lucide-react";
+import Image from "next/image";
 
 type OfficerCardProps = {
   className?: string;
   image?: string;
   name: string;
+  priority?: boolean;
   role: string;
 };
 
@@ -14,15 +16,20 @@ export function OfficerCard({
   className,
   image,
   name,
+  priority = false,
   role,
 }: OfficerCardProps) {
   return (
     <Card className={cn("w-full gap-0 overflow-hidden py-0", className)}>
       {image ? (
-        <img
+        <Image
           src={image}
           alt={name}
-          className="aspect-square w-full object-cover"
+          width={800}
+          height={800}
+          priority={priority}
+          sizes="(min-width: 1024px) 342px, (min-width: 640px) 50vw, 100vw"
+          className="aspect-square h-auto w-full object-cover"
         />
       ) : (
         <div

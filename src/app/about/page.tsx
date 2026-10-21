@@ -76,6 +76,7 @@ export default function AboutPage() {
               name={person.name}
               role={person.role}
               image={person.image}
+              priority={index < 3}
               className={
                 index === leadership.length - 1 && leadership.length % 3 === 1
                   ? "lg:col-start-2"
