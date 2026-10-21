@@ -208,10 +208,6 @@ export function SponsorshipForm({
             {canceled ? (
               <Alert>
                 <AlertTitle>Checkout canceled</AlertTitle>
-                <AlertDescription>
-                  Your saved registration is ready to review. Continue to
-                  payment when you&apos;re ready.
-                </AlertDescription>
               </Alert>
             ) : null}
             <section aria-labelledby="package-heading" className="space-y-6">
