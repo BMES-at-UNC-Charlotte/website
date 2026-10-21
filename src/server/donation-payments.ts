@@ -1,4 +1,3 @@
-import { PAYMENT_DISCLAIMER } from "@/lib/payment-disclaimer";
 import "server-only";
 
 import { createHash } from "node:crypto";
@@ -9,6 +8,7 @@ import { env } from "@/env";
 import {
   INDIVIDUAL_DESCRIPTION,
   MAX_LOGO_BYTES,
+  PAYMENT_DISCLAIMER,
   type DonationCheckoutInput,
   type SponsorLogo,
 } from "@/lib/donation";

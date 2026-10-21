@@ -1,4 +1,4 @@
-import { PAYMENT_DISCLAIMER } from "../src/lib/payment-disclaimer.ts";
+import { PAYMENT_DISCLAIMER } from "../src/lib/donation.ts";
 // Run the real payment and configuration code against in-memory Stripe/database
 // adapters. No network requests or Stripe records are created.
 import assert from "node:assert/strict";

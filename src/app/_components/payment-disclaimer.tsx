@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
-import { PAYMENT_DISCLAIMER_PARAGRAPHS } from "@/lib/payment-disclaimer";
+import { PAYMENT_DISCLAIMER_PARAGRAPHS } from "@/lib/donation";
 
 export function PaymentDisclaimer() {
   return (
