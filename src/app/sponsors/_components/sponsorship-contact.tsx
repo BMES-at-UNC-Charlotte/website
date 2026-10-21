@@ -5,22 +5,23 @@ import { SPONSORSHIP_EMAIL, SPONSORSHIP_MAILTO } from "@/lib/sponsorship";
 
 export function SponsorshipContact({
   title = "Prefer to talk first?",
+  description = "Email us about benefits, recruiting, or a partnership that fits your company.",
+  href = SPONSORSHIP_MAILTO,
 }: {
   title?: string;
+  description?: string;
+  href?: string;
 }) {
   return (
     <div className="space-y-3">
       <Typography variant="h4" as="h3">
         {title}
       </Typography>
-      <Typography>
-        Email us about benefits, recruiting, or a partnership that fits your
-        company.
-      </Typography>
+      <Typography>{description}</Typography>
       <Button
         variant="secondary"
         size="lg"
-        render={<a href={SPONSORSHIP_MAILTO} />}
+        render={<a href={href} />}
         nativeButton={false}
       >
         <Mail aria-hidden="true" />

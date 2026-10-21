@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { Typography } from "@/app/_components/typography";
 import { SponsorshipContact } from "@/app/sponsors/_components/sponsorship-contact";
@@ -10,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { formatDonationUsd } from "@/lib/donation";
+import { SPONSORSHIP_EMAIL } from "@/lib/sponsorship";
 import { api } from "@/trpc/react";
 
 export function ContributionStatus({ sessionId }: { sessionId?: string }) {
@@ -96,14 +96,11 @@ export function ContributionStatus({ sessionId }: { sessionId?: string }) {
             </AlertDescription>
           </Alert>
         )}
-        <SponsorshipContact />
-        <Button
-          variant="outline"
-          render={<Link href="/sponsors" />}
-          nativeButton={false}
-        >
-          Back to donation options
-        </Button>
+        <SponsorshipContact
+          title="Have any questions?"
+          description="Contact us with any questions about your contribution."
+          href={`mailto:${SPONSORSHIP_EMAIL}`}
+        />
       </CardContent>
     </Card>
   );
