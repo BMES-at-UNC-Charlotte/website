@@ -169,16 +169,32 @@ export async function createDonationCheckout(
     where: { id: attempt.id },
     data: { stripeCheckoutSessionId: session.id },
   });
-  if (!session.url) throw new Error("Stripe did not return a checkout URL");
+  if (session.status !== "open" || !session.url)
+    throw new TRPCError({
+      code: "CONFLICT",
+      message:
+        "This checkout is no longer available. Check your receipt or contact us for help.",
+    });
   return { url: session.url };
 }
 
 // Both signed webhooks and the return page retrieve Stripe's current session.
 // Re-reading it prevents late or duplicate events from reverting a paid record.
 export async function synchronizeDonationSession(sessionId: string) {
-  const session = await getStripe().checkout.sessions.retrieve(sessionId, {
-    expand: ["payment_intent"],
-  });
+  let session: Stripe.Checkout.Session;
+  try {
+    session = await getStripe().checkout.sessions.retrieve(sessionId, {
+      expand: ["payment_intent"],
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      "code" in error &&
+      error.code === "resource_missing"
+    )
+      return null;
+    throw error;
+  }
   if (session.metadata?.source !== "bmes-donation") return null;
   const id = session.metadata.donationCheckoutId;
   if (!id) return null;

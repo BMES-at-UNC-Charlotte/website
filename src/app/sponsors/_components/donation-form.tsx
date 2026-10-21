@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Typography } from "@/app/_components/typography";
 import { PaymentDisclaimer } from "@/app/_components/payment-disclaimer";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -41,6 +41,16 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
   const invalid =
     custom && amount === null && (submitted || customValue.length > 0);
   const busy = createCheckout.isPending || redirecting;
+
+  useEffect(() => {
+    function restore(event: PageTransitionEvent) {
+      if (!event.persisted) return;
+      inFlight.current = false;
+      setRedirecting(false);
+    }
+    window.addEventListener("pageshow", restore);
+    return () => window.removeEventListener("pageshow", restore);
+  }, []);
 
   async function checkout(cents: number) {
     if (inFlight.current) return;

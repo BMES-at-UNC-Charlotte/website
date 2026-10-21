@@ -110,6 +110,14 @@ export function SponsorshipForm({
   const createCheckout = api.donation.createCheckoutSession.useMutation();
   const busy = createCheckout.isPending || redirecting;
 
+  useEffect(() => {
+    function restore(event: PageTransitionEvent) {
+      if (event.persisted) setRedirecting(false);
+    }
+    window.addEventListener("pageshow", restore);
+    return () => window.removeEventListener("pageshow", restore);
+  }, []);
+
   const form = useAppForm({
     defaultValues: { ...sponsorDefaults, tier: initialTier },
     validationLogic: revalidateLogic({
@@ -168,14 +176,18 @@ export function SponsorshipForm({
       const draft = JSON.parse(stored) as { value?: unknown; logo?: unknown };
       const parsed = sponsorshipFormSchema.safeParse(draft.value);
       if (!parsed.success) return;
-      if (!tiers.some((tier) => tier.priceId === parsed.data.tier)) return;
-      form.reset(parsed.data);
+      form.reset({
+        ...parsed.data,
+        tier: tiers.some((tier) => tier.priceId === parsed.data.tier)
+          ? parsed.data.tier
+          : initialTier,
+      });
       const checked = logoSchema.safeParse(draft.logo);
       if (checked.success) setLogo(checked.data);
     } catch {
       /* A missing or invalid draft leaves the form ready for a new registration. */
     }
-  }, [canceled, form, tiers]);
+  }, [canceled, form, tiers, initialTier]);
 
   const tier = useSelector(form.store, (state) => state.values.tier);
   const selected = tiers.find((item) => item.priceId === tier);

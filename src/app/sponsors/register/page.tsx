@@ -24,7 +24,8 @@ export default async function SponsorRegistrationPage({
     tier === CUSTOM_SPONSORSHIP
       ? CUSTOM_SPONSORSHIP
       : tier
-        ? catalog.tiers.find((item) => item.priceId === tier)?.priceId
+        ? (catalog.tiers.find((item) => item.priceId === tier)?.priceId ??
+          (status === "canceled" ? CUSTOM_SPONSORSHIP : undefined))
         : (catalog.tiers[0]?.priceId ?? CUSTOM_SPONSORSHIP);
   return (
     <Container contentClassName="space-y-8">

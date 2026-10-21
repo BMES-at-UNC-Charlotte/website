@@ -53,7 +53,6 @@ export async function getSponsorshipCatalog() {
           ]
         : [],
     ),
-    priceIds: prices.map((price) => price.priceId),
   };
 }
 
