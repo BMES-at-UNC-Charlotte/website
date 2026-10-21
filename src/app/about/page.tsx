@@ -11,6 +11,7 @@ const leadership = [
   {
     name: "Mario Portillo-Arreola",
     role: "Vice President",
+    image: "/about/mario.png",
   },
   {
     name: "Adriana Austin",
