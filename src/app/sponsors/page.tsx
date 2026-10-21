@@ -6,10 +6,6 @@ import { DonationForm } from "./_components/donation-form";
 import { SponsorshipContact } from "./_components/sponsorship-contact";
 import { SponsorshipPicker } from "./_components/sponsorship-picker";
 import { Separator } from "@/components/ui/separator";
-import {
-  INDIVIDUAL_DESCRIPTION,
-  SPONSORSHIP_DESCRIPTION,
-} from "@/lib/donation";
 import { getSponsorshipCatalog } from "@/server/sponsorship-prices";
 
 export const metadata: Metadata = {
@@ -45,7 +41,13 @@ export default async function SponsorsPage({
           <Typography variant="h2" id="individual-heading">
             Individual Supporter Donation
           </Typography>
-          <Typography>{INDIVIDUAL_DESCRIPTION}</Typography>
+          <Typography>
+            A charitable contribution for parents, families, alumni, friends,
+            and community members who would like to support our organization.
+            Donations help fund student programs, educational activities,
+            outreach events, professional development, supplies, and other
+            organization initiatives.
+          </Typography>
         </div>
         <DonationForm canceled={status === "canceled"} />
       </section>
@@ -59,7 +61,11 @@ export default async function SponsorsPage({
             <Typography variant="h2" id="sponsorship-heading">
               Employer &amp; Corporate Sponsorship
             </Typography>
-            <Typography>{SPONSORSHIP_DESCRIPTION}</Typography>
+            <Typography>
+              A sponsorship opportunity for employers, companies, professional
+              organizations, and community partners that would like to
+              financially support our organization and engage with our members.
+            </Typography>
           </div>
           <SponsorshipContact />
         </div>

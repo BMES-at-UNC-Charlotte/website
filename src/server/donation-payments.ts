@@ -6,7 +6,6 @@ import { TRPCError } from "@trpc/server";
 
 import { env } from "@/env";
 import {
-  INDIVIDUAL_DESCRIPTION,
   MAX_LOGO_BYTES,
   PAYMENT_DISCLAIMER,
   type DonationCheckoutInput,
@@ -150,7 +149,8 @@ export async function createDonationCheckout(
                 unit_amount: amount,
                 product_data: {
                   name: productName,
-                  description: INDIVIDUAL_DESCRIPTION,
+                  description:
+                    "A charitable contribution for parents, families, alumni, friends, and community members who would like to support our organization. Donations help fund student programs, educational activities, outreach events, professional development, supplies, and other organization initiatives.",
                 },
               },
             },

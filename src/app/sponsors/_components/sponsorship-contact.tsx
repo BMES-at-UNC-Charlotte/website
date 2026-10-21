@@ -1,12 +1,12 @@
 import { Mail } from "lucide-react";
 import { Typography } from "@/app/_components/typography";
 import { Button } from "@/components/ui/button";
-import { SPONSORSHIP_EMAIL, SPONSORSHIP_MAILTO } from "@/lib/sponsorship";
+import { SPONSORSHIP_EMAIL } from "@/lib/sponsorship";
 
 export function SponsorshipContact({
   title = "Prefer to talk first?",
   description = "Email us about benefits, recruiting, or a partnership that fits your company.",
-  href = SPONSORSHIP_MAILTO,
+  href = `mailto:${SPONSORSHIP_EMAIL}?subject=${encodeURIComponent("Charlotte BMES sponsorship inquiry")}`,
 }: {
   title?: string;
   description?: string;

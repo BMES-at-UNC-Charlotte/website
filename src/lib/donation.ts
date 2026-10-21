@@ -7,16 +7,11 @@ export const PAYMENT_DISCLAIMER_PARAGRAPHS = [
 
 export const PAYMENT_DISCLAIMER = PAYMENT_DISCLAIMER_PARAGRAPHS.join("\n\n");
 
-export const PRESET_DONATION_DOLLARS = [10, 20, 50, 100, 500] as const;
-export const MIN_DONATION_CENTS = 100;
-export const MAX_DONATION_CENTS = 1_000_000;
+const MIN_DONATION_CENTS = 100;
+const MAX_DONATION_CENTS = 1_000_000;
 export const MAX_LOGO_BYTES = 5 * 1024 * 1024;
 
-export const INDIVIDUAL_DESCRIPTION =
-  "A charitable contribution for parents, families, alumni, friends, and community members who would like to support our organization. Donations help fund student programs, educational activities, outreach events, professional development, supplies, and other organization initiatives.";
-export const SPONSORSHIP_DESCRIPTION =
-  "A sponsorship opportunity for employers, companies, professional organizations, and community partners that would like to financially support our organization and engage with our members.";
-export const sponsorshipTierSchema = z
+const sponsorshipTierSchema = z
   .string()
   .regex(/^price_[a-zA-Z0-9]+$/, "Choose a sponsorship package");
 export const CUSTOM_SPONSORSHIP = "custom";
@@ -81,21 +76,8 @@ export const sponsorshipSelectionFormSchema = z
     if (!result.success)
       for (const issue of result.error.issues) ctx.addIssue(issue);
   });
-export const sponsorDefaults: SponsorshipFormValues = {
-  tier: "",
-  companyName: "",
-  contactName: "",
-  email: "",
-  phone: "",
-  website: "",
-  preferences: [],
-  recruitingOpportunities: "",
-  recruitingUrl: "",
-  partnershipInterests: [],
-  notes: "",
-};
 
-const logoSchema = z.object({
+export const logoSchema = z.object({
   name: z.string().trim().min(1).max(255),
   contentType: z.enum(["image/png", "image/jpeg", "image/webp"]),
   base64: z

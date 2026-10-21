@@ -62,7 +62,6 @@ export function sortSponsorshipTiers<T extends SponsorshipTier>(tiers: T[]) {
 }
 
 export const SPONSORSHIP_EMAIL = "unccbmes@gmail.com";
-export const SPONSORSHIP_MAILTO = `mailto:${SPONSORSHIP_EMAIL}?subject=${encodeURIComponent("Charlotte BMES sponsorship inquiry")}`;
 export const CUSTOM_SPONSORSHIP_MAILTO = `mailto:${SPONSORSHIP_EMAIL}?subject=${encodeURIComponent("Custom Charlotte BMES sponsorship")}`;
 
 export function formatSponsorshipDate(date: Date, includeTime = false) {

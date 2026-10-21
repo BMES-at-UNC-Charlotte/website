@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { revalidateLogic, useSelector } from "@tanstack/react-form";
 import { focusFirstInvalidField, useAppForm } from "@/app/_components/form";
-import { type RadioCardOption } from "@/app/_components/form/radio-card-field";
 import { PaymentDisclaimer } from "@/app/_components/payment-disclaimer";
 import { Typography } from "@/app/_components/typography";
 import { SponsorshipContact } from "./sponsorship-contact";
+import { sponsorshipOptions } from "./sponsorship-picker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,18 +26,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
-  donationCheckoutInput,
+  logoSchema,
   createCheckoutKey,
   CUSTOM_SPONSORSHIP,
   formatDonationUsd,
   MAX_LOGO_BYTES,
   PARTNERSHIP_INTERESTS,
-  sponsorDefaults,
   sponsorRegistrationSchema,
   SPONSORSHIP_PREFERENCES,
   sponsorshipFormSchema,
   sponsorshipSelectionFormSchema,
   type SponsorLogo,
+  type SponsorshipFormValues,
 } from "@/lib/donation";
 import {
   CUSTOM_SPONSORSHIP_MAILTO,
@@ -46,25 +46,21 @@ import {
 } from "@/lib/sponsorship";
 import { api } from "@/trpc/react";
 
-export const SPONSOR_DRAFT_KEY = "bmes-sponsor-registration";
+const sponsorDefaults: SponsorshipFormValues = {
+  tier: "",
+  companyName: "",
+  contactName: "",
+  email: "",
+  phone: "",
+  website: "",
+  preferences: [],
+  recruitingOpportunities: "",
+  recruitingUrl: "",
+  partnershipInterests: [],
+  notes: "",
+};
 
-export function sponsorshipOptions(
-  tiers: SponsorshipTier[],
-): RadioCardOption[] {
-  return [
-    ...tiers.map((tier) => ({
-      value: tier.priceId,
-      title: tier.name,
-      description: tier.description,
-      action: formatDonationUsd(tier.amount),
-    })),
-    {
-      value: CUSTOM_SPONSORSHIP,
-      title: "Custom sponsorship",
-      description: "A different amount or partnership, arranged by email.",
-    },
-  ];
-}
+const SPONSOR_DRAFT_KEY = "bmes-sponsor-registration";
 
 async function readLogo(file: File): Promise<SponsorLogo> {
   if (
@@ -174,16 +170,8 @@ export function SponsorshipForm({
       if (!parsed.success) return;
       if (!tiers.some((tier) => tier.priceId === parsed.data.tier)) return;
       form.reset(parsed.data);
-      const checked = donationCheckoutInput.safeParse({
-        kind: "sponsorship",
-        priceId: tiers.find((tier) => tier.priceId === parsed.data.tier)!
-          .priceId,
-        sponsor: parsed.data,
-        logo: draft.logo,
-        idempotencyKey: createCheckoutKey(),
-      });
-      if (checked.success && checked.data.kind === "sponsorship")
-        setLogo(checked.data.logo);
+      const checked = logoSchema.safeParse(draft.logo);
+      if (checked.success) setLogo(checked.data);
     } catch {
       /* A missing or invalid draft leaves the form ready for a new registration. */
     }

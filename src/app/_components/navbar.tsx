@@ -43,7 +43,11 @@ export function NavBar() {
   const isAdminPage = pathname.startsWith("/admin");
   const isSurveyPage = pathname === "/s" || pathname.startsWith("/s/");
   const navigationItems = isAdminPage
-    ? adminNavigationItems
+    ? adminNavigationItems.filter(
+        (item) =>
+          item.href !== "/admin/sponsorship" ||
+          session?.user.adminUser?.role === "ADMIN",
+      )
     : mainNavigationItems;
 
   const isActive = (href: string) =>

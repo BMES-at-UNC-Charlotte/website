@@ -23,9 +23,10 @@ import {
   createCheckoutKey,
   formatDonationUsd,
   parseDonationCents,
-  PRESET_DONATION_DOLLARS,
 } from "@/lib/donation";
 import { api } from "@/trpc/react";
+
+const PRESET_DONATION_DOLLARS = [10, 20, 50, 100, 500] as const;
 
 export function DonationForm({ canceled = false }: { canceled?: boolean }) {
   const [custom, setCustom] = useState(false);

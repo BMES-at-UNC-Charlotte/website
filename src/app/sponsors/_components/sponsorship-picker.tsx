@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useAppForm } from "@/app/_components/form";
 import { PaymentDisclaimer } from "@/app/_components/payment-disclaimer";
 import { Typography } from "@/app/_components/typography";
-import { sponsorshipOptions } from "./sponsorship-form";
+import { type RadioCardOption } from "@/app/_components/form/radio-card-field";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,11 +12,29 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { CUSTOM_SPONSORSHIP } from "@/lib/donation";
+import { CUSTOM_SPONSORSHIP, formatDonationUsd } from "@/lib/donation";
 import {
   CUSTOM_SPONSORSHIP_MAILTO,
   type SponsorshipTier,
 } from "@/lib/sponsorship";
+
+export function sponsorshipOptions(
+  tiers: SponsorshipTier[],
+): RadioCardOption[] {
+  return [
+    ...tiers.map((tier) => ({
+      value: tier.priceId,
+      title: tier.name,
+      description: tier.description,
+      action: formatDonationUsd(tier.amount),
+    })),
+    {
+      value: CUSTOM_SPONSORSHIP,
+      title: "Custom sponsorship",
+      description: "A different amount or partnership, arranged by email.",
+    },
+  ];
+}
 
 export function SponsorshipPicker({ tiers }: { tiers: SponsorshipTier[] }) {
   const form = useAppForm({
