@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import { type ReactNode } from "react";
 
 type HeroImage = {
@@ -33,13 +32,14 @@ export function Container({
     <main className={cn("min-h-screen pt-16", className)}>
       {hero ? (
         <section className="relative isolate h-[clamp(18rem,32vw,28rem)] overflow-hidden">
-          <Image
+          {/* Keep the original hero image URL without Next.js optimization. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={hero.src}
             alt={hero.alt}
-            fill
-            priority={hero.priority}
-            className="object-cover"
-            sizes="100vw"
+            loading={hero.priority ? "eager" : "lazy"}
+            fetchPriority={hero.priority ? "high" : "auto"}
+            className="absolute inset-0 size-full object-cover"
           />
           {heroContent ? (
             <div className="relative z-10 mx-auto flex size-full max-w-6xl items-end px-4 py-10 sm:px-6 lg:px-8">

@@ -34,7 +34,6 @@ type NavigationItem = {
 const mainNavigationItems: NavigationItem[] = [
   { title: "Home", href: "/" },
   { title: "About", href: "/about" },
-  { title: "Gallery", href: "/gallery" },
   { title: "Sponsors", href: "/sponsors" },
   // Only include dev link in development environment
   ...(process.env.NODE_ENV === "development"
@@ -104,7 +103,10 @@ export function NavBar() {
                     active={isActive(item.href)}
                     aria-current={isActive(item.href) ? "page" : undefined}
                     render={<Link href={item.href} />}
-                    className={navigationMenuTriggerStyle()}
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      isActive(item.href) && "bg-muted/50",
+                    )}
                   >
                     {item.title}
                   </NavigationMenuLink>
