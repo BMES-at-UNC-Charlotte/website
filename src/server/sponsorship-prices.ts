@@ -13,7 +13,11 @@ export async function retrieveSponsorshipPrice(priceId: string) {
     const price = await getStripe().prices.retrieve(priceId, {
       expand: ["product"],
     });
-    return sponsorshipTierFromPrice(price);
+    const tier = sponsorshipTierFromPrice(price);
+    return {
+      ...tier,
+      stripeProductUrl: `https://dashboard.stripe.com/${price.livemode ? "" : "test/"}products/${tier.productId}`,
+    };
   } catch (error) {
     // Do not expose Stripe response details or credentials to public callers.
     throw new TRPCError({

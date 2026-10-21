@@ -63,7 +63,17 @@ const price = (id, amount = 25000) => ({
     default_price: "price_Different",
   },
 });
-let saved, attempts, sessionParams, createdSessions, dbWrites;
+let saved,
+  attempts,
+  sessionParams,
+  createdSessions,
+  dbWrites,
+  sponsorRecords,
+  recordQueries;
+const selectRecord = (record, select) =>
+  Object.fromEntries(Object.keys(select).map((key) => [key, record[key]]));
+const matchingRecord = (record, where) =>
+  Object.entries(where).every(([key, value]) => record[key] === value);
 state.env = { SITE_URL: "http://localhost:3001" };
 state.auth = {};
 state.db = {
@@ -75,6 +85,21 @@ state.db = {
     createMany: ({ data }) => ({ operation: "create", data }),
   },
   donationCheckout: {
+    findMany: async (query) => {
+      recordQueries.push(query);
+      return sponsorRecords
+        .filter((record) => matchingRecord(record, query.where))
+        .sort((a, b) => b.updatedAt - a.updatedAt || b.id.localeCompare(a.id))
+        .slice(query.skip, query.skip + query.take)
+        .map((record) => selectRecord(record, query.select));
+    },
+    findFirst: async (query) => {
+      recordQueries.push(query);
+      const record = sponsorRecords.find((record) =>
+        matchingRecord(record, query.where),
+      );
+      return record ? selectRecord(record, query.select) : null;
+    },
     upsert: async ({ where, create }) => {
       dbWrites++;
       if (!attempts.has(where.idempotencyKey))
@@ -162,6 +187,8 @@ beforeEach(() => {
   sessionParams = null;
   createdSessions = 0;
   dbWrites = 0;
+  sponsorRecords = [];
+  recordQueries = [];
 });
 
 test("checkout uses configured Stripe price and ignores a client-supplied amount", async () => {
@@ -282,4 +309,140 @@ test("the complete payment disclaimer fits Stripe's custom submit text limit", (
     /This is not an official University of North Carolina at Charlotte/,
   );
   assert.match(PAYMENT_DISCLAIMER, /The University does not review/);
+});
+
+const sponsorRecord = (index = 1, changed = {}) => ({
+  id: `c${String(index).padStart(24, "0")}`,
+  kind: "sponsorship",
+  status: "SUCCEEDED",
+  sponsor: {
+    ...sponsor,
+    companyName: `Company ${index}`,
+    notes: "Private partnership notes",
+  },
+  amount: 25000,
+  currency: "usd",
+  createdAt: new Date("2026-10-20T12:00:00Z"),
+  updatedAt: new Date(
+    `2026-10-21T12:${String(index % 60).padStart(2, "0")}:00Z`,
+  ),
+  stripePriceId: "price_Sponsor",
+  stripeCheckoutSessionId: "cs_test_record",
+  stripePaymentIntentId: "pi_record",
+  logoName: "logo.png",
+  logoContentType: "image/png",
+  logoData: Buffer.from("original logo bytes"),
+  ...changed,
+});
+
+test("sponsor list, details and raw logo require a verified admin", async () => {
+  for (const client of [
+    caller(null),
+    caller("OFFICER"),
+    caller("ADMIN", false),
+  ]) {
+    await assert.rejects(client.list({ page: 0 }));
+    await assert.rejects(client.detail({ id: sponsorRecord().id }));
+    await assert.rejects(client.logo({ id: sponsorRecord().id, chunk: 0 }));
+  }
+  assert.equal(recordQueries.length, 0);
+});
+
+test("sponsor list paginates confirmed sponsorships newest first and excludes full registration and logos", async () => {
+  sponsorRecords = Array.from({ length: 28 }, (_, i) => sponsorRecord(i + 1));
+  sponsorRecords.push(sponsorRecord(50, { status: "PENDING" }));
+  sponsorRecords.push(sponsorRecord(51, { kind: "individual" }));
+  const page = await caller("ADMIN").list({ page: 0 });
+  assert.equal(page.items.length, 25);
+  assert.equal(page.hasMore, true);
+  assert.equal(page.items[0].companyName, "Company 28");
+  assert.equal(page.items[0].packageName, "Company partner");
+  assert.equal(
+    page.items[0].sponsoredAt.getTime(),
+    sponsorRecord(28).updatedAt.getTime(),
+  );
+  assert.ok(
+    page.items.every(
+      (item) =>
+        !("sponsor" in item) && !("logoData" in item) && !("logoName" in item),
+    ),
+  );
+  assert.equal(recordQueries[0].select.logoData, undefined);
+  const last = await caller("ADMIN").list({ page: 1 });
+  assert.equal(last.items.length, 3);
+  assert.equal(last.hasMore, false);
+  assert.equal(last.items[2].companyName, "Company 1");
+});
+
+test("sponsor details include full registration without fetching logo bytes", async () => {
+  const record = sponsorRecord();
+  sponsorRecords = [record];
+  const detail = await caller("ADMIN").detail({ id: record.id });
+  assert.equal(detail.registration.notes, "Private partnership notes");
+  assert.equal(detail.registration.email, sponsor.email);
+  assert.equal(detail.checkoutSessionId, record.stripeCheckoutSessionId);
+  assert.equal(detail.priceId, record.stripePriceId);
+  assert.equal(detail.hasLogo, true);
+  assert.equal(recordQueries[0].select.logoData, undefined);
+  assert.equal("logoData" in detail, false);
+});
+
+test("details and logo cannot expose unfinished payments or individual donations", async () => {
+  for (const changed of [{ status: "PENDING" }, { kind: "individual" }]) {
+    const record = sponsorRecord(1, changed);
+    sponsorRecords = [record];
+    for (const request of [
+      () => caller("ADMIN").detail({ id: record.id }),
+      () => caller("ADMIN").logo({ id: record.id, chunk: 0 }),
+    ])
+      await assert.rejects(request, (error) => error.code === "NOT_FOUND");
+  }
+});
+
+test("on-demand logo chunks preserve the entire 5 MB original and keep each response small", async () => {
+  const bytes = Buffer.alloc(5 * 1024 * 1024, 123);
+  const record = sponsorRecord(1, { logoData: bytes });
+  sponsorRecords = [record];
+  const chunks = [];
+  let chunk = 0;
+  while (chunk !== null) {
+    const part = await caller("ADMIN").logo({ id: record.id, chunk });
+    assert.equal(part.contentType, "image/png");
+    assert.ok(part.base64.length <= 1024 * 1024);
+    chunks.push(part.base64);
+    chunk = part.nextChunk;
+  }
+  assert.deepEqual(Buffer.from(chunks.join(""), "base64"), bytes);
+  await assert.rejects(
+    caller("ADMIN").logo({ id: record.id, chunk: 7 }),
+    (error) => error.code === "BAD_REQUEST",
+  );
+});
+
+test("completed sponsors remain visible when their Stripe price is unavailable", async () => {
+  const record = sponsorRecord(1, { stripePriceId: "price_Missing" });
+  sponsorRecords = [record];
+  const list = await caller("ADMIN").list({ page: 0 });
+  const detail = await caller("ADMIN").detail({ id: record.id });
+  assert.equal(list.items[0].companyName, "Company 1");
+  assert.equal(list.items[0].packageName, "Sponsorship");
+  assert.equal(detail.registration.contactName, sponsor.contactName);
+  assert.equal(detail.package, null);
+});
+
+test("package links open the product in the matching Stripe test or live mode", async () => {
+  const original = state.stripe.prices.retrieve;
+  try {
+    for (const livemode of [false, true]) {
+      state.stripe.prices.retrieve = async (id) => ({ ...price(id), livemode });
+      const configuration = await caller("ADMIN").configuration();
+      assert.equal(
+        configuration.tiers[0].stripeProductUrl,
+        `https://dashboard.stripe.com/${livemode ? "" : "test/"}products/prod_Sponsor`,
+      );
+    }
+  } finally {
+    state.stripe.prices.retrieve = original;
+  }
+  assert.equal(dbWrites, 0);
 });

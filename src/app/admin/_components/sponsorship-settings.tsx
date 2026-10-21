@@ -1,11 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
 import { Typography } from "@/app/_components/typography";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -14,83 +20,186 @@ import { sponsorshipPriceIdsSchema } from "@/lib/sponsorship";
 import { api, type RouterOutputs } from "@/trpc/react";
 
 type Configuration = RouterOutputs["sponsorship"]["configuration"];
+function configurationRows(catalog: Configuration) {
+  return [
+    ...catalog.tiers.map((tier) => tier.priceId),
+    ...catalog.errors.map((error) => error.priceId),
+  ].map((priceId) => ({
+    id: createCheckoutKey(),
+    priceId,
+    originalPriceId: priceId,
+  }));
+}
 
 export function SponsorshipSettings() {
   const configuration = api.sponsorship.configuration.useQuery();
   if (configuration.isPending)
     return (
-      <div role="status">
-        <Spinner />
-        Loading sponsorship prices
+      <div className="flex items-center gap-2" role="status">
+        <Spinner /> Loading sponsorship packages…
       </div>
     );
   if (configuration.error)
     return (
       <Alert variant="destructive">
-        <AlertDescription>{configuration.error.message}</AlertDescription>
-        <Button variant="outline" onClick={() => void configuration.refetch()}>
-          Try again
-        </Button>
+        <AlertDescription>
+          {configuration.error.message}
+          <Button variant="link" onClick={() => void configuration.refetch()}>
+            Try again
+          </Button>
+        </AlertDescription>
       </Alert>
     );
-  return <PriceEditor initial={configuration.data} />;
+  return <PackageSettings initial={configuration.data} />;
 }
 
-function PriceEditor({ initial }: { initial: Configuration }) {
-  const [rows, setRows] = useState(() =>
-    initial.priceIds.map((priceId) => ({
-      id: createCheckoutKey(),
-      priceId,
-    })),
-  );
-  const [catalog, setCatalog] = useState(initial);
+function PackageSettings({ initial }: { initial: Configuration }) {
+  const [editing, setEditing] = useState(false);
+  const catalog = initial;
+  const [rows, setRows] = useState(() => configurationRows(initial));
   const [message, setMessage] = useState("");
   const [validation, setValidation] = useState("");
   const save = api.sponsorship.save.useMutation();
   const utils = api.useUtils();
   const busy = save.isPending;
 
+  function clearError() {
+    setMessage("");
+    setValidation("");
+    save.reset();
+  }
+
   return (
-    <div className="space-y-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Configured Price IDs</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form
-            className="space-y-6"
-            onSubmit={async (event) => {
-              event.preventDefault();
-              setMessage("");
-              setValidation("");
-              const parsed = sponsorshipPriceIdsSchema.safeParse(
-                rows.map((row) => row.priceId),
+    <div className="space-y-6">
+      {!editing ? (
+        <>
+          <div className="flex justify-end">
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Edit sponsorship packages"
+              onClick={() => {
+                setRows(configurationRows(catalog));
+                clearError();
+                setEditing(true);
+              }}
+            >
+              <Pencil />
+            </Button>
+          </div>
+          {catalog.tiers.length ? (
+            catalog.tiers.map((tier) => (
+              <a
+                key={tier.priceId}
+                href={tier.stripeProductUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+                aria-label={`Open ${tier.name} in Stripe`}
+              >
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{tier.name}</CardTitle>
+                    <CardAction>
+                      <ExternalLink aria-hidden="true" />
+                    </CardAction>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Typography variant="h3" as="p">
+                      {formatDonationUsd(tier.amount)}
+                    </Typography>
+                    {tier.description ? (
+                      <Typography>{tier.description}</Typography>
+                    ) : null}
+                  </CardContent>
+                </Card>
+              </a>
+            ))
+          ) : (
+            <Typography>No paid sponsorship packages configured.</Typography>
+          )}
+          {catalog.errors.map((error) => (
+            <Alert key={error.priceId} variant="destructive">
+              <AlertDescription>
+                {error.message} Edit packages to replace or remove this price.
+              </AlertDescription>
+            </Alert>
+          ))}
+        </>
+      ) : (
+        <form
+          className="space-y-6"
+          onSubmit={async (event) => {
+            event.preventDefault();
+            if (busy) return;
+            clearError();
+            const parsed = sponsorshipPriceIdsSchema.safeParse(
+              rows.map((row) => row.priceId),
+            );
+            if (!parsed.success) {
+              setValidation(
+                parsed.error.issues[0]?.message ?? "Check the Price IDs.",
               );
-              if (!parsed.success) {
-                setValidation(
-                  parsed.error.issues[0]?.message ?? "Check the Price IDs.",
-                );
-                return;
-              }
-              try {
-                const result = await save.mutateAsync({
-                  priceIds: parsed.data,
-                });
-                setCatalog(result);
-                setMessage("Sponsorship prices saved.");
-                await utils.sponsorship.configuration.invalidate();
-              } catch {
-                /* The mutation error is displayed below. */
-              }
-            }}
-          >
-            {rows.length ? (
-              rows.map((row, index) => (
-                <Field key={row.id}>
-                  <FieldLabel htmlFor={`price-${row.id}`}>
-                    Price ID {index + 1}
-                  </FieldLabel>
-                  <div className="flex items-center gap-3">
+              return;
+            }
+            try {
+              const result = await save.mutateAsync({ priceIds: parsed.data });
+              utils.sponsorship.configuration.setData(undefined, result);
+              setRows(configurationRows(result));
+              setEditing(false);
+              setMessage("Sponsorship packages saved.");
+              await utils.sponsorship.configuration.invalidate();
+            } catch {
+              /* The mutation error is displayed below. */
+            }
+          }}
+        >
+          {rows.map((row, index) => {
+            const tier = catalog.tiers.find(
+              (item) => item.priceId === row.originalPriceId,
+            );
+            return (
+              <Card key={row.id}>
+                <CardHeader>
+                  <CardTitle>
+                    {tier?.name ??
+                      (row.originalPriceId
+                        ? "Unavailable package"
+                        : "New package")}
+                  </CardTitle>
+                  <CardAction>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      disabled={busy}
+                      aria-label={`Remove ${tier?.name ?? `package ${index + 1}`}`}
+                      onClick={() => {
+                        setRows((current) =>
+                          current.filter((item) => item.id !== row.id),
+                        );
+                        clearError();
+                      }}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="space-y-5">
+                  {tier ? (
+                    <div className="space-y-3">
+                      <Typography variant="h3" as="p">
+                        {formatDonationUsd(tier.amount)}
+                      </Typography>
+                      {tier.description ? (
+                        <Typography>{tier.description}</Typography>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  <Field>
+                    <FieldLabel htmlFor={`price-${row.id}`}>
+                      Stripe Price ID
+                    </FieldLabel>
                     <Input
                       id={`price-${row.id}`}
                       value={row.priceId}
@@ -107,98 +216,65 @@ function PriceEditor({ initial }: { initial: Configuration }) {
                               : item,
                           ),
                         );
-                        setMessage("");
-                        setValidation("");
-                        save.reset();
+                        clearError();
                       }}
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      aria-label={`Remove price ${index + 1}`}
-                      disabled={busy}
-                      onClick={() => {
-                        setRows((current) =>
-                          current.filter((item) => item.id !== row.id),
-                        );
-                        setMessage("");
-                        setValidation("");
-                        save.reset();
-                      }}
-                    >
-                      <Trash2 />
-                    </Button>
-                  </div>
-                </Field>
-              ))
-            ) : (
-              <Typography>
-                No paid sponsorships configured. Visitors can still email us
-                about sponsorships.
-              </Typography>
-            )}
-            <div className="flex flex-wrap gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={busy || rows.length >= 50}
-                onClick={() => {
-                  setRows((current) => [
-                    ...current,
-                    { id: createCheckoutKey(), priceId: "" },
-                  ]);
-                  setMessage("");
-                  setValidation("");
-                  save.reset();
-                }}
-              >
-                <Plus />
-                Add price
-              </Button>
-              <Button type="submit" disabled={busy}>
-                {busy ? <Spinner /> : null}Save prices
-              </Button>
-            </div>
-            {validation || save.error ? (
-              <Alert variant="destructive">
-                <AlertDescription>
-                  {validation || save.error?.message}
-                </AlertDescription>
-              </Alert>
-            ) : null}
-            {message ? <p role="status">{message}</p> : null}
-          </form>
-        </CardContent>
-      </Card>
-      {catalog.errors.map((error) => (
-        <Alert key={error.priceId} variant="destructive">
-          <AlertDescription>
-            {error.message} This price is hidden from sponsors until it is fixed
-            or removed.
-          </AlertDescription>
-        </Alert>
-      ))}
-      {catalog.tiers.length ? (
-        <section className="space-y-4" aria-labelledby="published-tiers">
-          <Typography variant="h2" id="published-tiers">
-            Published sponsorships
+                  </Field>
+                </CardContent>
+              </Card>
+            );
+          })}
+          {!rows.length ? (
+            <Typography>
+              No paid packages. Custom sponsorships will still be available by
+              email.
+            </Typography>
+          ) : null}
+          <Button
+            type="button"
+            variant="outline"
+            disabled={busy || rows.length >= 50}
+            onClick={() => {
+              setRows((current) => [
+                ...current,
+                { id: createCheckoutKey(), priceId: "", originalPriceId: "" },
+              ]);
+              clearError();
+            }}
+          >
+            <Plus /> Add package
+          </Button>
+          <Typography variant="caption">
+            Names, descriptions, and amounts come from Stripe. Use active,
+            one-time USD prices of at least $1.
           </Typography>
-          {catalog.tiers.map((tier) => (
-            <Card key={tier.priceId} size="sm">
-              <CardHeader>
-                <CardTitle>
-                  {tier.name} · {formatDonationUsd(tier.amount)}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Typography>{tier.description}</Typography>
-                <Typography>{tier.priceId}</Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </section>
-      ) : null}
+          {validation || save.error ? (
+            <Alert variant="destructive">
+              <AlertDescription>
+                {validation || save.error?.message}
+              </AlertDescription>
+            </Alert>
+          ) : null}
+          <div className="flex flex-wrap gap-3">
+            <Button type="submit" disabled={busy}>
+              {busy ? <Spinner /> : null} Save changes
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={busy}
+              onClick={() => {
+                setRows(configurationRows(catalog));
+                clearError();
+                setEditing(false);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      )}
+      {message ? <p role="status">{message}</p> : null}
     </div>
   );
 }

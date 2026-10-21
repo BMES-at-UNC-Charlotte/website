@@ -35,7 +35,11 @@ amount buttons open Stripe Checkout directly. Custom individual donations accept
 $1 to $10,000 USD, including cents. Sponsorship questions and custom sponsorships
 link to `unccbmes@gmail.com`; custom sponsorship never starts a payment.
 
-Authorized admins can manage paid packages at `/admin/sponsorship`, using the
+Authorized admins can review confirmed sponsors at `/admin/sponsorship`. Clicking a
+company opens its full registration; logo bytes are loaded only in this detail
+view through authenticated tRPC calls and displayed with a plain `<img>`.
+
+Paid packages are configured at `/admin/sponsorship/config`, using the
 existing officer portal and Google sign-in. Add exact Stripe Price IDs beginning
 with `price_`, not Product IDs. Each price must be active, fixed, one-time, USD,
 and at least $1, with an active linked product. The site reads the amount from
