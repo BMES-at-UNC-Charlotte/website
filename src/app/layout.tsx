@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 
+import { Footer } from "@/app/_components/footer";
 import { NavBar } from "@/app/_components/navbar";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/trpc/react";
@@ -39,10 +40,11 @@ export default function RootLayout({
       lang="en"
       className={cn(fraunces.variable, crimsonText.variable, "dark")}
     >
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className="flex min-h-screen flex-col">
         <TRPCReactProvider>
           <NavBar />
-          {children}
+          <div className="flex-1">{children}</div>
+          <Footer />
         </TRPCReactProvider>
       </body>
     </html>

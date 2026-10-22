@@ -29,7 +29,7 @@ export function Container({
   heroContent,
 }: PageContainerProps) {
   return (
-    <main className={cn("min-h-screen", !hero && "pt-16", className)}>
+    <main className={cn(!hero && "pt-16", className)}>
       {hero ? (
         <section className="relative isolate h-[calc(clamp(18rem,32vw,28rem)+4rem)] overflow-hidden">
           {/* Keep the original hero image URL without Next.js optimization. */}
