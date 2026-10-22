@@ -41,7 +41,7 @@ export function Footer() {
   return (
     <footer className={styles.footer}>
       <div className="mx-auto max-w-6xl px-4 pt-6 pb-4 sm:px-6 lg:px-8">
-        <div className="grid gap-y-6 sm:grid-cols-2 sm:gap-x-16 lg:grid-cols-[0.75fr_1fr_1fr]">
+        <div className="grid gap-y-7 sm:grid-cols-2 sm:gap-x-20 lg:grid-cols-[0.75fr_1fr_1fr]">
           <div className="order-1 space-y-2 sm:col-span-2 lg:col-span-1">
             <Link
               href="/"
