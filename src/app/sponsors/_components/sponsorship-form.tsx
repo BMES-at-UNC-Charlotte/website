@@ -31,6 +31,7 @@ import {
   CUSTOM_SPONSORSHIP,
   formatDonationUsd,
   MAX_LOGO_BYTES,
+  LOGO_CHUNK_BYTES,
   PARTNERSHIP_INTERESTS,
   sponsorRegistrationSchema,
   SPONSORSHIP_PREFERENCES,
@@ -62,13 +63,8 @@ const sponsorDefaults: SponsorshipFormValues = {
 
 const SPONSOR_DRAFT_KEY = "bmes-sponsor-registration";
 
-async function readLogo(file: File): Promise<SponsorLogo> {
-  if (
-    file.size > MAX_LOGO_BYTES ||
-    !["image/png", "image/jpeg", "image/webp"].includes(file.type)
-  )
-    throw new Error("Choose a PNG, JPEG, or WebP logo up to 5 MB.");
-  const base64 = await new Promise<string>((resolve, reject) => {
+async function readLogoChunk(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () =>
       reject(new Error("The logo could not be read. Please choose it again."));
@@ -81,13 +77,8 @@ async function readLogo(file: File): Promise<SponsorLogo> {
       }
       resolve(reader.result.split(",")[1] ?? "");
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(blob);
   });
-  return {
-    name: file.name,
-    contentType: file.type as SponsorLogo["contentType"],
-    base64,
-  };
 }
 
 export function SponsorshipForm({
@@ -108,6 +99,7 @@ export function SponsorshipForm({
   const [redirecting, setRedirecting] = useState(false);
   const [invalidNotice, setInvalidNotice] = useState(false);
   const createCheckout = api.donation.createCheckoutSession.useMutation();
+  const uploadLogo = api.donation.uploadLogoChunk.useMutation();
   const busy = createCheckout.isPending || redirecting;
 
   useEffect(() => {
@@ -162,7 +154,11 @@ export function SponsorshipForm({
         });
         setRedirecting(true);
         window.location.assign(url);
-      } catch {
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("logo")) {
+          setLogo(undefined);
+          setLogoError(error.message);
+        }
         /* Keep the form filled and display the mutation error below. */
       }
     },
@@ -187,7 +183,10 @@ export function SponsorshipForm({
           : initialTier,
       });
       const checked = logoSchema.optional().safeParse(draft.logo);
-      if (!checked.success) return;
+      if (!checked.success) {
+        setLogoError("Please choose your logo again.");
+        return;
+      }
       setLogo(checked.data);
       if (
         typeof draft.idempotencyKey === "string" &&
@@ -354,7 +353,43 @@ export function SponsorshipForm({
                           if (!file) return;
                           setReadingLogo(true);
                           try {
-                            setLogo(await readLogo(file));
+                            if (
+                              file.size < 1 ||
+                              file.size > MAX_LOGO_BYTES ||
+                              ![
+                                "image/png",
+                                "image/jpeg",
+                                "image/webp",
+                              ].includes(file.type)
+                            )
+                              throw new Error(
+                                "Choose a PNG, JPEG, or WebP logo up to 5 MB.",
+                              );
+                            const parsedLogo = logoSchema.safeParse({
+                              uploadId: createCheckoutKey(),
+                              name: file.name,
+                              contentType: file.type,
+                              size: file.size,
+                            });
+                            if (!parsedLogo.success)
+                              throw new Error(
+                                "The logo could not be uploaded. Please choose another file.",
+                              );
+                            const uploaded = parsedLogo.data;
+                            for (
+                              let offset = 0;
+                              offset < file.size;
+                              offset += LOGO_CHUNK_BYTES
+                            ) {
+                              await uploadLogo.mutateAsync({
+                                logo: uploaded,
+                                chunk: offset / LOGO_CHUNK_BYTES,
+                                base64: await readLogoChunk(
+                                  file.slice(offset, offset + LOGO_CHUNK_BYTES),
+                                ),
+                              });
+                            }
+                            setLogo(uploaded);
                           } catch (error) {
                             setLogoError(
                               error instanceof Error
@@ -377,7 +412,7 @@ export function SponsorshipForm({
                       {logoError ? (
                         <FieldError id="logo-error">{logoError}</FieldError>
                       ) : null}
-                      {logo || logoError ? (
+                      {!readingLogo && (logo || logoError) ? (
                         <Button
                           type="button"
                           variant="outline"

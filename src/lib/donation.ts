@@ -10,6 +10,7 @@ export const PAYMENT_DISCLAIMER = PAYMENT_DISCLAIMER_PARAGRAPHS.join("\n\n");
 const MIN_DONATION_CENTS = 100;
 const MAX_DONATION_CENTS = 1_000_000;
 export const MAX_LOGO_BYTES = 5 * 1024 * 1024;
+export const LOGO_CHUNK_BYTES = 768 * 1024;
 
 const sponsorshipTierSchema = z
   .string()
@@ -78,12 +79,22 @@ export const sponsorshipSelectionFormSchema = z
   });
 
 export const logoSchema = z.object({
+  uploadId: z.string().uuid(),
   name: z.string().trim().min(1).max(255),
   contentType: z.enum(["image/png", "image/jpeg", "image/webp"]),
+  size: z.number().int().min(1).max(MAX_LOGO_BYTES),
+});
+export const logoChunkInput = z.object({
+  logo: logoSchema,
+  chunk: z
+    .number()
+    .int()
+    .min(0)
+    .max(Math.ceil(MAX_LOGO_BYTES / LOGO_CHUNK_BYTES) - 1),
   base64: z
     .string()
     .min(4)
-    .max(Math.ceil(MAX_LOGO_BYTES / 3) * 4)
+    .max(Math.ceil(LOGO_CHUNK_BYTES / 3) * 4)
     .regex(/^[A-Za-z0-9+/]+={0,2}$/),
 });
 export type SponsorLogo = z.infer<typeof logoSchema>;

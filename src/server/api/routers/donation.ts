@@ -1,14 +1,29 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { donationCheckoutInput } from "@/lib/donation";
+import { donationCheckoutInput, logoChunkInput } from "@/lib/donation";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import {
   createDonationCheckout,
+  uploadSponsorLogoChunk,
   synchronizeDonationSession,
 } from "@/server/donation-payments";
 
 export const donationRouter = createTRPCRouter({
+  uploadLogoChunk: publicProcedure
+    .input(logoChunkInput)
+    .mutation(async ({ input }) => {
+      try {
+        return await uploadSponsorLogoChunk(input);
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        console.error("Sponsor logo could not be uploaded", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "The logo could not be uploaded. Please choose it again.",
+        });
+      }
+    }),
   createCheckoutSession: publicProcedure
     .input(donationCheckoutInput)
     .mutation(async ({ ctx, input }) => {

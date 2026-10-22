@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter } from "@/server/api/trpc";
 import { sponsorshipPriceIdsSchema } from "@/lib/sponsorship";
-import { sponsorRegistrationSchema } from "@/lib/donation";
+import { sponsorRegistrationSchema, LOGO_CHUNK_BYTES } from "@/lib/donation";
 import { getStripe } from "@/server/stripe";
 import {
   getSponsorshipCatalog,
@@ -52,8 +52,6 @@ const completedSponsorship = {
 } as const;
 const recordInput = z.object({ id: z.string().cuid() });
 const PAGE_SIZE = 25;
-// Divisible by three so base64 chunks can be joined without intermediate padding.
-const LOGO_CHUNK_BYTES = 768 * 1024;
 
 export const sponsorshipRouter = createTRPCRouter({
   list: adminProcedure

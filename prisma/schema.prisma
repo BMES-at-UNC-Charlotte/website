@@ -156,3 +156,17 @@ model DonationCheckout {
 model SponsorshipPrice {
   priceId String @id
 }
+
+// Temporary upload pieces; completed logos live on DonationCheckout.
+model SponsorshipLogoChunk {
+  uploadId    String
+  chunk       Int
+  name        String
+  contentType String
+  size        Int
+  data        Bytes
+  createdAt   DateTime @default(now())
+
+  @@id([uploadId, chunk])
+  @@index([createdAt])
+}

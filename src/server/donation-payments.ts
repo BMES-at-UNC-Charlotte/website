@@ -2,11 +2,14 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 import type Stripe from "stripe";
+import type { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
 import { env } from "@/env";
 import {
   MAX_LOGO_BYTES,
+  LOGO_CHUNK_BYTES,
+  type logoChunkInput,
   PAYMENT_DISCLAIMER,
   type DonationCheckoutInput,
   type SponsorLogo,
@@ -35,9 +38,7 @@ function siteOrigin(headers: Headers) {
   return url.origin;
 }
 
-function logoBytes(logo: SponsorLogo | undefined) {
-  if (!logo) return undefined;
-  const bytes = Buffer.from(logo.base64, "base64");
+function validateLogoBytes(bytes: Buffer, contentType: string) {
   const png = bytes
     .subarray(0, 8)
     .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
@@ -48,9 +49,9 @@ function logoBytes(logo: SponsorLogo | undefined) {
   if (
     bytes.length > MAX_LOGO_BYTES ||
     !(
-      (logo.contentType === "image/png" && png) ||
-      (logo.contentType === "image/jpeg" && jpeg) ||
-      (logo.contentType === "image/webp" && webp)
+      (contentType === "image/png" && png) ||
+      (contentType === "image/jpeg" && jpeg) ||
+      (contentType === "image/webp" && webp)
     )
   ) {
     throw new TRPCError({
@@ -59,6 +60,71 @@ function logoBytes(logo: SponsorLogo | undefined) {
     });
   }
   return bytes;
+}
+
+export async function uploadSponsorLogoChunk(
+  input: z.infer<typeof logoChunkInput>,
+) {
+  const { logo, chunk } = input;
+  const bytes = Buffer.from(input.base64, "base64");
+  const expected = Math.min(
+    LOGO_CHUNK_BYTES,
+    logo.size - chunk * LOGO_CHUNK_BYTES,
+  );
+  if (expected <= 0 || bytes.length !== expected)
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "The logo could not be uploaded. Please choose it again.",
+    });
+  if (chunk === 0) {
+    validateLogoBytes(bytes, logo.contentType);
+    await db.sponsorshipLogoChunk.deleteMany({
+      where: { createdAt: { lt: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
+    });
+  }
+  const saved = await db.sponsorshipLogoChunk.upsert({
+    where: { uploadId_chunk: { uploadId: logo.uploadId, chunk } },
+    update: {},
+    create: { ...logo, chunk, data: bytes },
+  });
+  if (
+    saved.name !== logo.name ||
+    saved.contentType !== logo.contentType ||
+    saved.size !== logo.size ||
+    !Buffer.from(saved.data).equals(bytes)
+  )
+    throw new TRPCError({
+      code: "CONFLICT",
+      message: "The logo has changed. Please choose it again.",
+    });
+  return { uploaded: true };
+}
+
+async function uploadedLogoBytes(logo: SponsorLogo) {
+  const chunks = await db.sponsorshipLogoChunk.findMany({
+    where: { uploadId: logo.uploadId },
+    orderBy: { chunk: "asc" },
+  });
+  if (
+    chunks.length !== Math.ceil(logo.size / LOGO_CHUNK_BYTES) ||
+    chunks.some(
+      (item, index) =>
+        item.chunk !== index ||
+        item.name !== logo.name ||
+        item.contentType !== logo.contentType ||
+        item.size !== logo.size ||
+        item.data.length !==
+          Math.min(LOGO_CHUNK_BYTES, logo.size - index * LOGO_CHUNK_BYTES),
+    )
+  )
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "The logo upload is incomplete. Please choose it again.",
+    });
+  return validateLogoBytes(
+    Buffer.concat(chunks.map((item) => Buffer.from(item.data))),
+    logo.contentType,
+  );
 }
 
 export async function createDonationCheckout(
@@ -73,26 +139,31 @@ export async function createDonationCheckout(
       : undefined;
   const amount = input.kind === "individual" ? input.amountCents : tier!.amount;
   const logo = input.kind === "sponsorship" ? input.logo : undefined;
-  const bytes = logoBytes(logo);
   const requestHash = createHash("sha256")
     .update(JSON.stringify(input))
     .digest("hex");
-  const attempt = await db.donationCheckout.upsert({
+  const existing = await db.donationCheckout.findUnique({
     where: { idempotencyKey: input.idempotencyKey },
-    update: {},
-    create: {
-      idempotencyKey: input.idempotencyKey,
-      requestHash,
-      amount,
-      kind: input.kind,
-      tier: tier?.productId,
-      stripePriceId: tier?.priceId,
-      sponsor: input.kind === "sponsorship" ? input.sponsor : undefined,
-      logoName: logo?.name,
-      logoContentType: logo?.contentType,
-      logoData: bytes,
-    },
   });
+  const bytes = !existing && logo ? await uploadedLogoBytes(logo) : undefined;
+  const attempt =
+    existing ??
+    (await db.donationCheckout.upsert({
+      where: { idempotencyKey: input.idempotencyKey },
+      update: {},
+      create: {
+        idempotencyKey: input.idempotencyKey,
+        requestHash,
+        amount,
+        kind: input.kind,
+        tier: tier?.productId,
+        stripePriceId: tier?.priceId,
+        sponsor: input.kind === "sponsorship" ? input.sponsor : undefined,
+        logoName: logo?.name,
+        logoContentType: logo?.contentType,
+        logoData: bytes ? Uint8Array.from(bytes) : undefined,
+      },
+    }));
   if (
     attempt.requestHash !== requestHash ||
     attempt.amount !== amount ||
