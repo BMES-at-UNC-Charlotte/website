@@ -1,11 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { surveyInputSchema } from "@/lib/surveys";
+import { embeddedPageInputSchema } from "@/lib/embeds";
 import { createTRPCRouter, officerProcedure } from "@/server/api/trpc";
-import { expireSurveys } from "@/server/surveys";
+import { expireEmbeddedPages } from "@/server/embeds";
 
-function surveyWriteError(error: unknown): never {
+function embeddedPageWriteError(error: unknown): never {
   // Prisma can have separate class identities across development hot reloads.
   if (error && typeof error === "object" && "code" in error) {
     if (error.code === "P2002") {
@@ -15,53 +15,56 @@ function surveyWriteError(error: unknown): never {
       });
     }
     if (error.code === "P2025") {
-      throw new TRPCError({ code: "NOT_FOUND", message: "Survey not found." });
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Embedded page not found.",
+      });
     }
   }
   throw error;
 }
 
-export const surveyRouter = createTRPCRouter({
+export const embedRouter = createTRPCRouter({
   list: officerProcedure.query(async ({ ctx }) => {
-    await expireSurveys();
-    return ctx.db.survey.findMany({ orderBy: { createdAt: "desc" } });
+    await expireEmbeddedPages();
+    return ctx.db.embeddedPage.findMany({ orderBy: { createdAt: "desc" } });
   }),
 
   create: officerProcedure
-    .input(surveyInputSchema)
+    .input(embeddedPageInputSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        return await ctx.db.survey.create({ data: input });
+        return await ctx.db.embeddedPage.create({ data: input });
       } catch (error) {
-        surveyWriteError(error);
+        embeddedPageWriteError(error);
       }
     }),
 
   update: officerProcedure
-    .input(z.object({ id: z.string().cuid(), values: surveyInputSchema }))
+    .input(z.object({ id: z.string().cuid(), values: embeddedPageInputSchema }))
     .mutation(async ({ ctx, input }) => {
       try {
-        return await ctx.db.survey.update({
+        return await ctx.db.embeddedPage.update({
           where: { id: input.id },
           data: input.values,
         });
       } catch (error) {
-        surveyWriteError(error);
+        embeddedPageWriteError(error);
       }
     }),
 
   setLive: officerProcedure
     .input(z.object({ id: z.string().cuid(), live: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      // Clear an old closing date before re-enabling a survey.
-      await expireSurveys();
+      // Clear an old closing date before re-enabling a page.
+      await expireEmbeddedPages();
       try {
-        return await ctx.db.survey.update({
+        return await ctx.db.embeddedPage.update({
           where: { id: input.id },
           data: { live: input.live },
         });
       } catch (error) {
-        surveyWriteError(error);
+        embeddedPageWriteError(error);
       }
     }),
 
@@ -69,9 +72,9 @@ export const surveyRouter = createTRPCRouter({
     .input(z.object({ id: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {
       try {
-        return await ctx.db.survey.delete({ where: { id: input.id } });
+        return await ctx.db.embeddedPage.delete({ where: { id: input.id } });
       } catch (error) {
-        surveyWriteError(error);
+        embeddedPageWriteError(error);
       }
     }),
 });

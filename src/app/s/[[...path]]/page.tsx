@@ -10,33 +10,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatSurveyDate, surveyEmbedUrl } from "@/lib/surveys";
-import { getLiveSurvey } from "@/server/surveys";
+import { formatEmbeddedPageDate, embedUrlForPage } from "@/lib/embeds";
+import { cn } from "@/lib/utils";
+import { getLiveEmbeddedPage } from "@/server/embeds";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Survey | Charlotte BMES",
+  title: "Embedded page | Charlotte BMES",
   robots: { index: false, follow: false, nocache: true },
   referrer: "no-referrer",
 };
 
-export default async function SurveyPage({
+export default async function EmbeddedPageView({
   params,
 }: {
   params: Promise<{ path?: string[] }>;
 }) {
   const { path } = await params;
-  const survey = path?.length === 1 ? await getLiveSurvey(path[0]!) : null;
-  const embedUrl = survey ? surveyEmbedUrl(survey.formUrl) : null;
+  const page = path?.length === 1 ? await getLiveEmbeddedPage(path[0]!) : null;
+  const embedUrl = page ? embedUrlForPage(page.url) : null;
 
-  if (!survey || !embedUrl) {
+  if (!page || !embedUrl) {
     return (
       <Container className="pt-12" contentClassName="flex justify-center py-16">
         <Card className="w-full max-w-xl">
           <CardHeader>
             <CardTitle>
               <Typography variant="h2">
-                This survey link is invalid or has expired
+                This page link is invalid or has expired
               </Typography>
             </CardTitle>
             <CardDescription>
@@ -48,32 +49,38 @@ export default async function SurveyPage({
     );
   }
 
+  const isGoogleForm = new URL(embedUrl).hostname === "docs.google.com";
+
   return (
     <Container
       className="flex h-dvh min-h-0 flex-col pt-12"
       contentClassName="flex min-h-0 flex-1 flex-col px-0 pt-0 pb-5 sm:px-6 sm:pt-0 sm:pb-6"
     >
-      {/* Match Google Forms' standard content column inside the iframe. */}
-      <div className="relative z-10 mx-auto flex w-9/10 max-w-[640px] shrink-0 items-center justify-end gap-1 py-1">
+      <div
+        className={cn(
+          "relative z-10 mx-auto flex w-9/10 shrink-0 items-center justify-end gap-1 py-1",
+          // Match Google Forms' standard content column inside the iframe.
+          isGoogleForm && "max-w-[640px]",
+        )}
+      >
         <Typography
           variant="caption"
-          className="text-foreground mr-auto translate-y-1.5"
+          className={cn(
+            "text-foreground mr-auto",
+            isGoogleForm && "translate-y-1.5",
+          )}
         >
-          {survey.closesOn
-            ? `Open through ${formatSurveyDate(survey.closesOn)} at 11:59 PM EST.`
-            : "Having trouble with the form?"}
+          {page.closesOn
+            ? `Open through ${formatEmbeddedPageDate(page.closesOn)} at 11:59 PM EST.`
+            : "Having trouble with the page?"}
         </Typography>
         <Button
           variant="outline"
           size="xs"
-          className="translate-y-1.5"
+          className={cn(isGoogleForm && "translate-y-1.5")}
           nativeButton={false}
           render={
-            <a
-              href={survey.formUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            />
+            <a href={page.url} target="_blank" rel="noopener noreferrer" />
           }
         >
           <ExternalLink />
@@ -82,16 +89,18 @@ export default async function SurveyPage({
       </div>
       <div className="relative min-h-0 flex-1">
         <iframe
-          title={`Survey: ${survey.path}`}
+          title={`Embedded page: ${page.path}`}
           src={embedUrl}
           className="block h-full w-full border-0"
           referrerPolicy="no-referrer"
         />
-        {/* Keep the visual top gutter in place while the form scrolls. */}
-        <div
-          aria-hidden="true"
-          className="bg-background pointer-events-none absolute inset-x-0 top-0 h-3"
-        />
+        {/* Keep Google Forms' visual top gutter in place while it scrolls. */}
+        {isGoogleForm && (
+          <div
+            aria-hidden="true"
+            className="bg-background pointer-events-none absolute inset-x-0 top-0 h-3"
+          />
+        )}
       </div>
     </Container>
   );

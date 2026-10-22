@@ -17,14 +17,15 @@ export default function AdminPage() {
       <Typography variant="h1">Officer Dashboard</Typography>
       <Card>
         <CardHeader>
-          <CardTitle>Surveys</CardTitle>
+          <CardTitle>Embedded pages</CardTitle>
           <CardDescription>
-            Create survey pages, share QR codes, and manage when links are live.
+            Embed forms, presentations, and other pages. Share QR codes and
+            manage when links are live.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button nativeButton={false} render={<Link href="/admin/surveys" />}>
-            Manage surveys
+          <Button nativeButton={false} render={<Link href="/admin/embeds" />}>
+            Manage pages
           </Button>
         </CardContent>
       </Card>

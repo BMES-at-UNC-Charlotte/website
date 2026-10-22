@@ -16,18 +16,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldTitle } from "@/components/ui/field";
-import { type Survey } from "./survey-editor";
+import { type EmbeddedPage } from "./embed-editor";
 
-export function SurveySharing({
-  survey,
+export function EmbeddedPageSharing({
+  page,
   onClose,
 }: {
-  survey: Survey;
+  page: EmbeddedPage;
   onClose: () => void;
 }) {
-  const url = `${window.location.origin}/s/${survey.path}`;
+  const url = `${window.location.origin}/s/${page.path}`;
   const qr = useRef<SVGSVGElement>(null);
-  const surveyLink = useRef<HTMLAnchorElement>(null);
+  const pageLink = useRef<HTMLAnchorElement>(null);
   const [message, setMessage] = useState("");
 
   async function copyLink() {
@@ -35,10 +35,10 @@ export function SurveySharing({
       await navigator.clipboard.writeText(url);
       setMessage("Link copied.");
     } catch {
-      if (surveyLink.current) {
+      if (pageLink.current) {
         const selection = window.getSelection();
         const range = document.createRange();
-        range.selectNodeContents(surveyLink.current);
+        range.selectNodeContents(pageLink.current);
         selection?.removeAllRanges();
         selection?.addRange(range);
       }
@@ -54,7 +54,7 @@ export function SurveySharing({
     const objectUrl = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = objectUrl;
-    link.download = `${survey.path}-qr.svg`;
+    link.download = `${page.path}-qr.svg`;
     link.click();
     URL.revokeObjectURL(objectUrl);
   }
@@ -68,17 +68,17 @@ export function SurveySharing({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Share survey</DialogTitle>
+          <DialogTitle>Share page</DialogTitle>
           <DialogDescription className="[overflow-wrap:anywhere]">
-            /s/{survey.path}
+            /s/{page.path}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="space-y-6">
           <Field>
-            <FieldTitle>Survey link</FieldTitle>
+            <FieldTitle>Page link</FieldTitle>
             <div className="flex min-w-0 items-center gap-2">
               <a
-                ref={surveyLink}
+                ref={pageLink}
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -89,7 +89,7 @@ export function SurveySharing({
               <Button
                 variant="outline"
                 size="icon-sm"
-                aria-label="Copy survey link"
+                aria-label="Copy page link"
                 onClick={copyLink}
               >
                 <Copy />
@@ -103,10 +103,10 @@ export function SurveySharing({
               size={240}
               marginSize={4}
               level="M"
-              title={`QR code for /s/${survey.path}`}
+              title={`QR code for /s/${page.path}`}
             />
           </div>
-          {!survey.live && (
+          {!page.live && (
             <Alert>
               <AlertDescription>
                 This link is off. Turn it on before sharing it with visitors.
@@ -120,7 +120,7 @@ export function SurveySharing({
             </Button>
           </div>
           <Typography variant="caption">
-            The QR code uses this short link, so you can update the survey URL
+            The QR code uses this short link, so you can update the page URL
             without printing a new code.
           </Typography>
           <p role="status">{message}</p>
