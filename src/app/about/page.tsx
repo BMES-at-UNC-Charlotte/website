@@ -11,6 +11,7 @@ const leadership = [
   {
     name: "Mario Portillo-Arreola",
     role: "Vice President",
+    image: "/about/mario.png",
   },
   {
     name: "Adriana Austin",
@@ -26,11 +27,6 @@ const leadership = [
     name: "Deepu Shishir Nallabothu",
     role: "Research Co-Chair",
     image: "/about/deepu.png",
-  },
-  {
-    name: "Joshua Matherson",
-    role: "Research Co-Chair",
-    image: "/about/joshua.png",
   },
   {
     name: "Camryn Wheaton",
