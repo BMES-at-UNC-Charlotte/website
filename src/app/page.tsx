@@ -25,9 +25,8 @@ export default function HomePage() {
       }}
       contentClassName="space-y-8"
     >
-      <Typography variant="h1">Purpose</Typography>
       <section className="space-y-4">
-        <Typography variant="h2">
+        <Typography variant="h1">
           UNC Charlotte Biomedical Engineering Society
         </Typography>
         <Typography>
@@ -39,34 +38,6 @@ export default function HomePage() {
           between academic theory and real-world engineering application.
         </Typography>
       </section>
-      <section className="space-y-4">
-        <Typography variant="h2">Mini BEE and Community Impact</Typography>
-        <Typography>
-          Develop your technical toolkit through our specialized workshop series
-          and the &quot;Mini-BEE&quot; events designed to build core engineering
-          and professional skills.
-        </Typography>
-      </section>
-      <section className="space-y-4">
-        <Typography variant="h2">BMES Projects</Typography>
-        <Typography>
-          We compete annually in the prestigious Medtronic Medical Design
-          Competition at the National BMES Conference. Our members gain hands-on
-          engineering experience in the Super Fab Lab, where we are currently
-          building an advanced prosthetic arm and a companion robot named Art-E.
-        </Typography>
-      </section>
-      <section className="space-y-4">
-        <Typography variant="h2">
-          Networking & Interdisciplinary Events
-        </Typography>
-        <Typography>
-          Expand your network by engaging with peers and industry professionals
-          through cross-club collaborations and joint professional development
-          sessions.
-        </Typography>
-      </section>
-
       <section aria-labelledby="highlights-heading" className="space-y-4">
         <Carousel
           opts={{ align: "center", loop: true }}
@@ -173,6 +144,34 @@ export default function HomePage() {
             />
           </div>
         </Carousel>
+      </section>
+
+      <section className="space-y-4">
+        <Typography variant="h2">Mini BEE and Community Impact</Typography>
+        <Typography>
+          Develop your technical toolkit through our specialized workshop series
+          and the &quot;Mini-BEE&quot; events designed to build core engineering
+          and professional skills.
+        </Typography>
+      </section>
+      <section className="space-y-4">
+        <Typography variant="h2">BMES Projects</Typography>
+        <Typography>
+          We compete annually in the prestigious Medtronic Medical Design
+          Competition at the National BMES Conference. Our members gain hands-on
+          engineering experience in the Super Fab Lab, where we are currently
+          building an advanced prosthetic arm and a companion robot named Art-E.
+        </Typography>
+      </section>
+      <section className="space-y-4">
+        <Typography variant="h2">
+          Networking & Interdisciplinary Events
+        </Typography>
+        <Typography>
+          Expand your network by engaging with peers and industry professionals
+          through cross-club collaborations and joint professional development
+          sessions.
+        </Typography>
       </section>
     </Container>
   );
