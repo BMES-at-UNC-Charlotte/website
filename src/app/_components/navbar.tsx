@@ -45,11 +45,11 @@ export function NavBar() {
   const pathname = usePathname();
   const { data: session } = authClient.useSession();
   const isAdminPage = pathname.startsWith("/admin");
-  const isSurveyPage = pathname === "/s" || pathname.startsWith("/s/");
+  const isEmbeddedPage = pathname === "/s" || pathname.startsWith("/s/");
   const navigationItems: NavigationItem[] = isAdminPage
     ? [
         { title: "Dashboard", href: "/admin" },
-        { title: "Surveys", href: "/admin/surveys" },
+        { title: "Embedded pages", href: "/admin/embeds" },
         ...(session?.user.adminUser?.role === "ADMIN"
           ? [{ title: "Sponsorships", href: "/admin/sponsorship" }]
           : []),
@@ -75,7 +75,7 @@ export function NavBar() {
         aria-label="Main navigation"
         className={cn(
           "flex items-center justify-between gap-4 px-4 sm:px-6",
-          isSurveyPage ? "h-12" : "h-16",
+          isEmbeddedPage ? "h-12" : "h-16",
         )}
       >
         {/* Logo */}
@@ -89,7 +89,7 @@ export function NavBar() {
             alt="Charlotte Biomedical Engineering Society"
             width={1369}
             height={502}
-            className={cn("w-auto", isSurveyPage ? "h-7" : "h-9")}
+            className={cn("w-auto", isEmbeddedPage ? "h-7" : "h-9")}
             priority
           />
         </Link>

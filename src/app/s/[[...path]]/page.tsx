@@ -10,34 +10,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatSurveyDate, surveyEmbedUrl } from "@/lib/surveys";
+import { formatEmbeddedPageDate, embedUrlForPage } from "@/lib/embeds";
 import { cn } from "@/lib/utils";
-import { getLiveSurvey } from "@/server/surveys";
+import { getLiveEmbeddedPage } from "@/server/embeds";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Survey | Charlotte BMES",
+  title: "Embedded page | Charlotte BMES",
   robots: { index: false, follow: false, nocache: true },
   referrer: "no-referrer",
 };
 
-export default async function SurveyPage({
+export default async function EmbeddedPageView({
   params,
 }: {
   params: Promise<{ path?: string[] }>;
 }) {
   const { path } = await params;
-  const survey = path?.length === 1 ? await getLiveSurvey(path[0]!) : null;
-  const embedUrl = survey ? surveyEmbedUrl(survey.formUrl) : null;
+  const page = path?.length === 1 ? await getLiveEmbeddedPage(path[0]!) : null;
+  const embedUrl = page ? embedUrlForPage(page.url) : null;
 
-  if (!survey || !embedUrl) {
+  if (!page || !embedUrl) {
     return (
       <Container className="pt-12" contentClassName="flex justify-center py-16">
         <Card className="w-full max-w-xl">
           <CardHeader>
             <CardTitle>
               <Typography variant="h2">
-                This survey link is invalid or has expired
+                This page link is invalid or has expired
               </Typography>
             </CardTitle>
             <CardDescription>
@@ -70,8 +70,8 @@ export default async function SurveyPage({
             isGoogleForm && "translate-y-1.5",
           )}
         >
-          {survey.closesOn
-            ? `Open through ${formatSurveyDate(survey.closesOn)} at 11:59 PM EST.`
+          {page.closesOn
+            ? `Open through ${formatEmbeddedPageDate(page.closesOn)} at 11:59 PM EST.`
             : "Having trouble with the page?"}
         </Typography>
         <Button
@@ -80,11 +80,7 @@ export default async function SurveyPage({
           className={cn(isGoogleForm && "translate-y-1.5")}
           nativeButton={false}
           render={
-            <a
-              href={survey.formUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            />
+            <a href={page.url} target="_blank" rel="noopener noreferrer" />
           }
         >
           <ExternalLink />
@@ -93,7 +89,7 @@ export default async function SurveyPage({
       </div>
       <div className="relative min-h-0 flex-1">
         <iframe
-          title={`Survey: ${survey.path}`}
+          title={`Embedded page: ${page.path}`}
           src={embedUrl}
           className="block h-full w-full border-0"
           referrerPolicy="no-referrer"

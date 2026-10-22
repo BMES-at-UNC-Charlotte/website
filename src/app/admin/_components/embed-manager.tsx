@@ -35,30 +35,30 @@ import {
 } from "@/components/ui/item";
 import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
-import { formatSurveyDate } from "@/lib/surveys";
+import { formatEmbeddedPageDate } from "@/lib/embeds";
 import { api } from "@/trpc/react";
-import { SurveyEditor, type Survey } from "./survey-editor";
-import { SurveySharing } from "./survey-sharing";
+import { EmbeddedPageEditor, type EmbeddedPage } from "./embed-editor";
+import { EmbeddedPageSharing } from "./embed-sharing";
 
-export function SurveyManager() {
-  const surveys = api.survey.list.useQuery(undefined, {
+export function EmbeddedPageManager() {
+  const pages = api.embed.list.useQuery(undefined, {
     refetchInterval: 60_000,
   });
   const utils = api.useUtils();
-  const [editing, setEditing] = useState<Survey | null>();
-  const [sharing, setSharing] = useState<Survey>();
-  const [removing, setRemoving] = useState<Survey>();
+  const [editing, setEditing] = useState<EmbeddedPage | null>();
+  const [sharing, setSharing] = useState<EmbeddedPage>();
+  const [removing, setRemoving] = useState<EmbeddedPage>();
   const [message, setMessage] = useState("");
-  const setLive = api.survey.setLive.useMutation({
+  const setLive = api.embed.setLive.useMutation({
     onSuccess: async () => {
-      await utils.survey.list.invalidate();
+      await utils.embed.list.invalidate();
     },
   });
-  const remove = api.survey.remove.useMutation({
+  const remove = api.embed.remove.useMutation({
     onSuccess: async () => {
-      await utils.survey.list.invalidate();
+      await utils.embed.list.invalidate();
       setRemoving(undefined);
-      setMessage("Survey deleted.");
+      setMessage("Page deleted.");
     },
   });
 
@@ -66,7 +66,7 @@ export function SurveyManager() {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Survey pages</CardTitle>
+          <CardTitle>Embedded pages</CardTitle>
           <CardDescription>
             Share a link or QR code. Use the switch to control who can access
             each page.
@@ -74,22 +74,22 @@ export function SurveyManager() {
           <CardAction>
             <Button onClick={() => setEditing(null)}>
               <Plus />
-              New survey
+              New page
             </Button>
           </CardAction>
         </CardHeader>
         <CardContent className="space-y-6">
-          {surveys.isLoading && (
+          {pages.isLoading && (
             <div className="flex items-center gap-2" role="status">
               <Spinner />
-              Loading surveys…
+              Loading pages…
             </div>
           )}
-          {surveys.error && (
+          {pages.error && (
             <Alert variant="destructive">
               <AlertDescription>
-                Unable to load surveys.{" "}
-                <Button variant="link" onClick={() => surveys.refetch()}>
+                Unable to load pages.{" "}
+                <Button variant="link" onClick={() => pages.refetch()}>
                   Try again
                 </Button>
               </AlertDescription>
@@ -100,59 +100,60 @@ export function SurveyManager() {
               <AlertDescription>{setLive.error.message}</AlertDescription>
             </Alert>
           )}
-          {surveys.data?.length === 0 && (
+          {pages.data?.length === 0 && (
             <div className="space-y-2 py-6">
-              <Typography variant="h3">No surveys yet</Typography>
+              <Typography variant="h3">No pages yet</Typography>
               <Typography variant="caption">
-                Create a survey page to give your form a short, shareable link.
+                Embed a form, presentation, or other page with a short,
+                shareable link.
               </Typography>
             </div>
           )}
           <ItemGroup className="gap-3">
-            {surveys.data?.map((survey) => (
-              <Item key={survey.id} variant="muted" className="flex-wrap">
+            {pages.data?.map((page) => (
+              <Item key={page.id} variant="muted" className="flex-wrap">
                 <ItemContent className="min-w-0 basis-full sm:basis-0">
                   <ItemTitle className="max-w-full flex-wrap">
                     <span className="min-w-0 [overflow-wrap:anywhere]">
-                      /s/{survey.path}
+                      /s/{page.path}
                     </span>
-                    <Badge variant={survey.live ? "default" : "outline"}>
-                      {survey.live ? "Live" : "Off"}
+                    <Badge variant={page.live ? "default" : "outline"}>
+                      {page.live ? "Live" : "Off"}
                     </Badge>
                   </ItemTitle>
-                  {survey.comment && (
+                  {page.comment && (
                     <ItemDescription className="whitespace-pre-line">
-                      {survey.comment}
+                      {page.comment}
                     </ItemDescription>
                   )}
                   <Typography variant="caption">
-                    {survey.closesOn
-                      ? `Closes ${formatSurveyDate(survey.closesOn)} at 11:59 PM EST`
+                    {page.closesOn
+                      ? `Closes ${formatEmbeddedPageDate(page.closesOn)} at 11:59 PM EST`
                       : "No close date"}
                   </Typography>
                 </ItemContent>
                 <ItemActions className="flex-wrap">
                   <Field orientation="horizontal" className="w-auto">
-                    <FieldLabel htmlFor={`live-${survey.id}`}>
-                      Live<span className="sr-only"> /s/{survey.path}</span>
+                    <FieldLabel htmlFor={`live-${page.id}`}>
+                      Live<span className="sr-only"> /s/{page.path}</span>
                     </FieldLabel>
                     <Switch
-                      id={`live-${survey.id}`}
-                      checked={survey.live}
+                      id={`live-${page.id}`}
+                      checked={page.live}
                       disabled={setLive.isPending}
                       onCheckedChange={(live) => {
-                        setLive.mutate({ id: survey.id, live });
+                        setLive.mutate({ id: page.id, live });
                       }}
                     />
                   </Field>
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={`Open /s/${survey.path}`}
+                    aria-label={`Open /s/${page.path}`}
                     nativeButton={false}
                     render={
                       <Link
-                        href={`/s/${survey.path}`}
+                        href={`/s/${page.path}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         prefetch={false}
@@ -164,26 +165,26 @@ export function SurveyManager() {
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={`Share /s/${survey.path}`}
-                    onClick={() => setSharing(survey)}
+                    aria-label={`Share /s/${page.path}`}
+                    onClick={() => setSharing(page)}
                   >
                     <QrCode />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={`Edit /s/${survey.path}`}
-                    onClick={() => setEditing(survey)}
+                    aria-label={`Edit /s/${page.path}`}
+                    onClick={() => setEditing(page)}
                   >
                     <Pencil />
                   </Button>
                   <Button
                     variant="destructive"
                     size="icon-sm"
-                    aria-label={`Delete /s/${survey.path}`}
+                    aria-label={`Delete /s/${page.path}`}
                     onClick={() => {
                       remove.reset();
-                      setRemoving(survey);
+                      setRemoving(page);
                     }}
                   >
                     <Trash2 />
@@ -196,13 +197,14 @@ export function SurveyManager() {
         </CardContent>
       </Card>
       {editing !== undefined && (
-        <SurveyEditor survey={editing} onClose={() => setEditing(undefined)} />
+        <EmbeddedPageEditor
+          page={editing}
+          onClose={() => setEditing(undefined)}
+        />
       )}
       {sharing && (
-        <SurveySharing
-          survey={
-            surveys.data?.find((survey) => survey.id === sharing.id) ?? sharing
-          }
+        <EmbeddedPageSharing
+          page={pages.data?.find((page) => page.id === sharing.id) ?? sharing}
           onClose={() => setSharing(undefined)}
         />
       )}
@@ -215,10 +217,11 @@ export function SurveyManager() {
         >
           <DialogContent className="gap-6">
             <DialogHeader>
-              <DialogTitle>Delete survey?</DialogTitle>
+              <DialogTitle>Delete page?</DialogTitle>
               <DialogDescription>
                 Delete “/s/{removing.path}”? Its short link and QR code will
-                stop working. Responses in the form will remain there.
+                stop working. The original page will remain available at its
+                source.
               </DialogDescription>
             </DialogHeader>
             {remove.error && (
@@ -239,7 +242,7 @@ export function SurveyManager() {
                 disabled={remove.isPending}
                 onClick={() => remove.mutate({ id: removing.id })}
               >
-                {remove.isPending && <Spinner />}Delete survey
+                {remove.isPending && <Spinner />}Delete page
               </Button>
             </DialogFooter>
           </DialogContent>

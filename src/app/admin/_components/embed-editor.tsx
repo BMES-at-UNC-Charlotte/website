@@ -31,42 +31,42 @@ import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  surveyInputSchema,
-  surveyToday,
-  type SurveyInput,
-} from "@/lib/surveys";
+  embeddedPageInputSchema,
+  embeddedPageToday,
+  type EmbeddedPageInput,
+} from "@/lib/embeds";
 import { api, type RouterOutputs } from "@/trpc/react";
 
-export type Survey = RouterOutputs["survey"]["list"][number];
+export type EmbeddedPage = RouterOutputs["embed"]["list"][number];
 
-export function SurveyEditor({
-  survey,
+export function EmbeddedPageEditor({
+  page,
   onClose,
 }: {
-  survey: Survey | null;
+  page: EmbeddedPage | null;
   onClose: () => void;
 }) {
-  const [values, setValues] = useState<SurveyInput>(
-    survey ?? {
+  const [values, setValues] = useState<EmbeddedPageInput>(
+    page ?? {
       comment: "",
       path: "",
-      formUrl: "",
+      url: "",
       live: false,
       closesOn: null,
     },
   );
   const [errors, setErrors] = useState<
-    Partial<Record<keyof SurveyInput, string[]>>
+    Partial<Record<keyof EmbeddedPageInput, string[]>>
   >({});
   const utils = api.useUtils();
-  const create = api.survey.create.useMutation();
-  const update = api.survey.update.useMutation();
+  const create = api.embed.create.useMutation();
+  const update = api.embed.update.useMutation();
   const pending = create.isPending || update.isPending;
   const error = create.error ?? update.error;
 
-  function change<Key extends keyof SurveyInput>(
+  function change<Key extends keyof EmbeddedPageInput>(
     key: Key,
-    value: SurveyInput[Key],
+    value: EmbeddedPageInput[Key],
   ) {
     setValues((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: undefined }));
@@ -76,16 +76,15 @@ export function SurveyEditor({
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const parsed = surveyInputSchema.safeParse(values);
+    const parsed = embeddedPageInputSchema.safeParse(values);
     if (!parsed.success) {
       setErrors(parsed.error.flatten().fieldErrors);
       return;
     }
     try {
-      if (survey)
-        await update.mutateAsync({ id: survey.id, values: parsed.data });
+      if (page) await update.mutateAsync({ id: page.id, values: parsed.data });
       else await create.mutateAsync(parsed.data);
-      await utils.survey.list.invalidate();
+      await utils.embed.list.invalidate();
       onClose();
     } catch {
       // Keep entered values and display the server error in the dialog.
@@ -102,20 +101,21 @@ export function SurveyEditor({
       <DialogContent>
         <form onSubmit={submit} noValidate className="flex min-h-0 flex-col">
           <DialogHeader>
-            <DialogTitle>{survey ? "Edit survey" : "New survey"}</DialogTitle>
+            <DialogTitle>{page ? "Edit page" : "New page"}</DialogTitle>
             <DialogDescription>
-              Embed a survey and choose an easy-to-type link for its page.
+              Embed a form, presentation, or other page with an easy-to-type
+              link.
             </DialogDescription>
           </DialogHeader>
           <DialogBody className="space-y-6">
             <fieldset disabled={pending} className="space-y-6">
               <FieldGroup>
                 <Field data-invalid={Boolean(errors.path)}>
-                  <FieldLabel htmlFor="survey-path">Short link</FieldLabel>
+                  <FieldLabel htmlFor="embed-path">Short link</FieldLabel>
                   <InputGroup>
                     <InputGroupAddon>/s/</InputGroupAddon>
                     <InputGroupInput
-                      id="survey-path"
+                      id="embed-path"
                       autoFocus
                       placeholder="member-feedback"
                       required
@@ -128,72 +128,72 @@ export function SurveyEditor({
                         change("path", event.target.value.toLowerCase())
                       }
                       aria-invalid={Boolean(errors.path)}
-                      aria-describedby="survey-path-help survey-path-error"
+                      aria-describedby="embed-path-help embed-path-error"
                     />
                   </InputGroup>
-                  <FieldDescription id="survey-path-help">
+                  <FieldDescription id="embed-path-help">
                     Letters, numbers, and hyphens. Changing this breaks the
                     previous link and its QR code.
                   </FieldDescription>
-                  <FieldError id="survey-path-error">
+                  <FieldError id="embed-path-error">
                     {errors.path?.[0]}
                   </FieldError>
                 </Field>
-                <Field data-invalid={Boolean(errors.formUrl)}>
-                  <FieldLabel htmlFor="survey-form-url">Survey URL</FieldLabel>
+                <Field data-invalid={Boolean(errors.url)}>
+                  <FieldLabel htmlFor="embed-url">Page URL</FieldLabel>
                   <Input
-                    id="survey-form-url"
+                    id="embed-url"
                     type="url"
                     required
                     maxLength={2048}
-                    placeholder="https://example.com/survey"
-                    value={values.formUrl}
-                    onChange={(event) => change("formUrl", event.target.value)}
-                    aria-invalid={Boolean(errors.formUrl)}
-                    aria-describedby="survey-url-help survey-url-error"
+                    placeholder="https://example.com/presentation"
+                    value={values.url}
+                    onChange={(event) => change("url", event.target.value)}
+                    aria-invalid={Boolean(errors.url)}
+                    aria-describedby="embed-url-help embed-url-error"
                   />
-                  <FieldDescription id="survey-url-help">
+                  <FieldDescription id="embed-url-help">
                     Paste any HTTP or HTTPS link. For Google Forms, use the full
                     docs.google.com/forms/…/viewform responder link. Other links
                     are embedded as entered; if a site blocks embedding,
                     visitors can open it in a new tab.
                   </FieldDescription>
-                  <FieldError id="survey-url-error">
-                    {errors.formUrl?.[0]}
+                  <FieldError id="embed-url-error">
+                    {errors.url?.[0]}
                   </FieldError>
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="survey-comment">
+                  <FieldLabel htmlFor="embed-comment">
                     Admin comment (optional)
                   </FieldLabel>
                   <Textarea
-                    id="survey-comment"
+                    id="embed-comment"
                     maxLength={2000}
                     rows={3}
-                    aria-describedby="survey-comment-help"
+                    aria-describedby="embed-comment-help"
                     value={values.comment}
                     onChange={(event) => change("comment", event.target.value)}
                   />
-                  <FieldDescription id="survey-comment-help">
+                  <FieldDescription id="embed-comment-help">
                     Only visible to officers in the admin portal.
                   </FieldDescription>
                 </Field>
                 <Field data-invalid={Boolean(errors.closesOn)}>
-                  <FieldLabel htmlFor="survey-close-date">
+                  <FieldLabel htmlFor="embed-close-date">
                     Close date (optional)
                   </FieldLabel>
                   <div className="flex items-center gap-2">
                     <Input
-                      id="survey-close-date"
+                      id="embed-close-date"
                       type="date"
-                      min={surveyToday()}
+                      min={embeddedPageToday()}
                       max="9999-12-31"
                       value={values.closesOn ?? ""}
                       onChange={(event) =>
                         change("closesOn", event.target.value || null)
                       }
                       aria-invalid={Boolean(errors.closesOn)}
-                      aria-describedby="survey-date-help survey-date-error"
+                      aria-describedby="embed-date-help embed-date-error"
                     />
                     {values.closesOn && (
                       <Button
@@ -205,29 +205,29 @@ export function SurveyEditor({
                       </Button>
                     )}
                   </div>
-                  <FieldDescription id="survey-date-help">
+                  <FieldDescription id="embed-date-help">
                     Open through 11:59 PM on this day in EST. When expired, the
                     link turns off and the date clears. Leave blank to keep it
                     open until you turn it off.
                   </FieldDescription>
-                  <FieldError id="survey-date-error">
+                  <FieldError id="embed-date-error">
                     {errors.closesOn?.[0]}
                   </FieldError>
                 </Field>
                 <Field orientation="horizontal">
                   <FieldContent>
-                    <FieldLabel htmlFor="survey-live">
-                      Survey link is live
+                    <FieldLabel htmlFor="embed-live">
+                      Page link is live
                     </FieldLabel>
-                    <FieldDescription id="survey-live-help">
-                      Visitors can access the survey only while this is on.
+                    <FieldDescription id="embed-live-help">
+                      Visitors can access the page only while this is on.
                     </FieldDescription>
                   </FieldContent>
                   <Switch
-                    id="survey-live"
+                    id="embed-live"
                     checked={values.live}
                     onCheckedChange={(live) => change("live", live)}
-                    aria-describedby="survey-live-help"
+                    aria-describedby="embed-live-help"
                   />
                 </Field>
               </FieldGroup>
@@ -255,7 +255,7 @@ export function SurveyEditor({
             </Button>
             <Button type="submit" disabled={pending}>
               {pending && <Spinner />}
-              {survey ? "Save changes" : "Create survey"}
+              {page ? "Save changes" : "Create page"}
             </Button>
           </DialogFooter>
         </form>

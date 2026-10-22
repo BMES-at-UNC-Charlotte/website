@@ -109,11 +109,11 @@ model AdminUser {
   @@map("adminUsers")
 }
 
-model Survey {
+model EmbeddedPage {
   id        String   @id @default(cuid())
-  comment   String   @default("") @map("description")
+  comment   String   @default("")
   path      String   @unique @db.VarChar(64)
-  formUrl   String
+  url       String
   live      Boolean  @default(false)
   // A calendar date in America/New_York, inclusive through 11:59:59 PM.
   closesOn  String?  @db.VarChar(10)

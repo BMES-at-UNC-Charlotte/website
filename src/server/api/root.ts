@@ -1,7 +1,7 @@
 import { donationRouter } from "@/server/api/routers/donation";
 import { sponsorshipRouter } from "@/server/api/routers/sponsorship";
 import { officerRouter } from "@/server/api/routers/officer";
-import { surveyRouter } from "@/server/api/routers/survey";
+import { embedRouter } from "@/server/api/routers/embed";
 import { postRouter } from "@/server/api/routers/post";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
@@ -15,7 +15,7 @@ export const appRouter = createTRPCRouter({
   sponsorship: sponsorshipRouter,
   post: postRouter,
   officer: officerRouter,
-  survey: surveyRouter,
+  embed: embedRouter,
 });
 
 // export type definition of API
