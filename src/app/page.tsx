@@ -38,14 +38,6 @@ export default function HomePage() {
           between academic theory and real-world engineering application.
         </Typography>
       </section>
-      <section className="space-y-4">
-        <Typography variant="h2">Mini BEE and Community Impact</Typography>
-        <Typography>
-          Develop your technical toolkit through our specialized workshop series
-          and the &quot;Mini-BEE&quot; events designed to build core engineering
-          and professional skills.
-        </Typography>
-      </section>
       <section aria-labelledby="highlights-heading" className="space-y-4">
         <Carousel
           opts={{ align: "center", loop: true }}
@@ -154,6 +146,14 @@ export default function HomePage() {
         </Carousel>
       </section>
 
+      <section className="space-y-4">
+        <Typography variant="h2">Mini BEE and Community Impact</Typography>
+        <Typography>
+          Develop your technical toolkit through our specialized workshop series
+          and the &quot;Mini-BEE&quot; events designed to build core engineering
+          and professional skills.
+        </Typography>
+      </section>
       <section className="space-y-4">
         <Typography variant="h2">BMES Projects</Typography>
         <Typography>
