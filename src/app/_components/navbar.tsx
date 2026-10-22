@@ -34,7 +34,7 @@ type NavigationItem = {
 const mainNavigationItems: NavigationItem[] = [
   { title: "Home", href: "/" },
   { title: "About", href: "/about" },
-  { title: "Sponsors", href: "/sponsors" },
+  { title: "Support Us", href: "/sponsors" },
   // Only include dev link in development environment
   ...(process.env.NODE_ENV === "development"
     ? [{ title: "Dev", href: "/dev" }]
