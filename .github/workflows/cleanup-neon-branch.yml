@@ -13,56 +13,11 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID || secrets.NEON_PROJECT_ID }}
     steps:
-      - name: Find Neon preview branch
-        id: preview
-        shell: bash
-        env:
-          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
-          BRANCH_NAME: preview/${{ github.event.pull_request.head.ref }}
-        run: |
-          if [[ -z "$NEON_API_KEY" || ! "$NEON_PROJECT_ID" =~ ^[a-z0-9-]{1,60}$ ]]; then
-            echo "::error::Set NEON_API_KEY as an Actions secret and NEON_PROJECT_ID as an Actions variable or secret."
-            exit 1
-          fi
-
-          cursor=""
-          branch_id=""
-          while true; do
-            query=(--data-urlencode "search=$BRANCH_NAME")
-            if [[ -n "$cursor" ]]; then
-              query+=(--data-urlencode "cursor=$cursor")
-            fi
-            response=$(curl --fail-with-body --silent --show-error --get \
-              "https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches" \
-              --header "Authorization: Bearer $NEON_API_KEY" \
-              "${query[@]}")
-            branch_id=$(jq -r --arg name "$BRANCH_NAME" \
-              '.branches[] | select(.name == $name) | .id' <<< "$response")
-            if [[ -n "$branch_id" ]]; then
-              break
-            fi
-            cursor=$(jq -r '.pagination.next // empty' <<< "$response")
-            if [[ -z "$cursor" ]]; then
-              echo "::notice::Neon preview branch is already absent; nothing to delete."
-              exit 0
-            fi
-          done
-
-          # The released action interpolates inputs into shell commands. Pass
-          # only a validated Neon ID, never the PR's user-controlled branch name.
-          if [[ ! "$branch_id" =~ ^br-[a-z0-9-]+$ ]]; then
-            echo "::error::Neon returned an invalid branch ID."
-            exit 1
-          fi
-          echo "branch_id=$branch_id" >> "$GITHUB_OUTPUT"
-
       - name: Delete Neon branch
-        if: steps.preview.outputs.branch_id != ''
-        uses: neondatabase/delete-branch-action@4468d825d5a88ef4012f1705a82f02ec3072f776 # v3.2.1
+        # Pin upstream's input-handling fix, which is not yet in a tagged release.
+        uses: neondatabase/delete-branch-action@aed9ab1ec86e380312c7b0a9e29942e41349adf6
         with:
-          project_id: ${{ env.NEON_PROJECT_ID }}
-          branch: ${{ steps.preview.outputs.branch_id }}
+          project_id: ${{ vars.NEON_PROJECT_ID || secrets.NEON_PROJECT_ID }}
+          branch: preview/${{ github.event.pull_request.head.ref }}
           api_key: ${{ secrets.NEON_API_KEY }}
