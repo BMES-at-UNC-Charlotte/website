@@ -1,0 +1,35 @@
+.footer {
+  border-top: 1px solid var(--border);
+  background: var(--card);
+}
+
+.brand {
+  display: inline-block;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  text-underline-offset: 0.25rem;
+}
+
+.link svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.link:hover {
+  color: var(--foreground);
+  text-decoration: underline;
+}
+
+.link:focus-visible,
+.brand:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+}
