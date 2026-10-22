@@ -9,7 +9,6 @@ export default function EmbeddedPagesPage() {
         <Typography variant="h1">Embedded pages</Typography>
         <Typography variant="subtitle">
           Create short links to forms, presentations, and other embedded pages.
-          These pages aren’t listed on the public site.
         </Typography>
       </div>
       <EmbeddedPageManager />
