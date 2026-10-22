@@ -19,6 +19,7 @@ export function OfficerCard({
   return (
     <Card className={cn("w-full gap-0 overflow-hidden py-0", className)}>
       {image ? (
+        // eslint-disable-next-line @next/next/no-img-element -- Officer portraits intentionally use native images.
         <img
           src={image}
           alt={name}

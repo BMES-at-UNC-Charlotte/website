@@ -21,7 +21,10 @@ const crimsonText = Crimson_Text({
 export const metadata: Metadata = {
   title: "Charlotte BMES",
   description: "Biomedical Engineering Society at UNC Charlotte.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [
+    { rel: "icon", url: "/favicon.ico", sizes: "16x16 32x32 48x48 64x64" },
+    { rel: "icon", url: "/logo/icon/icon-green-gold.png", type: "image/png" },
+  ],
 };
 
 /**
@@ -36,7 +39,7 @@ export default function RootLayout({
       lang="en"
       className={cn(fraunces.variable, crimsonText.variable, "dark")}
     >
-      <body suppressHydrationWarning>
+      <body>
         <TRPCReactProvider>
           <NavBar />
           {children}

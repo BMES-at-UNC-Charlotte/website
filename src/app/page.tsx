@@ -23,9 +23,6 @@ export default function HomePage() {
         alt: "Charlotte BMES members",
         priority: true,
       }}
-      heroContent={
-        <Typography variant="h3">Biomedical Engineering Society</Typography>
-      }
       contentClassName="space-y-8"
     >
       <Typography variant="h1">Purpose</Typography>
