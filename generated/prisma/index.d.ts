@@ -15,42 +15,52 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 /**
  * Model RegistrationAttempt
- * 
+ *
  */
 export type RegistrationAttempt = $Result.DefaultSelection<Prisma.$RegistrationAttemptPayload>
 /**
  * Model EmployerRegistration
- * 
+ *
  */
 export type EmployerRegistration = $Result.DefaultSelection<Prisma.$EmployerRegistrationPayload>
 /**
+ * Model EmployerRegistrationPackage
+ *
+ */
+export type EmployerRegistrationPackage = $Result.DefaultSelection<Prisma.$EmployerRegistrationPackagePayload>
+/**
+ * Model EmployerRegistrationConfiguration
+ *
+ */
+export type EmployerRegistrationConfiguration = $Result.DefaultSelection<Prisma.$EmployerRegistrationConfigurationPayload>
+/**
  * Model Post
- * 
+ *
  */
 export type Post = $Result.DefaultSelection<Prisma.$PostPayload>
 /**
  * Model User
- * 
+ *
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
  * Model AdminUser
- * 
+ *
  */
 export type AdminUser = $Result.DefaultSelection<Prisma.$AdminUserPayload>
 /**
  * Model Session
- * 
+ *
  */
 export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
 /**
  * Model Account
- * 
+ *
  */
 export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
 /**
  * Model Verification
- * 
+ *
  */
 export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
 
@@ -209,7 +219,7 @@ export class PrismaClient<
    *   prisma.user.create({ data: { name: 'Alice' } }),
    * ])
    * ```
-   * 
+   *
    * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
@@ -239,6 +249,26 @@ export class PrismaClient<
     * ```
     */
   get employerRegistration(): Prisma.EmployerRegistrationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.employerRegistrationPackage`: Exposes CRUD operations for the **EmployerRegistrationPackage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployerRegistrationPackages
+    * const employerRegistrationPackages = await prisma.employerRegistrationPackage.findMany()
+    * ```
+    */
+  get employerRegistrationPackage(): Prisma.EmployerRegistrationPackageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.employerRegistrationConfiguration`: Exposes CRUD operations for the **EmployerRegistrationConfiguration** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployerRegistrationConfigurations
+    * const employerRegistrationConfigurations = await prisma.employerRegistrationConfiguration.findMany()
+    * ```
+    */
+  get employerRegistrationConfiguration(): Prisma.EmployerRegistrationConfigurationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.post`: Exposes CRUD operations for the **Post** model.
@@ -748,6 +778,8 @@ export namespace Prisma {
   export const ModelName: {
     RegistrationAttempt: 'RegistrationAttempt',
     EmployerRegistration: 'EmployerRegistration',
+    EmployerRegistrationPackage: 'EmployerRegistrationPackage',
+    EmployerRegistrationConfiguration: 'EmployerRegistrationConfiguration',
     Post: 'Post',
     User: 'User',
     AdminUser: 'AdminUser',
@@ -769,7 +801,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "registrationAttempt" | "employerRegistration" | "post" | "user" | "adminUser" | "session" | "account" | "verification"
+      modelProps: "registrationAttempt" | "employerRegistration" | "employerRegistrationPackage" | "employerRegistrationConfiguration" | "post" | "user" | "adminUser" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -918,6 +950,154 @@ export namespace Prisma {
           count: {
             args: Prisma.EmployerRegistrationCountArgs<ExtArgs>
             result: $Utils.Optional<EmployerRegistrationCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmployerRegistrationPackage: {
+        payload: Prisma.$EmployerRegistrationPackagePayload<ExtArgs>
+        fields: Prisma.EmployerRegistrationPackageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmployerRegistrationPackageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmployerRegistrationPackageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>
+          }
+          findFirst: {
+            args: Prisma.EmployerRegistrationPackageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmployerRegistrationPackageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>
+          }
+          findMany: {
+            args: Prisma.EmployerRegistrationPackageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>[]
+          }
+          create: {
+            args: Prisma.EmployerRegistrationPackageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>
+          }
+          createMany: {
+            args: Prisma.EmployerRegistrationPackageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmployerRegistrationPackageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>[]
+          }
+          delete: {
+            args: Prisma.EmployerRegistrationPackageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>
+          }
+          update: {
+            args: Prisma.EmployerRegistrationPackageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>
+          }
+          deleteMany: {
+            args: Prisma.EmployerRegistrationPackageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmployerRegistrationPackageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmployerRegistrationPackageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>[]
+          }
+          upsert: {
+            args: Prisma.EmployerRegistrationPackageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationPackagePayload>
+          }
+          aggregate: {
+            args: Prisma.EmployerRegistrationPackageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmployerRegistrationPackage>
+          }
+          groupBy: {
+            args: Prisma.EmployerRegistrationPackageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmployerRegistrationPackageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmployerRegistrationPackageCountArgs<ExtArgs>
+            result: $Utils.Optional<EmployerRegistrationPackageCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmployerRegistrationConfiguration: {
+        payload: Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>
+        fields: Prisma.EmployerRegistrationConfigurationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmployerRegistrationConfigurationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmployerRegistrationConfigurationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>
+          }
+          findFirst: {
+            args: Prisma.EmployerRegistrationConfigurationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmployerRegistrationConfigurationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>
+          }
+          findMany: {
+            args: Prisma.EmployerRegistrationConfigurationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>[]
+          }
+          create: {
+            args: Prisma.EmployerRegistrationConfigurationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>
+          }
+          createMany: {
+            args: Prisma.EmployerRegistrationConfigurationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmployerRegistrationConfigurationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>[]
+          }
+          delete: {
+            args: Prisma.EmployerRegistrationConfigurationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>
+          }
+          update: {
+            args: Prisma.EmployerRegistrationConfigurationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmployerRegistrationConfigurationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmployerRegistrationConfigurationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmployerRegistrationConfigurationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>[]
+          }
+          upsert: {
+            args: Prisma.EmployerRegistrationConfigurationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployerRegistrationConfigurationPayload>
+          }
+          aggregate: {
+            args: Prisma.EmployerRegistrationConfigurationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmployerRegistrationConfiguration>
+          }
+          groupBy: {
+            args: Prisma.EmployerRegistrationConfigurationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmployerRegistrationConfigurationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmployerRegistrationConfigurationCountArgs<ExtArgs>
+            result: $Utils.Optional<EmployerRegistrationConfigurationCountAggregateOutputType> | number
           }
         }
       }
@@ -1402,7 +1582,7 @@ export namespace Prisma {
      * ```
      * // Shorthand for `emit: 'stdout'`
      * log: ['query', 'info', 'warn', 'error']
-     * 
+     *
      * // Emit as events only
      * log: [
      *   { emit: 'event', level: 'query' },
@@ -1410,14 +1590,14 @@ export namespace Prisma {
      *   { emit: 'event', level: 'warn' }
      *   { emit: 'event', level: 'error' }
      * ]
-     * 
+     *
      * / Emit as events and log to stdout
      * og: [
      *  { emit: 'stdout', level: 'query' },
      *  { emit: 'stdout', level: 'info' },
      *  { emit: 'stdout', level: 'warn' }
      *  { emit: 'stdout', level: 'error' }
-     * 
+     *
      * ```
      * Read more in our [docs](https://pris.ly/d/logging).
      */
@@ -1434,16 +1614,16 @@ export namespace Prisma {
     }
     /**
      * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
-     * 
+     *
      * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
-     * 
+     *
      * Learn more: https://pris.ly/d/driver-adapters
-     * 
+     *
      * @example
      * ```ts
      * import { PrismaPg } from '@prisma/adapter-pg'
      * import { PrismaClient } from './generated/prisma/client'
-     * 
+     *
      * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
      * const prisma = new PrismaClient({ adapter })
      * ```
@@ -1451,13 +1631,13 @@ export namespace Prisma {
     adapter?: runtime.SqlDriverAdapterFactory
     /**
      * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
-     * 
+     *
      * Learn more: https://pris.ly/d/accelerate
      */
     accelerateUrl?: string
     /**
      * Global configuration for omitting model fields by default.
-     * 
+     *
      * @example
      * ```
      * const prisma = new PrismaClient({
@@ -1473,7 +1653,7 @@ export namespace Prisma {
     /**
      * SQL commenter plugins that add metadata to SQL queries as comments.
      * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
-     * 
+     *
      * @example
      * ```
      * const prisma = new PrismaClient({
@@ -1490,6 +1670,8 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     registrationAttempt?: RegistrationAttemptOmit
     employerRegistration?: EmployerRegistrationOmit
+    employerRegistrationPackage?: EmployerRegistrationPackageOmit
+    employerRegistrationConfiguration?: EmployerRegistrationConfigurationOmit
     post?: PostOmit
     user?: UserOmit
     adminUser?: AdminUserOmit
@@ -1661,9 +1843,11 @@ export namespace Prisma {
     id: string | null
     idempotencyKey: string | null
     selectedPriceId: string | null
+    selectedPackageId: string | null
+    packageTitle: string | null
     stripeProductId: string | null
     tierName: string | null
-    confirmationTokenId: string | null
+    stripeCheckoutSessionId: string | null
     additionalRepPriceId: string | null
     additionalRepProductId: string | null
     additionalRepCount: number | null
@@ -1681,9 +1865,11 @@ export namespace Prisma {
     id: string | null
     idempotencyKey: string | null
     selectedPriceId: string | null
+    selectedPackageId: string | null
+    packageTitle: string | null
     stripeProductId: string | null
     tierName: string | null
-    confirmationTokenId: string | null
+    stripeCheckoutSessionId: string | null
     additionalRepPriceId: string | null
     additionalRepProductId: string | null
     additionalRepCount: number | null
@@ -1702,9 +1888,11 @@ export namespace Prisma {
     idempotencyKey: number
     formPayload: number
     selectedPriceId: number
+    selectedPackageId: number
+    packageTitle: number
     stripeProductId: number
     tierName: number
-    confirmationTokenId: number
+    stripeCheckoutSessionId: number
     additionalRepPriceId: number
     additionalRepProductId: number
     additionalRepCount: number
@@ -1736,9 +1924,11 @@ export namespace Prisma {
     id?: true
     idempotencyKey?: true
     selectedPriceId?: true
+    selectedPackageId?: true
+    packageTitle?: true
     stripeProductId?: true
     tierName?: true
-    confirmationTokenId?: true
+    stripeCheckoutSessionId?: true
     additionalRepPriceId?: true
     additionalRepProductId?: true
     additionalRepCount?: true
@@ -1756,9 +1946,11 @@ export namespace Prisma {
     id?: true
     idempotencyKey?: true
     selectedPriceId?: true
+    selectedPackageId?: true
+    packageTitle?: true
     stripeProductId?: true
     tierName?: true
-    confirmationTokenId?: true
+    stripeCheckoutSessionId?: true
     additionalRepPriceId?: true
     additionalRepProductId?: true
     additionalRepCount?: true
@@ -1777,9 +1969,11 @@ export namespace Prisma {
     idempotencyKey?: true
     formPayload?: true
     selectedPriceId?: true
+    selectedPackageId?: true
+    packageTitle?: true
     stripeProductId?: true
     tierName?: true
-    confirmationTokenId?: true
+    stripeCheckoutSessionId?: true
     additionalRepPriceId?: true
     additionalRepProductId?: true
     additionalRepCount?: true
@@ -1801,55 +1995,55 @@ export namespace Prisma {
     where?: RegistrationAttemptWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of RegistrationAttempts to fetch.
      */
     orderBy?: RegistrationAttemptOrderByWithRelationInput | RegistrationAttemptOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: RegistrationAttemptWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` RegistrationAttempts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` RegistrationAttempts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned RegistrationAttempts
     **/
     _count?: true | RegistrationAttemptCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: RegistrationAttemptAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: RegistrationAttemptSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: RegistrationAttemptMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: RegistrationAttemptMaxAggregateInputType
@@ -1885,9 +2079,11 @@ export namespace Prisma {
     idempotencyKey: string
     formPayload: JsonValue
     selectedPriceId: string
+    selectedPackageId: string
+    packageTitle: string
     stripeProductId: string
     tierName: string
-    confirmationTokenId: string
+    stripeCheckoutSessionId: string | null
     additionalRepPriceId: string
     additionalRepProductId: string
     additionalRepCount: number
@@ -1925,9 +2121,11 @@ export namespace Prisma {
     idempotencyKey?: boolean
     formPayload?: boolean
     selectedPriceId?: boolean
+    selectedPackageId?: boolean
+    packageTitle?: boolean
     stripeProductId?: boolean
     tierName?: boolean
-    confirmationTokenId?: boolean
+    stripeCheckoutSessionId?: boolean
     additionalRepPriceId?: boolean
     additionalRepProductId?: boolean
     additionalRepCount?: boolean
@@ -1947,9 +2145,11 @@ export namespace Prisma {
     idempotencyKey?: boolean
     formPayload?: boolean
     selectedPriceId?: boolean
+    selectedPackageId?: boolean
+    packageTitle?: boolean
     stripeProductId?: boolean
     tierName?: boolean
-    confirmationTokenId?: boolean
+    stripeCheckoutSessionId?: boolean
     additionalRepPriceId?: boolean
     additionalRepProductId?: boolean
     additionalRepCount?: boolean
@@ -1968,9 +2168,11 @@ export namespace Prisma {
     idempotencyKey?: boolean
     formPayload?: boolean
     selectedPriceId?: boolean
+    selectedPackageId?: boolean
+    packageTitle?: boolean
     stripeProductId?: boolean
     tierName?: boolean
-    confirmationTokenId?: boolean
+    stripeCheckoutSessionId?: boolean
     additionalRepPriceId?: boolean
     additionalRepProductId?: boolean
     additionalRepCount?: boolean
@@ -1989,9 +2191,11 @@ export namespace Prisma {
     idempotencyKey?: boolean
     formPayload?: boolean
     selectedPriceId?: boolean
+    selectedPackageId?: boolean
+    packageTitle?: boolean
     stripeProductId?: boolean
     tierName?: boolean
-    confirmationTokenId?: boolean
+    stripeCheckoutSessionId?: boolean
     additionalRepPriceId?: boolean
     additionalRepProductId?: boolean
     additionalRepCount?: boolean
@@ -2005,7 +2209,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type RegistrationAttemptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "idempotencyKey" | "formPayload" | "selectedPriceId" | "stripeProductId" | "tierName" | "confirmationTokenId" | "additionalRepPriceId" | "additionalRepProductId" | "additionalRepCount" | "additionalRepUnitAmount" | "stripePaymentIntentId" | "amount" | "currency" | "status" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["registrationAttempt"]>
+  export type RegistrationAttemptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "idempotencyKey" | "formPayload" | "selectedPriceId" | "selectedPackageId" | "packageTitle" | "stripeProductId" | "tierName" | "stripeCheckoutSessionId" | "additionalRepPriceId" | "additionalRepProductId" | "additionalRepCount" | "additionalRepUnitAmount" | "stripePaymentIntentId" | "amount" | "currency" | "status" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["registrationAttempt"]>
   export type RegistrationAttemptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     registration?: boolean | RegistrationAttempt$registrationArgs<ExtArgs>
   }
@@ -2022,9 +2226,11 @@ export namespace Prisma {
       idempotencyKey: string
       formPayload: Prisma.JsonValue
       selectedPriceId: string
+      selectedPackageId: string
+      packageTitle: string
       stripeProductId: string
       tierName: string
-      confirmationTokenId: string
+      stripeCheckoutSessionId: string | null
       additionalRepPriceId: string
       additionalRepProductId: string
       additionalRepCount: number
@@ -2115,13 +2321,13 @@ export namespace Prisma {
      * @example
      * // Get all RegistrationAttempts
      * const registrationAttempts = await prisma.registrationAttempt.findMany()
-     * 
+     *
      * // Get first 10 RegistrationAttempts
      * const registrationAttempts = await prisma.registrationAttempt.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const registrationAttemptWithIdOnly = await prisma.registrationAttempt.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends RegistrationAttemptFindManyArgs>(args?: SelectSubset<T, RegistrationAttemptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -2135,7 +2341,7 @@ export namespace Prisma {
      *     // ... data to create a RegistrationAttempt
      *   }
      * })
-     * 
+     *
      */
     create<T extends RegistrationAttemptCreateArgs>(args: SelectSubset<T, RegistrationAttemptCreateArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -2149,7 +2355,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends RegistrationAttemptCreateManyArgs>(args?: SelectSubset<T, RegistrationAttemptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -2163,7 +2369,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many RegistrationAttempts and only return the `id`
      * const registrationAttemptWithIdOnly = await prisma.registrationAttempt.createManyAndReturn({
      *   select: { id: true },
@@ -2173,7 +2379,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends RegistrationAttemptCreateManyAndReturnArgs>(args?: SelectSubset<T, RegistrationAttemptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -2187,7 +2393,7 @@ export namespace Prisma {
      *     // ... filter to delete one RegistrationAttempt
      *   }
      * })
-     * 
+     *
      */
     delete<T extends RegistrationAttemptDeleteArgs>(args: SelectSubset<T, RegistrationAttemptDeleteArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -2204,7 +2410,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends RegistrationAttemptUpdateArgs>(args: SelectSubset<T, RegistrationAttemptUpdateArgs<ExtArgs>>): Prisma__RegistrationAttemptClient<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -2218,7 +2424,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends RegistrationAttemptDeleteManyArgs>(args?: SelectSubset<T, RegistrationAttemptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -2237,7 +2443,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends RegistrationAttemptUpdateManyArgs>(args: SelectSubset<T, RegistrationAttemptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -2254,7 +2460,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more RegistrationAttempts and only return the `id`
      * const registrationAttemptWithIdOnly = await prisma.registrationAttempt.updateManyAndReturn({
      *   select: { id: true },
@@ -2267,7 +2473,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends RegistrationAttemptUpdateManyAndReturnArgs>(args: SelectSubset<T, RegistrationAttemptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegistrationAttemptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -2356,7 +2562,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends RegistrationAttemptGroupByArgs,
@@ -2464,9 +2670,11 @@ export namespace Prisma {
     readonly idempotencyKey: FieldRef<"RegistrationAttempt", 'String'>
     readonly formPayload: FieldRef<"RegistrationAttempt", 'Json'>
     readonly selectedPriceId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly selectedPackageId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly packageTitle: FieldRef<"RegistrationAttempt", 'String'>
     readonly stripeProductId: FieldRef<"RegistrationAttempt", 'String'>
     readonly tierName: FieldRef<"RegistrationAttempt", 'String'>
-    readonly confirmationTokenId: FieldRef<"RegistrationAttempt", 'String'>
+    readonly stripeCheckoutSessionId: FieldRef<"RegistrationAttempt", 'String'>
     readonly additionalRepPriceId: FieldRef<"RegistrationAttempt", 'String'>
     readonly additionalRepProductId: FieldRef<"RegistrationAttempt", 'String'>
     readonly additionalRepCount: FieldRef<"RegistrationAttempt", 'Int'>
@@ -2479,7 +2687,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"RegistrationAttempt", 'DateTime'>
     readonly updatedAt: FieldRef<"RegistrationAttempt", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -2548,31 +2756,31 @@ export namespace Prisma {
     where?: RegistrationAttemptWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of RegistrationAttempts to fetch.
      */
     orderBy?: RegistrationAttemptOrderByWithRelationInput | RegistrationAttemptOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for RegistrationAttempts.
      */
     cursor?: RegistrationAttemptWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` RegistrationAttempts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` RegistrationAttempts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of RegistrationAttempts.
      */
     distinct?: RegistrationAttemptScalarFieldEnum | RegistrationAttemptScalarFieldEnum[]
@@ -2600,31 +2808,31 @@ export namespace Prisma {
     where?: RegistrationAttemptWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of RegistrationAttempts to fetch.
      */
     orderBy?: RegistrationAttemptOrderByWithRelationInput | RegistrationAttemptOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for RegistrationAttempts.
      */
     cursor?: RegistrationAttemptWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` RegistrationAttempts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` RegistrationAttempts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of RegistrationAttempts.
      */
     distinct?: RegistrationAttemptScalarFieldEnum | RegistrationAttemptScalarFieldEnum[]
@@ -2652,31 +2860,31 @@ export namespace Prisma {
     where?: RegistrationAttemptWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of RegistrationAttempts to fetch.
      */
     orderBy?: RegistrationAttemptOrderByWithRelationInput | RegistrationAttemptOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing RegistrationAttempts.
      */
     cursor?: RegistrationAttemptWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` RegistrationAttempts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` RegistrationAttempts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of RegistrationAttempts.
      */
     distinct?: RegistrationAttemptScalarFieldEnum | RegistrationAttemptScalarFieldEnum[]
@@ -2956,6 +3164,8 @@ export namespace Prisma {
     overview: string | null
     workAuthorizationOther: string | null
     tierName: string | null
+    selectedPackageId: string | null
+    packageTitle: string | null
     stripeProductId: string | null
     stripePriceId: string | null
     additionalRepPriceId: string | null
@@ -2992,6 +3202,8 @@ export namespace Prisma {
     overview: string | null
     workAuthorizationOther: string | null
     tierName: string | null
+    selectedPackageId: string | null
+    packageTitle: string | null
     stripeProductId: string | null
     stripePriceId: string | null
     additionalRepPriceId: string | null
@@ -3032,6 +3244,8 @@ export namespace Prisma {
     degreeLevels: number
     positionsAvailable: number
     tierName: number
+    selectedPackageId: number
+    packageTitle: number
     stripeProductId: number
     stripePriceId: number
     additionalRepPriceId: number
@@ -3084,6 +3298,8 @@ export namespace Prisma {
     overview?: true
     workAuthorizationOther?: true
     tierName?: true
+    selectedPackageId?: true
+    packageTitle?: true
     stripeProductId?: true
     stripePriceId?: true
     additionalRepPriceId?: true
@@ -3120,6 +3336,8 @@ export namespace Prisma {
     overview?: true
     workAuthorizationOther?: true
     tierName?: true
+    selectedPackageId?: true
+    packageTitle?: true
     stripeProductId?: true
     stripePriceId?: true
     additionalRepPriceId?: true
@@ -3160,6 +3378,8 @@ export namespace Prisma {
     degreeLevels?: true
     positionsAvailable?: true
     tierName?: true
+    selectedPackageId?: true
+    packageTitle?: true
     stripeProductId?: true
     stripePriceId?: true
     additionalRepPriceId?: true
@@ -3182,55 +3402,55 @@ export namespace Prisma {
     where?: EmployerRegistrationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of EmployerRegistrations to fetch.
      */
     orderBy?: EmployerRegistrationOrderByWithRelationInput | EmployerRegistrationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: EmployerRegistrationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` EmployerRegistrations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` EmployerRegistrations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned EmployerRegistrations
     **/
     _count?: true | EmployerRegistrationCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: EmployerRegistrationAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: EmployerRegistrationSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: EmployerRegistrationMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: EmployerRegistrationMaxAggregateInputType
@@ -3287,6 +3507,8 @@ export namespace Prisma {
     degreeLevels: string[]
     positionsAvailable: string[]
     tierName: string
+    selectedPackageId: string
+    packageTitle: string
     stripeProductId: string
     stripePriceId: string
     additionalRepPriceId: string
@@ -3346,6 +3568,8 @@ export namespace Prisma {
     degreeLevels?: boolean
     positionsAvailable?: boolean
     tierName?: boolean
+    selectedPackageId?: boolean
+    packageTitle?: boolean
     stripeProductId?: boolean
     stripePriceId?: boolean
     additionalRepPriceId?: boolean
@@ -3387,6 +3611,8 @@ export namespace Prisma {
     degreeLevels?: boolean
     positionsAvailable?: boolean
     tierName?: boolean
+    selectedPackageId?: boolean
+    packageTitle?: boolean
     stripeProductId?: boolean
     stripePriceId?: boolean
     additionalRepPriceId?: boolean
@@ -3428,6 +3654,8 @@ export namespace Prisma {
     degreeLevels?: boolean
     positionsAvailable?: boolean
     tierName?: boolean
+    selectedPackageId?: boolean
+    packageTitle?: boolean
     stripeProductId?: boolean
     stripePriceId?: boolean
     additionalRepPriceId?: boolean
@@ -3469,6 +3697,8 @@ export namespace Prisma {
     degreeLevels?: boolean
     positionsAvailable?: boolean
     tierName?: boolean
+    selectedPackageId?: boolean
+    packageTitle?: boolean
     stripeProductId?: boolean
     stripePriceId?: boolean
     additionalRepPriceId?: boolean
@@ -3483,7 +3713,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type EmployerRegistrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "attemptId" | "companyName" | "contactName" | "title" | "representativeCount" | "addressCountry" | "addressState" | "addressPostalCode" | "addressCity" | "addressStreet" | "division" | "phone" | "email" | "fax" | "thirdPartyRecruiter" | "alumni" | "website" | "overview" | "majorsRecruiting" | "workAuthorizations" | "workAuthorizationOther" | "degreeLevels" | "positionsAvailable" | "tierName" | "stripeProductId" | "stripePriceId" | "additionalRepPriceId" | "additionalRepProductId" | "additionalRepCount" | "additionalRepUnitAmount" | "stripePaymentIntentId" | "amount" | "currency" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["employerRegistration"]>
+  export type EmployerRegistrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "attemptId" | "companyName" | "contactName" | "title" | "representativeCount" | "addressCountry" | "addressState" | "addressPostalCode" | "addressCity" | "addressStreet" | "division" | "phone" | "email" | "fax" | "thirdPartyRecruiter" | "alumni" | "website" | "overview" | "majorsRecruiting" | "workAuthorizations" | "workAuthorizationOther" | "degreeLevels" | "positionsAvailable" | "tierName" | "selectedPackageId" | "packageTitle" | "stripeProductId" | "stripePriceId" | "additionalRepPriceId" | "additionalRepProductId" | "additionalRepCount" | "additionalRepUnitAmount" | "stripePaymentIntentId" | "amount" | "currency" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["employerRegistration"]>
   export type EmployerRegistrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attempt?: boolean | RegistrationAttemptDefaultArgs<ExtArgs>
   }
@@ -3525,6 +3755,8 @@ export namespace Prisma {
       degreeLevels: string[]
       positionsAvailable: string[]
       tierName: string
+      selectedPackageId: string
+      packageTitle: string
       stripeProductId: string
       stripePriceId: string
       additionalRepPriceId: string
@@ -3616,13 +3848,13 @@ export namespace Prisma {
      * @example
      * // Get all EmployerRegistrations
      * const employerRegistrations = await prisma.employerRegistration.findMany()
-     * 
+     *
      * // Get first 10 EmployerRegistrations
      * const employerRegistrations = await prisma.employerRegistration.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const employerRegistrationWithIdOnly = await prisma.employerRegistration.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends EmployerRegistrationFindManyArgs>(args?: SelectSubset<T, EmployerRegistrationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -3636,7 +3868,7 @@ export namespace Prisma {
      *     // ... data to create a EmployerRegistration
      *   }
      * })
-     * 
+     *
      */
     create<T extends EmployerRegistrationCreateArgs>(args: SelectSubset<T, EmployerRegistrationCreateArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -3650,7 +3882,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends EmployerRegistrationCreateManyArgs>(args?: SelectSubset<T, EmployerRegistrationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -3664,7 +3896,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many EmployerRegistrations and only return the `id`
      * const employerRegistrationWithIdOnly = await prisma.employerRegistration.createManyAndReturn({
      *   select: { id: true },
@@ -3674,7 +3906,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends EmployerRegistrationCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployerRegistrationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -3688,7 +3920,7 @@ export namespace Prisma {
      *     // ... filter to delete one EmployerRegistration
      *   }
      * })
-     * 
+     *
      */
     delete<T extends EmployerRegistrationDeleteArgs>(args: SelectSubset<T, EmployerRegistrationDeleteArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -3705,7 +3937,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends EmployerRegistrationUpdateArgs>(args: SelectSubset<T, EmployerRegistrationUpdateArgs<ExtArgs>>): Prisma__EmployerRegistrationClient<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -3719,7 +3951,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends EmployerRegistrationDeleteManyArgs>(args?: SelectSubset<T, EmployerRegistrationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -3738,7 +3970,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends EmployerRegistrationUpdateManyArgs>(args: SelectSubset<T, EmployerRegistrationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -3755,7 +3987,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more EmployerRegistrations and only return the `id`
      * const employerRegistrationWithIdOnly = await prisma.employerRegistration.updateManyAndReturn({
      *   select: { id: true },
@@ -3768,7 +4000,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends EmployerRegistrationUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployerRegistrationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -3857,7 +4089,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends EmployerRegistrationGroupByArgs,
@@ -3986,6 +4218,8 @@ export namespace Prisma {
     readonly degreeLevels: FieldRef<"EmployerRegistration", 'String[]'>
     readonly positionsAvailable: FieldRef<"EmployerRegistration", 'String[]'>
     readonly tierName: FieldRef<"EmployerRegistration", 'String'>
+    readonly selectedPackageId: FieldRef<"EmployerRegistration", 'String'>
+    readonly packageTitle: FieldRef<"EmployerRegistration", 'String'>
     readonly stripeProductId: FieldRef<"EmployerRegistration", 'String'>
     readonly stripePriceId: FieldRef<"EmployerRegistration", 'String'>
     readonly additionalRepPriceId: FieldRef<"EmployerRegistration", 'String'>
@@ -3999,7 +4233,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"EmployerRegistration", 'DateTime'>
     readonly updatedAt: FieldRef<"EmployerRegistration", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -4068,31 +4302,31 @@ export namespace Prisma {
     where?: EmployerRegistrationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of EmployerRegistrations to fetch.
      */
     orderBy?: EmployerRegistrationOrderByWithRelationInput | EmployerRegistrationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for EmployerRegistrations.
      */
     cursor?: EmployerRegistrationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` EmployerRegistrations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` EmployerRegistrations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of EmployerRegistrations.
      */
     distinct?: EmployerRegistrationScalarFieldEnum | EmployerRegistrationScalarFieldEnum[]
@@ -4120,31 +4354,31 @@ export namespace Prisma {
     where?: EmployerRegistrationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of EmployerRegistrations to fetch.
      */
     orderBy?: EmployerRegistrationOrderByWithRelationInput | EmployerRegistrationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for EmployerRegistrations.
      */
     cursor?: EmployerRegistrationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` EmployerRegistrations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` EmployerRegistrations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of EmployerRegistrations.
      */
     distinct?: EmployerRegistrationScalarFieldEnum | EmployerRegistrationScalarFieldEnum[]
@@ -4172,31 +4406,31 @@ export namespace Prisma {
     where?: EmployerRegistrationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of EmployerRegistrations to fetch.
      */
     orderBy?: EmployerRegistrationOrderByWithRelationInput | EmployerRegistrationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing EmployerRegistrations.
      */
     cursor?: EmployerRegistrationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` EmployerRegistrations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` EmployerRegistrations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of EmployerRegistrations.
      */
     distinct?: EmployerRegistrationScalarFieldEnum | EmployerRegistrationScalarFieldEnum[]
@@ -4418,6 +4652,2049 @@ export namespace Prisma {
 
 
   /**
+   * Model EmployerRegistrationPackage
+   */
+
+  export type AggregateEmployerRegistrationPackage = {
+    _count: EmployerRegistrationPackageCountAggregateOutputType | null
+    _avg: EmployerRegistrationPackageAvgAggregateOutputType | null
+    _sum: EmployerRegistrationPackageSumAggregateOutputType | null
+    _min: EmployerRegistrationPackageMinAggregateOutputType | null
+    _max: EmployerRegistrationPackageMaxAggregateOutputType | null
+  }
+
+  export type EmployerRegistrationPackageAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type EmployerRegistrationPackageSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type EmployerRegistrationPackageMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    enabled: boolean | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployerRegistrationPackageMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    enabled: boolean | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployerRegistrationPackageCountAggregateOutputType = {
+    id: number
+    title: number
+    stripePriceIds: number
+    enabled: number
+    sortOrder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmployerRegistrationPackageAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type EmployerRegistrationPackageSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type EmployerRegistrationPackageMinAggregateInputType = {
+    id?: true
+    title?: true
+    enabled?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployerRegistrationPackageMaxAggregateInputType = {
+    id?: true
+    title?: true
+    enabled?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployerRegistrationPackageCountAggregateInputType = {
+    id?: true
+    title?: true
+    stripePriceIds?: true
+    enabled?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmployerRegistrationPackageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployerRegistrationPackage to aggregate.
+     */
+    where?: EmployerRegistrationPackageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of EmployerRegistrationPackages to fetch.
+     */
+    orderBy?: EmployerRegistrationPackageOrderByWithRelationInput | EmployerRegistrationPackageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: EmployerRegistrationPackageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` EmployerRegistrationPackages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` EmployerRegistrationPackages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned EmployerRegistrationPackages
+    **/
+    _count?: true | EmployerRegistrationPackageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: EmployerRegistrationPackageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: EmployerRegistrationPackageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmployerRegistrationPackageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmployerRegistrationPackageMaxAggregateInputType
+  }
+
+  export type GetEmployerRegistrationPackageAggregateType<T extends EmployerRegistrationPackageAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmployerRegistrationPackage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmployerRegistrationPackage[P]>
+      : GetScalarType<T[P], AggregateEmployerRegistrationPackage[P]>
+  }
+
+
+
+
+  export type EmployerRegistrationPackageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployerRegistrationPackageWhereInput
+    orderBy?: EmployerRegistrationPackageOrderByWithAggregationInput | EmployerRegistrationPackageOrderByWithAggregationInput[]
+    by: EmployerRegistrationPackageScalarFieldEnum[] | EmployerRegistrationPackageScalarFieldEnum
+    having?: EmployerRegistrationPackageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmployerRegistrationPackageCountAggregateInputType | true
+    _avg?: EmployerRegistrationPackageAvgAggregateInputType
+    _sum?: EmployerRegistrationPackageSumAggregateInputType
+    _min?: EmployerRegistrationPackageMinAggregateInputType
+    _max?: EmployerRegistrationPackageMaxAggregateInputType
+  }
+
+  export type EmployerRegistrationPackageGroupByOutputType = {
+    id: string
+    title: string
+    stripePriceIds: string[]
+    enabled: boolean
+    sortOrder: number
+    createdAt: Date
+    updatedAt: Date
+    _count: EmployerRegistrationPackageCountAggregateOutputType | null
+    _avg: EmployerRegistrationPackageAvgAggregateOutputType | null
+    _sum: EmployerRegistrationPackageSumAggregateOutputType | null
+    _min: EmployerRegistrationPackageMinAggregateOutputType | null
+    _max: EmployerRegistrationPackageMaxAggregateOutputType | null
+  }
+
+  type GetEmployerRegistrationPackageGroupByPayload<T extends EmployerRegistrationPackageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmployerRegistrationPackageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmployerRegistrationPackageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmployerRegistrationPackageGroupByOutputType[P]>
+            : GetScalarType<T[P], EmployerRegistrationPackageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmployerRegistrationPackageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    stripePriceIds?: boolean
+    enabled?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employerRegistrationPackage"]>
+
+  export type EmployerRegistrationPackageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    stripePriceIds?: boolean
+    enabled?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employerRegistrationPackage"]>
+
+  export type EmployerRegistrationPackageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    stripePriceIds?: boolean
+    enabled?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employerRegistrationPackage"]>
+
+  export type EmployerRegistrationPackageSelectScalar = {
+    id?: boolean
+    title?: boolean
+    stripePriceIds?: boolean
+    enabled?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmployerRegistrationPackageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "stripePriceIds" | "enabled" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["employerRegistrationPackage"]>
+
+  export type $EmployerRegistrationPackagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmployerRegistrationPackage"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      stripePriceIds: string[]
+      enabled: boolean
+      sortOrder: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["employerRegistrationPackage"]>
+    composites: {}
+  }
+
+  type EmployerRegistrationPackageGetPayload<S extends boolean | null | undefined | EmployerRegistrationPackageDefaultArgs> = $Result.GetResult<Prisma.$EmployerRegistrationPackagePayload, S>
+
+  type EmployerRegistrationPackageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmployerRegistrationPackageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmployerRegistrationPackageCountAggregateInputType | true
+    }
+
+  export interface EmployerRegistrationPackageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmployerRegistrationPackage'], meta: { name: 'EmployerRegistrationPackage' } }
+    /**
+     * Find zero or one EmployerRegistrationPackage that matches the filter.
+     * @param {EmployerRegistrationPackageFindUniqueArgs} args - Arguments to find a EmployerRegistrationPackage
+     * @example
+     * // Get one EmployerRegistrationPackage
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmployerRegistrationPackageFindUniqueArgs>(args: SelectSubset<T, EmployerRegistrationPackageFindUniqueArgs<ExtArgs>>): Prisma__EmployerRegistrationPackageClient<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmployerRegistrationPackage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmployerRegistrationPackageFindUniqueOrThrowArgs} args - Arguments to find a EmployerRegistrationPackage
+     * @example
+     * // Get one EmployerRegistrationPackage
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmployerRegistrationPackageFindUniqueOrThrowArgs>(args: SelectSubset<T, EmployerRegistrationPackageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmployerRegistrationPackageClient<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployerRegistrationPackage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationPackageFindFirstArgs} args - Arguments to find a EmployerRegistrationPackage
+     * @example
+     * // Get one EmployerRegistrationPackage
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmployerRegistrationPackageFindFirstArgs>(args?: SelectSubset<T, EmployerRegistrationPackageFindFirstArgs<ExtArgs>>): Prisma__EmployerRegistrationPackageClient<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployerRegistrationPackage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationPackageFindFirstOrThrowArgs} args - Arguments to find a EmployerRegistrationPackage
+     * @example
+     * // Get one EmployerRegistrationPackage
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmployerRegistrationPackageFindFirstOrThrowArgs>(args?: SelectSubset<T, EmployerRegistrationPackageFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmployerRegistrationPackageClient<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmployerRegistrationPackages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationPackageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmployerRegistrationPackages
+     * const employerRegistrationPackages = await prisma.employerRegistrationPackage.findMany()
+     *
+     * // Get first 10 EmployerRegistrationPackages
+     * const employerRegistrationPackages = await prisma.employerRegistrationPackage.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const employerRegistrationPackageWithIdOnly = await prisma.employerRegistrationPackage.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends EmployerRegistrationPackageFindManyArgs>(args?: SelectSubset<T, EmployerRegistrationPackageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmployerRegistrationPackage.
+     * @param {EmployerRegistrationPackageCreateArgs} args - Arguments to create a EmployerRegistrationPackage.
+     * @example
+     * // Create one EmployerRegistrationPackage
+     * const EmployerRegistrationPackage = await prisma.employerRegistrationPackage.create({
+     *   data: {
+     *     // ... data to create a EmployerRegistrationPackage
+     *   }
+     * })
+     *
+     */
+    create<T extends EmployerRegistrationPackageCreateArgs>(args: SelectSubset<T, EmployerRegistrationPackageCreateArgs<ExtArgs>>): Prisma__EmployerRegistrationPackageClient<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmployerRegistrationPackages.
+     * @param {EmployerRegistrationPackageCreateManyArgs} args - Arguments to create many EmployerRegistrationPackages.
+     * @example
+     * // Create many EmployerRegistrationPackages
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends EmployerRegistrationPackageCreateManyArgs>(args?: SelectSubset<T, EmployerRegistrationPackageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmployerRegistrationPackages and returns the data saved in the database.
+     * @param {EmployerRegistrationPackageCreateManyAndReturnArgs} args - Arguments to create many EmployerRegistrationPackages.
+     * @example
+     * // Create many EmployerRegistrationPackages
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many EmployerRegistrationPackages and only return the `id`
+     * const employerRegistrationPackageWithIdOnly = await prisma.employerRegistrationPackage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends EmployerRegistrationPackageCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployerRegistrationPackageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmployerRegistrationPackage.
+     * @param {EmployerRegistrationPackageDeleteArgs} args - Arguments to delete one EmployerRegistrationPackage.
+     * @example
+     * // Delete one EmployerRegistrationPackage
+     * const EmployerRegistrationPackage = await prisma.employerRegistrationPackage.delete({
+     *   where: {
+     *     // ... filter to delete one EmployerRegistrationPackage
+     *   }
+     * })
+     *
+     */
+    delete<T extends EmployerRegistrationPackageDeleteArgs>(args: SelectSubset<T, EmployerRegistrationPackageDeleteArgs<ExtArgs>>): Prisma__EmployerRegistrationPackageClient<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmployerRegistrationPackage.
+     * @param {EmployerRegistrationPackageUpdateArgs} args - Arguments to update one EmployerRegistrationPackage.
+     * @example
+     * // Update one EmployerRegistrationPackage
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends EmployerRegistrationPackageUpdateArgs>(args: SelectSubset<T, EmployerRegistrationPackageUpdateArgs<ExtArgs>>): Prisma__EmployerRegistrationPackageClient<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmployerRegistrationPackages.
+     * @param {EmployerRegistrationPackageDeleteManyArgs} args - Arguments to filter EmployerRegistrationPackages to delete.
+     * @example
+     * // Delete a few EmployerRegistrationPackages
+     * const { count } = await prisma.employerRegistrationPackage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends EmployerRegistrationPackageDeleteManyArgs>(args?: SelectSubset<T, EmployerRegistrationPackageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployerRegistrationPackages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationPackageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmployerRegistrationPackages
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends EmployerRegistrationPackageUpdateManyArgs>(args: SelectSubset<T, EmployerRegistrationPackageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployerRegistrationPackages and returns the data updated in the database.
+     * @param {EmployerRegistrationPackageUpdateManyAndReturnArgs} args - Arguments to update many EmployerRegistrationPackages.
+     * @example
+     * // Update many EmployerRegistrationPackages
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more EmployerRegistrationPackages and only return the `id`
+     * const employerRegistrationPackageWithIdOnly = await prisma.employerRegistrationPackage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends EmployerRegistrationPackageUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployerRegistrationPackageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmployerRegistrationPackage.
+     * @param {EmployerRegistrationPackageUpsertArgs} args - Arguments to update or create a EmployerRegistrationPackage.
+     * @example
+     * // Update or create a EmployerRegistrationPackage
+     * const employerRegistrationPackage = await prisma.employerRegistrationPackage.upsert({
+     *   create: {
+     *     // ... data to create a EmployerRegistrationPackage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmployerRegistrationPackage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmployerRegistrationPackageUpsertArgs>(args: SelectSubset<T, EmployerRegistrationPackageUpsertArgs<ExtArgs>>): Prisma__EmployerRegistrationPackageClient<$Result.GetResult<Prisma.$EmployerRegistrationPackagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmployerRegistrationPackages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationPackageCountArgs} args - Arguments to filter EmployerRegistrationPackages to count.
+     * @example
+     * // Count the number of EmployerRegistrationPackages
+     * const count = await prisma.employerRegistrationPackage.count({
+     *   where: {
+     *     // ... the filter for the EmployerRegistrationPackages we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmployerRegistrationPackageCountArgs>(
+      args?: Subset<T, EmployerRegistrationPackageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmployerRegistrationPackageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmployerRegistrationPackage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationPackageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmployerRegistrationPackageAggregateArgs>(args: Subset<T, EmployerRegistrationPackageAggregateArgs>): Prisma.PrismaPromise<GetEmployerRegistrationPackageAggregateType<T>>
+
+    /**
+     * Group by EmployerRegistrationPackage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationPackageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends EmployerRegistrationPackageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmployerRegistrationPackageGroupByArgs['orderBy'] }
+        : { orderBy?: EmployerRegistrationPackageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmployerRegistrationPackageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmployerRegistrationPackageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmployerRegistrationPackage model
+   */
+  readonly fields: EmployerRegistrationPackageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmployerRegistrationPackage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmployerRegistrationPackageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmployerRegistrationPackage model
+   */
+  interface EmployerRegistrationPackageFieldRefs {
+    readonly id: FieldRef<"EmployerRegistrationPackage", 'String'>
+    readonly title: FieldRef<"EmployerRegistrationPackage", 'String'>
+    readonly stripePriceIds: FieldRef<"EmployerRegistrationPackage", 'String[]'>
+    readonly enabled: FieldRef<"EmployerRegistrationPackage", 'Boolean'>
+    readonly sortOrder: FieldRef<"EmployerRegistrationPackage", 'Int'>
+    readonly createdAt: FieldRef<"EmployerRegistrationPackage", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmployerRegistrationPackage", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * EmployerRegistrationPackage findUnique
+   */
+  export type EmployerRegistrationPackageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationPackage to fetch.
+     */
+    where: EmployerRegistrationPackageWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistrationPackage findUniqueOrThrow
+   */
+  export type EmployerRegistrationPackageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationPackage to fetch.
+     */
+    where: EmployerRegistrationPackageWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistrationPackage findFirst
+   */
+  export type EmployerRegistrationPackageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationPackage to fetch.
+     */
+    where?: EmployerRegistrationPackageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of EmployerRegistrationPackages to fetch.
+     */
+    orderBy?: EmployerRegistrationPackageOrderByWithRelationInput | EmployerRegistrationPackageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for EmployerRegistrationPackages.
+     */
+    cursor?: EmployerRegistrationPackageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` EmployerRegistrationPackages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` EmployerRegistrationPackages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of EmployerRegistrationPackages.
+     */
+    distinct?: EmployerRegistrationPackageScalarFieldEnum | EmployerRegistrationPackageScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistrationPackage findFirstOrThrow
+   */
+  export type EmployerRegistrationPackageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationPackage to fetch.
+     */
+    where?: EmployerRegistrationPackageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of EmployerRegistrationPackages to fetch.
+     */
+    orderBy?: EmployerRegistrationPackageOrderByWithRelationInput | EmployerRegistrationPackageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for EmployerRegistrationPackages.
+     */
+    cursor?: EmployerRegistrationPackageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` EmployerRegistrationPackages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` EmployerRegistrationPackages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of EmployerRegistrationPackages.
+     */
+    distinct?: EmployerRegistrationPackageScalarFieldEnum | EmployerRegistrationPackageScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistrationPackage findMany
+   */
+  export type EmployerRegistrationPackageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationPackages to fetch.
+     */
+    where?: EmployerRegistrationPackageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of EmployerRegistrationPackages to fetch.
+     */
+    orderBy?: EmployerRegistrationPackageOrderByWithRelationInput | EmployerRegistrationPackageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing EmployerRegistrationPackages.
+     */
+    cursor?: EmployerRegistrationPackageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` EmployerRegistrationPackages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` EmployerRegistrationPackages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of EmployerRegistrationPackages.
+     */
+    distinct?: EmployerRegistrationPackageScalarFieldEnum | EmployerRegistrationPackageScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistrationPackage create
+   */
+  export type EmployerRegistrationPackageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EmployerRegistrationPackage.
+     */
+    data: XOR<EmployerRegistrationPackageCreateInput, EmployerRegistrationPackageUncheckedCreateInput>
+  }
+
+  /**
+   * EmployerRegistrationPackage createMany
+   */
+  export type EmployerRegistrationPackageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmployerRegistrationPackages.
+     */
+    data: EmployerRegistrationPackageCreateManyInput | EmployerRegistrationPackageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployerRegistrationPackage createManyAndReturn
+   */
+  export type EmployerRegistrationPackageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmployerRegistrationPackages.
+     */
+    data: EmployerRegistrationPackageCreateManyInput | EmployerRegistrationPackageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployerRegistrationPackage update
+   */
+  export type EmployerRegistrationPackageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EmployerRegistrationPackage.
+     */
+    data: XOR<EmployerRegistrationPackageUpdateInput, EmployerRegistrationPackageUncheckedUpdateInput>
+    /**
+     * Choose, which EmployerRegistrationPackage to update.
+     */
+    where: EmployerRegistrationPackageWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistrationPackage updateMany
+   */
+  export type EmployerRegistrationPackageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmployerRegistrationPackages.
+     */
+    data: XOR<EmployerRegistrationPackageUpdateManyMutationInput, EmployerRegistrationPackageUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployerRegistrationPackages to update
+     */
+    where?: EmployerRegistrationPackageWhereInput
+    /**
+     * Limit how many EmployerRegistrationPackages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployerRegistrationPackage updateManyAndReturn
+   */
+  export type EmployerRegistrationPackageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * The data used to update EmployerRegistrationPackages.
+     */
+    data: XOR<EmployerRegistrationPackageUpdateManyMutationInput, EmployerRegistrationPackageUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployerRegistrationPackages to update
+     */
+    where?: EmployerRegistrationPackageWhereInput
+    /**
+     * Limit how many EmployerRegistrationPackages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployerRegistrationPackage upsert
+   */
+  export type EmployerRegistrationPackageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EmployerRegistrationPackage to update in case it exists.
+     */
+    where: EmployerRegistrationPackageWhereUniqueInput
+    /**
+     * In case the EmployerRegistrationPackage found by the `where` argument doesn't exist, create a new EmployerRegistrationPackage with this data.
+     */
+    create: XOR<EmployerRegistrationPackageCreateInput, EmployerRegistrationPackageUncheckedCreateInput>
+    /**
+     * In case the EmployerRegistrationPackage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmployerRegistrationPackageUpdateInput, EmployerRegistrationPackageUncheckedUpdateInput>
+  }
+
+  /**
+   * EmployerRegistrationPackage delete
+   */
+  export type EmployerRegistrationPackageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+    /**
+     * Filter which EmployerRegistrationPackage to delete.
+     */
+    where: EmployerRegistrationPackageWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistrationPackage deleteMany
+   */
+  export type EmployerRegistrationPackageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployerRegistrationPackages to delete
+     */
+    where?: EmployerRegistrationPackageWhereInput
+    /**
+     * Limit how many EmployerRegistrationPackages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployerRegistrationPackage without action
+   */
+  export type EmployerRegistrationPackageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationPackage
+     */
+    select?: EmployerRegistrationPackageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationPackage
+     */
+    omit?: EmployerRegistrationPackageOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmployerRegistrationConfiguration
+   */
+
+  export type AggregateEmployerRegistrationConfiguration = {
+    _count: EmployerRegistrationConfigurationCountAggregateOutputType | null
+    _min: EmployerRegistrationConfigurationMinAggregateOutputType | null
+    _max: EmployerRegistrationConfigurationMaxAggregateOutputType | null
+  }
+
+  export type EmployerRegistrationConfigurationMinAggregateOutputType = {
+    id: string | null
+    additionalRepresentativePriceId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployerRegistrationConfigurationMaxAggregateOutputType = {
+    id: string | null
+    additionalRepresentativePriceId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployerRegistrationConfigurationCountAggregateOutputType = {
+    id: number
+    additionalRepresentativePriceId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmployerRegistrationConfigurationMinAggregateInputType = {
+    id?: true
+    additionalRepresentativePriceId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployerRegistrationConfigurationMaxAggregateInputType = {
+    id?: true
+    additionalRepresentativePriceId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployerRegistrationConfigurationCountAggregateInputType = {
+    id?: true
+    additionalRepresentativePriceId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmployerRegistrationConfigurationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployerRegistrationConfiguration to aggregate.
+     */
+    where?: EmployerRegistrationConfigurationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of EmployerRegistrationConfigurations to fetch.
+     */
+    orderBy?: EmployerRegistrationConfigurationOrderByWithRelationInput | EmployerRegistrationConfigurationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: EmployerRegistrationConfigurationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` EmployerRegistrationConfigurations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` EmployerRegistrationConfigurations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned EmployerRegistrationConfigurations
+    **/
+    _count?: true | EmployerRegistrationConfigurationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmployerRegistrationConfigurationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmployerRegistrationConfigurationMaxAggregateInputType
+  }
+
+  export type GetEmployerRegistrationConfigurationAggregateType<T extends EmployerRegistrationConfigurationAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmployerRegistrationConfiguration]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmployerRegistrationConfiguration[P]>
+      : GetScalarType<T[P], AggregateEmployerRegistrationConfiguration[P]>
+  }
+
+
+
+
+  export type EmployerRegistrationConfigurationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployerRegistrationConfigurationWhereInput
+    orderBy?: EmployerRegistrationConfigurationOrderByWithAggregationInput | EmployerRegistrationConfigurationOrderByWithAggregationInput[]
+    by: EmployerRegistrationConfigurationScalarFieldEnum[] | EmployerRegistrationConfigurationScalarFieldEnum
+    having?: EmployerRegistrationConfigurationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmployerRegistrationConfigurationCountAggregateInputType | true
+    _min?: EmployerRegistrationConfigurationMinAggregateInputType
+    _max?: EmployerRegistrationConfigurationMaxAggregateInputType
+  }
+
+  export type EmployerRegistrationConfigurationGroupByOutputType = {
+    id: string
+    additionalRepresentativePriceId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: EmployerRegistrationConfigurationCountAggregateOutputType | null
+    _min: EmployerRegistrationConfigurationMinAggregateOutputType | null
+    _max: EmployerRegistrationConfigurationMaxAggregateOutputType | null
+  }
+
+  type GetEmployerRegistrationConfigurationGroupByPayload<T extends EmployerRegistrationConfigurationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmployerRegistrationConfigurationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmployerRegistrationConfigurationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmployerRegistrationConfigurationGroupByOutputType[P]>
+            : GetScalarType<T[P], EmployerRegistrationConfigurationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmployerRegistrationConfigurationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    additionalRepresentativePriceId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employerRegistrationConfiguration"]>
+
+  export type EmployerRegistrationConfigurationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    additionalRepresentativePriceId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employerRegistrationConfiguration"]>
+
+  export type EmployerRegistrationConfigurationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    additionalRepresentativePriceId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employerRegistrationConfiguration"]>
+
+  export type EmployerRegistrationConfigurationSelectScalar = {
+    id?: boolean
+    additionalRepresentativePriceId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmployerRegistrationConfigurationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "additionalRepresentativePriceId" | "createdAt" | "updatedAt", ExtArgs["result"]["employerRegistrationConfiguration"]>
+
+  export type $EmployerRegistrationConfigurationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmployerRegistrationConfiguration"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      additionalRepresentativePriceId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["employerRegistrationConfiguration"]>
+    composites: {}
+  }
+
+  type EmployerRegistrationConfigurationGetPayload<S extends boolean | null | undefined | EmployerRegistrationConfigurationDefaultArgs> = $Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload, S>
+
+  type EmployerRegistrationConfigurationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmployerRegistrationConfigurationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmployerRegistrationConfigurationCountAggregateInputType | true
+    }
+
+  export interface EmployerRegistrationConfigurationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmployerRegistrationConfiguration'], meta: { name: 'EmployerRegistrationConfiguration' } }
+    /**
+     * Find zero or one EmployerRegistrationConfiguration that matches the filter.
+     * @param {EmployerRegistrationConfigurationFindUniqueArgs} args - Arguments to find a EmployerRegistrationConfiguration
+     * @example
+     * // Get one EmployerRegistrationConfiguration
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmployerRegistrationConfigurationFindUniqueArgs>(args: SelectSubset<T, EmployerRegistrationConfigurationFindUniqueArgs<ExtArgs>>): Prisma__EmployerRegistrationConfigurationClient<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmployerRegistrationConfiguration that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmployerRegistrationConfigurationFindUniqueOrThrowArgs} args - Arguments to find a EmployerRegistrationConfiguration
+     * @example
+     * // Get one EmployerRegistrationConfiguration
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmployerRegistrationConfigurationFindUniqueOrThrowArgs>(args: SelectSubset<T, EmployerRegistrationConfigurationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmployerRegistrationConfigurationClient<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployerRegistrationConfiguration that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationConfigurationFindFirstArgs} args - Arguments to find a EmployerRegistrationConfiguration
+     * @example
+     * // Get one EmployerRegistrationConfiguration
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmployerRegistrationConfigurationFindFirstArgs>(args?: SelectSubset<T, EmployerRegistrationConfigurationFindFirstArgs<ExtArgs>>): Prisma__EmployerRegistrationConfigurationClient<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployerRegistrationConfiguration that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationConfigurationFindFirstOrThrowArgs} args - Arguments to find a EmployerRegistrationConfiguration
+     * @example
+     * // Get one EmployerRegistrationConfiguration
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmployerRegistrationConfigurationFindFirstOrThrowArgs>(args?: SelectSubset<T, EmployerRegistrationConfigurationFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmployerRegistrationConfigurationClient<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmployerRegistrationConfigurations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationConfigurationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmployerRegistrationConfigurations
+     * const employerRegistrationConfigurations = await prisma.employerRegistrationConfiguration.findMany()
+     *
+     * // Get first 10 EmployerRegistrationConfigurations
+     * const employerRegistrationConfigurations = await prisma.employerRegistrationConfiguration.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const employerRegistrationConfigurationWithIdOnly = await prisma.employerRegistrationConfiguration.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends EmployerRegistrationConfigurationFindManyArgs>(args?: SelectSubset<T, EmployerRegistrationConfigurationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmployerRegistrationConfiguration.
+     * @param {EmployerRegistrationConfigurationCreateArgs} args - Arguments to create a EmployerRegistrationConfiguration.
+     * @example
+     * // Create one EmployerRegistrationConfiguration
+     * const EmployerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.create({
+     *   data: {
+     *     // ... data to create a EmployerRegistrationConfiguration
+     *   }
+     * })
+     *
+     */
+    create<T extends EmployerRegistrationConfigurationCreateArgs>(args: SelectSubset<T, EmployerRegistrationConfigurationCreateArgs<ExtArgs>>): Prisma__EmployerRegistrationConfigurationClient<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmployerRegistrationConfigurations.
+     * @param {EmployerRegistrationConfigurationCreateManyArgs} args - Arguments to create many EmployerRegistrationConfigurations.
+     * @example
+     * // Create many EmployerRegistrationConfigurations
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends EmployerRegistrationConfigurationCreateManyArgs>(args?: SelectSubset<T, EmployerRegistrationConfigurationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmployerRegistrationConfigurations and returns the data saved in the database.
+     * @param {EmployerRegistrationConfigurationCreateManyAndReturnArgs} args - Arguments to create many EmployerRegistrationConfigurations.
+     * @example
+     * // Create many EmployerRegistrationConfigurations
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many EmployerRegistrationConfigurations and only return the `id`
+     * const employerRegistrationConfigurationWithIdOnly = await prisma.employerRegistrationConfiguration.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends EmployerRegistrationConfigurationCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployerRegistrationConfigurationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmployerRegistrationConfiguration.
+     * @param {EmployerRegistrationConfigurationDeleteArgs} args - Arguments to delete one EmployerRegistrationConfiguration.
+     * @example
+     * // Delete one EmployerRegistrationConfiguration
+     * const EmployerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.delete({
+     *   where: {
+     *     // ... filter to delete one EmployerRegistrationConfiguration
+     *   }
+     * })
+     *
+     */
+    delete<T extends EmployerRegistrationConfigurationDeleteArgs>(args: SelectSubset<T, EmployerRegistrationConfigurationDeleteArgs<ExtArgs>>): Prisma__EmployerRegistrationConfigurationClient<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmployerRegistrationConfiguration.
+     * @param {EmployerRegistrationConfigurationUpdateArgs} args - Arguments to update one EmployerRegistrationConfiguration.
+     * @example
+     * // Update one EmployerRegistrationConfiguration
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends EmployerRegistrationConfigurationUpdateArgs>(args: SelectSubset<T, EmployerRegistrationConfigurationUpdateArgs<ExtArgs>>): Prisma__EmployerRegistrationConfigurationClient<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmployerRegistrationConfigurations.
+     * @param {EmployerRegistrationConfigurationDeleteManyArgs} args - Arguments to filter EmployerRegistrationConfigurations to delete.
+     * @example
+     * // Delete a few EmployerRegistrationConfigurations
+     * const { count } = await prisma.employerRegistrationConfiguration.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends EmployerRegistrationConfigurationDeleteManyArgs>(args?: SelectSubset<T, EmployerRegistrationConfigurationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployerRegistrationConfigurations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationConfigurationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmployerRegistrationConfigurations
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends EmployerRegistrationConfigurationUpdateManyArgs>(args: SelectSubset<T, EmployerRegistrationConfigurationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployerRegistrationConfigurations and returns the data updated in the database.
+     * @param {EmployerRegistrationConfigurationUpdateManyAndReturnArgs} args - Arguments to update many EmployerRegistrationConfigurations.
+     * @example
+     * // Update many EmployerRegistrationConfigurations
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more EmployerRegistrationConfigurations and only return the `id`
+     * const employerRegistrationConfigurationWithIdOnly = await prisma.employerRegistrationConfiguration.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends EmployerRegistrationConfigurationUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployerRegistrationConfigurationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmployerRegistrationConfiguration.
+     * @param {EmployerRegistrationConfigurationUpsertArgs} args - Arguments to update or create a EmployerRegistrationConfiguration.
+     * @example
+     * // Update or create a EmployerRegistrationConfiguration
+     * const employerRegistrationConfiguration = await prisma.employerRegistrationConfiguration.upsert({
+     *   create: {
+     *     // ... data to create a EmployerRegistrationConfiguration
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmployerRegistrationConfiguration we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmployerRegistrationConfigurationUpsertArgs>(args: SelectSubset<T, EmployerRegistrationConfigurationUpsertArgs<ExtArgs>>): Prisma__EmployerRegistrationConfigurationClient<$Result.GetResult<Prisma.$EmployerRegistrationConfigurationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmployerRegistrationConfigurations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationConfigurationCountArgs} args - Arguments to filter EmployerRegistrationConfigurations to count.
+     * @example
+     * // Count the number of EmployerRegistrationConfigurations
+     * const count = await prisma.employerRegistrationConfiguration.count({
+     *   where: {
+     *     // ... the filter for the EmployerRegistrationConfigurations we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmployerRegistrationConfigurationCountArgs>(
+      args?: Subset<T, EmployerRegistrationConfigurationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmployerRegistrationConfigurationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmployerRegistrationConfiguration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationConfigurationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmployerRegistrationConfigurationAggregateArgs>(args: Subset<T, EmployerRegistrationConfigurationAggregateArgs>): Prisma.PrismaPromise<GetEmployerRegistrationConfigurationAggregateType<T>>
+
+    /**
+     * Group by EmployerRegistrationConfiguration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployerRegistrationConfigurationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends EmployerRegistrationConfigurationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmployerRegistrationConfigurationGroupByArgs['orderBy'] }
+        : { orderBy?: EmployerRegistrationConfigurationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmployerRegistrationConfigurationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmployerRegistrationConfigurationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmployerRegistrationConfiguration model
+   */
+  readonly fields: EmployerRegistrationConfigurationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmployerRegistrationConfiguration.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmployerRegistrationConfigurationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmployerRegistrationConfiguration model
+   */
+  interface EmployerRegistrationConfigurationFieldRefs {
+    readonly id: FieldRef<"EmployerRegistrationConfiguration", 'String'>
+    readonly additionalRepresentativePriceId: FieldRef<"EmployerRegistrationConfiguration", 'String'>
+    readonly createdAt: FieldRef<"EmployerRegistrationConfiguration", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmployerRegistrationConfiguration", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * EmployerRegistrationConfiguration findUnique
+   */
+  export type EmployerRegistrationConfigurationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationConfiguration to fetch.
+     */
+    where: EmployerRegistrationConfigurationWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistrationConfiguration findUniqueOrThrow
+   */
+  export type EmployerRegistrationConfigurationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationConfiguration to fetch.
+     */
+    where: EmployerRegistrationConfigurationWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistrationConfiguration findFirst
+   */
+  export type EmployerRegistrationConfigurationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationConfiguration to fetch.
+     */
+    where?: EmployerRegistrationConfigurationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of EmployerRegistrationConfigurations to fetch.
+     */
+    orderBy?: EmployerRegistrationConfigurationOrderByWithRelationInput | EmployerRegistrationConfigurationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for EmployerRegistrationConfigurations.
+     */
+    cursor?: EmployerRegistrationConfigurationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` EmployerRegistrationConfigurations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` EmployerRegistrationConfigurations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of EmployerRegistrationConfigurations.
+     */
+    distinct?: EmployerRegistrationConfigurationScalarFieldEnum | EmployerRegistrationConfigurationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistrationConfiguration findFirstOrThrow
+   */
+  export type EmployerRegistrationConfigurationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationConfiguration to fetch.
+     */
+    where?: EmployerRegistrationConfigurationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of EmployerRegistrationConfigurations to fetch.
+     */
+    orderBy?: EmployerRegistrationConfigurationOrderByWithRelationInput | EmployerRegistrationConfigurationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for EmployerRegistrationConfigurations.
+     */
+    cursor?: EmployerRegistrationConfigurationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` EmployerRegistrationConfigurations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` EmployerRegistrationConfigurations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of EmployerRegistrationConfigurations.
+     */
+    distinct?: EmployerRegistrationConfigurationScalarFieldEnum | EmployerRegistrationConfigurationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistrationConfiguration findMany
+   */
+  export type EmployerRegistrationConfigurationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * Filter, which EmployerRegistrationConfigurations to fetch.
+     */
+    where?: EmployerRegistrationConfigurationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of EmployerRegistrationConfigurations to fetch.
+     */
+    orderBy?: EmployerRegistrationConfigurationOrderByWithRelationInput | EmployerRegistrationConfigurationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing EmployerRegistrationConfigurations.
+     */
+    cursor?: EmployerRegistrationConfigurationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` EmployerRegistrationConfigurations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` EmployerRegistrationConfigurations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of EmployerRegistrationConfigurations.
+     */
+    distinct?: EmployerRegistrationConfigurationScalarFieldEnum | EmployerRegistrationConfigurationScalarFieldEnum[]
+  }
+
+  /**
+   * EmployerRegistrationConfiguration create
+   */
+  export type EmployerRegistrationConfigurationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EmployerRegistrationConfiguration.
+     */
+    data: XOR<EmployerRegistrationConfigurationCreateInput, EmployerRegistrationConfigurationUncheckedCreateInput>
+  }
+
+  /**
+   * EmployerRegistrationConfiguration createMany
+   */
+  export type EmployerRegistrationConfigurationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmployerRegistrationConfigurations.
+     */
+    data: EmployerRegistrationConfigurationCreateManyInput | EmployerRegistrationConfigurationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployerRegistrationConfiguration createManyAndReturn
+   */
+  export type EmployerRegistrationConfigurationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmployerRegistrationConfigurations.
+     */
+    data: EmployerRegistrationConfigurationCreateManyInput | EmployerRegistrationConfigurationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployerRegistrationConfiguration update
+   */
+  export type EmployerRegistrationConfigurationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EmployerRegistrationConfiguration.
+     */
+    data: XOR<EmployerRegistrationConfigurationUpdateInput, EmployerRegistrationConfigurationUncheckedUpdateInput>
+    /**
+     * Choose, which EmployerRegistrationConfiguration to update.
+     */
+    where: EmployerRegistrationConfigurationWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistrationConfiguration updateMany
+   */
+  export type EmployerRegistrationConfigurationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmployerRegistrationConfigurations.
+     */
+    data: XOR<EmployerRegistrationConfigurationUpdateManyMutationInput, EmployerRegistrationConfigurationUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployerRegistrationConfigurations to update
+     */
+    where?: EmployerRegistrationConfigurationWhereInput
+    /**
+     * Limit how many EmployerRegistrationConfigurations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployerRegistrationConfiguration updateManyAndReturn
+   */
+  export type EmployerRegistrationConfigurationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * The data used to update EmployerRegistrationConfigurations.
+     */
+    data: XOR<EmployerRegistrationConfigurationUpdateManyMutationInput, EmployerRegistrationConfigurationUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployerRegistrationConfigurations to update
+     */
+    where?: EmployerRegistrationConfigurationWhereInput
+    /**
+     * Limit how many EmployerRegistrationConfigurations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployerRegistrationConfiguration upsert
+   */
+  export type EmployerRegistrationConfigurationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EmployerRegistrationConfiguration to update in case it exists.
+     */
+    where: EmployerRegistrationConfigurationWhereUniqueInput
+    /**
+     * In case the EmployerRegistrationConfiguration found by the `where` argument doesn't exist, create a new EmployerRegistrationConfiguration with this data.
+     */
+    create: XOR<EmployerRegistrationConfigurationCreateInput, EmployerRegistrationConfigurationUncheckedCreateInput>
+    /**
+     * In case the EmployerRegistrationConfiguration was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmployerRegistrationConfigurationUpdateInput, EmployerRegistrationConfigurationUncheckedUpdateInput>
+  }
+
+  /**
+   * EmployerRegistrationConfiguration delete
+   */
+  export type EmployerRegistrationConfigurationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+    /**
+     * Filter which EmployerRegistrationConfiguration to delete.
+     */
+    where: EmployerRegistrationConfigurationWhereUniqueInput
+  }
+
+  /**
+   * EmployerRegistrationConfiguration deleteMany
+   */
+  export type EmployerRegistrationConfigurationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployerRegistrationConfigurations to delete
+     */
+    where?: EmployerRegistrationConfigurationWhereInput
+    /**
+     * Limit how many EmployerRegistrationConfigurations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployerRegistrationConfiguration without action
+   */
+  export type EmployerRegistrationConfigurationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployerRegistrationConfiguration
+     */
+    select?: EmployerRegistrationConfigurationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployerRegistrationConfiguration
+     */
+    omit?: EmployerRegistrationConfigurationOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model Post
    */
 
@@ -4485,43 +6762,43 @@ export namespace Prisma {
     where?: PostWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Posts to fetch.
      */
     orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: PostWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Posts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Posts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Posts
     **/
     _count?: true | PostCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: PostMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: PostMaxAggregateInputType
@@ -4711,13 +6988,13 @@ export namespace Prisma {
      * @example
      * // Get all Posts
      * const posts = await prisma.post.findMany()
-     * 
+     *
      * // Get first 10 Posts
      * const posts = await prisma.post.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const postWithIdOnly = await prisma.post.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends PostFindManyArgs>(args?: SelectSubset<T, PostFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -4731,7 +7008,7 @@ export namespace Prisma {
      *     // ... data to create a Post
      *   }
      * })
-     * 
+     *
      */
     create<T extends PostCreateArgs>(args: SelectSubset<T, PostCreateArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -4745,7 +7022,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends PostCreateManyArgs>(args?: SelectSubset<T, PostCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -4759,7 +7036,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Posts and only return the `id`
      * const postWithIdOnly = await prisma.post.createManyAndReturn({
      *   select: { id: true },
@@ -4769,7 +7046,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends PostCreateManyAndReturnArgs>(args?: SelectSubset<T, PostCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -4783,7 +7060,7 @@ export namespace Prisma {
      *     // ... filter to delete one Post
      *   }
      * })
-     * 
+     *
      */
     delete<T extends PostDeleteArgs>(args: SelectSubset<T, PostDeleteArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -4800,7 +7077,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends PostUpdateArgs>(args: SelectSubset<T, PostUpdateArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -4814,7 +7091,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends PostDeleteManyArgs>(args?: SelectSubset<T, PostDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -4833,7 +7110,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends PostUpdateManyArgs>(args: SelectSubset<T, PostUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -4850,7 +7127,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Posts and only return the `id`
      * const postWithIdOnly = await prisma.post.updateManyAndReturn({
      *   select: { id: true },
@@ -4863,7 +7140,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends PostUpdateManyAndReturnArgs>(args: SelectSubset<T, PostUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -4952,7 +7229,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends PostGroupByArgs,
@@ -5062,7 +7339,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Post", 'DateTime'>
     readonly createdById: FieldRef<"Post", 'String'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -5131,31 +7408,31 @@ export namespace Prisma {
     where?: PostWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Posts to fetch.
      */
     orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Posts.
      */
     cursor?: PostWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Posts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Posts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Posts.
      */
     distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
@@ -5183,31 +7460,31 @@ export namespace Prisma {
     where?: PostWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Posts to fetch.
      */
     orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Posts.
      */
     cursor?: PostWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Posts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Posts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Posts.
      */
     distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
@@ -5235,31 +7512,31 @@ export namespace Prisma {
     where?: PostWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Posts to fetch.
      */
     orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Posts.
      */
     cursor?: PostWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Posts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Posts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Posts.
      */
     distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
@@ -5560,43 +7837,43 @@ export namespace Prisma {
     where?: UserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Users to fetch.
      */
     orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: UserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Users from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Users.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Users
     **/
     _count?: true | UserCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: UserMaxAggregateInputType
@@ -5806,13 +8083,13 @@ export namespace Prisma {
      * @example
      * // Get all Users
      * const users = await prisma.user.findMany()
-     * 
+     *
      * // Get first 10 Users
      * const users = await prisma.user.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const userWithIdOnly = await prisma.user.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends UserFindManyArgs>(args?: SelectSubset<T, UserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -5826,7 +8103,7 @@ export namespace Prisma {
      *     // ... data to create a User
      *   }
      * })
-     * 
+     *
      */
     create<T extends UserCreateArgs>(args: SelectSubset<T, UserCreateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -5840,7 +8117,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends UserCreateManyArgs>(args?: SelectSubset<T, UserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -5854,7 +8131,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Users and only return the `id`
      * const userWithIdOnly = await prisma.user.createManyAndReturn({
      *   select: { id: true },
@@ -5864,7 +8141,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends UserCreateManyAndReturnArgs>(args?: SelectSubset<T, UserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -5878,7 +8155,7 @@ export namespace Prisma {
      *     // ... filter to delete one User
      *   }
      * })
-     * 
+     *
      */
     delete<T extends UserDeleteArgs>(args: SelectSubset<T, UserDeleteArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -5895,7 +8172,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends UserUpdateArgs>(args: SelectSubset<T, UserUpdateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -5909,7 +8186,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends UserDeleteManyArgs>(args?: SelectSubset<T, UserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -5928,7 +8205,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends UserUpdateManyArgs>(args: SelectSubset<T, UserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -5945,7 +8222,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Users and only return the `id`
      * const userWithIdOnly = await prisma.user.updateManyAndReturn({
      *   select: { id: true },
@@ -5958,7 +8235,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends UserUpdateManyAndReturnArgs>(args: SelectSubset<T, UserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -6047,7 +8324,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends UserGroupByArgs,
@@ -6163,7 +8440,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -6232,31 +8509,31 @@ export namespace Prisma {
     where?: UserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Users to fetch.
      */
     orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Users.
      */
     cursor?: UserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Users from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Users.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Users.
      */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
@@ -6284,31 +8561,31 @@ export namespace Prisma {
     where?: UserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Users to fetch.
      */
     orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Users.
      */
     cursor?: UserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Users from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Users.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Users.
      */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
@@ -6336,31 +8613,31 @@ export namespace Prisma {
     where?: UserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Users to fetch.
      */
     orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Users.
      */
     cursor?: UserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Users from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Users.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Users.
      */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
@@ -6762,43 +9039,43 @@ export namespace Prisma {
     where?: AdminUserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of AdminUsers to fetch.
      */
     orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: AdminUserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` AdminUsers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` AdminUsers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned AdminUsers
     **/
     _count?: true | AdminUserCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: AdminUserMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: AdminUserMaxAggregateInputType
@@ -7001,13 +9278,13 @@ export namespace Prisma {
      * @example
      * // Get all AdminUsers
      * const adminUsers = await prisma.adminUser.findMany()
-     * 
+     *
      * // Get first 10 AdminUsers
      * const adminUsers = await prisma.adminUser.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const adminUserWithIdOnly = await prisma.adminUser.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends AdminUserFindManyArgs>(args?: SelectSubset<T, AdminUserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -7021,7 +9298,7 @@ export namespace Prisma {
      *     // ... data to create a AdminUser
      *   }
      * })
-     * 
+     *
      */
     create<T extends AdminUserCreateArgs>(args: SelectSubset<T, AdminUserCreateArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -7035,7 +9312,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends AdminUserCreateManyArgs>(args?: SelectSubset<T, AdminUserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -7049,7 +9326,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many AdminUsers and only return the `id`
      * const adminUserWithIdOnly = await prisma.adminUser.createManyAndReturn({
      *   select: { id: true },
@@ -7059,7 +9336,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends AdminUserCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminUserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -7073,7 +9350,7 @@ export namespace Prisma {
      *     // ... filter to delete one AdminUser
      *   }
      * })
-     * 
+     *
      */
     delete<T extends AdminUserDeleteArgs>(args: SelectSubset<T, AdminUserDeleteArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -7090,7 +9367,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends AdminUserUpdateArgs>(args: SelectSubset<T, AdminUserUpdateArgs<ExtArgs>>): Prisma__AdminUserClient<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -7104,7 +9381,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends AdminUserDeleteManyArgs>(args?: SelectSubset<T, AdminUserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -7123,7 +9400,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends AdminUserUpdateManyArgs>(args: SelectSubset<T, AdminUserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -7140,7 +9417,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more AdminUsers and only return the `id`
      * const adminUserWithIdOnly = await prisma.adminUser.updateManyAndReturn({
      *   select: { id: true },
@@ -7153,7 +9430,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends AdminUserUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminUserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminUserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -7242,7 +9519,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends AdminUserGroupByArgs,
@@ -7354,7 +9631,7 @@ export namespace Prisma {
     readonly addedByUserId: FieldRef<"AdminUser", 'String'>
     readonly userId: FieldRef<"AdminUser", 'String'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -7423,31 +9700,31 @@ export namespace Prisma {
     where?: AdminUserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of AdminUsers to fetch.
      */
     orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for AdminUsers.
      */
     cursor?: AdminUserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` AdminUsers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` AdminUsers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of AdminUsers.
      */
     distinct?: AdminUserScalarFieldEnum | AdminUserScalarFieldEnum[]
@@ -7475,31 +9752,31 @@ export namespace Prisma {
     where?: AdminUserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of AdminUsers to fetch.
      */
     orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for AdminUsers.
      */
     cursor?: AdminUserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` AdminUsers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` AdminUsers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of AdminUsers.
      */
     distinct?: AdminUserScalarFieldEnum | AdminUserScalarFieldEnum[]
@@ -7527,31 +9804,31 @@ export namespace Prisma {
     where?: AdminUserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of AdminUsers to fetch.
      */
     orderBy?: AdminUserOrderByWithRelationInput | AdminUserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing AdminUsers.
      */
     cursor?: AdminUserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` AdminUsers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` AdminUsers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of AdminUsers.
      */
     distinct?: AdminUserScalarFieldEnum | AdminUserScalarFieldEnum[]
@@ -7896,43 +10173,43 @@ export namespace Prisma {
     where?: SessionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Sessions to fetch.
      */
     orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: SessionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Sessions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Sessions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Sessions
     **/
     _count?: true | SessionCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: SessionMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: SessionMaxAggregateInputType
@@ -8140,13 +10417,13 @@ export namespace Prisma {
      * @example
      * // Get all Sessions
      * const sessions = await prisma.session.findMany()
-     * 
+     *
      * // Get first 10 Sessions
      * const sessions = await prisma.session.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const sessionWithIdOnly = await prisma.session.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends SessionFindManyArgs>(args?: SelectSubset<T, SessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -8160,7 +10437,7 @@ export namespace Prisma {
      *     // ... data to create a Session
      *   }
      * })
-     * 
+     *
      */
     create<T extends SessionCreateArgs>(args: SelectSubset<T, SessionCreateArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -8174,7 +10451,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends SessionCreateManyArgs>(args?: SelectSubset<T, SessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -8188,7 +10465,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Sessions and only return the `id`
      * const sessionWithIdOnly = await prisma.session.createManyAndReturn({
      *   select: { id: true },
@@ -8198,7 +10475,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends SessionCreateManyAndReturnArgs>(args?: SelectSubset<T, SessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -8212,7 +10489,7 @@ export namespace Prisma {
      *     // ... filter to delete one Session
      *   }
      * })
-     * 
+     *
      */
     delete<T extends SessionDeleteArgs>(args: SelectSubset<T, SessionDeleteArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -8229,7 +10506,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends SessionUpdateArgs>(args: SelectSubset<T, SessionUpdateArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -8243,7 +10520,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends SessionDeleteManyArgs>(args?: SelectSubset<T, SessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -8262,7 +10539,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends SessionUpdateManyArgs>(args: SelectSubset<T, SessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -8279,7 +10556,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Sessions and only return the `id`
      * const sessionWithIdOnly = await prisma.session.updateManyAndReturn({
      *   select: { id: true },
@@ -8292,7 +10569,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends SessionUpdateManyAndReturnArgs>(args: SelectSubset<T, SessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -8381,7 +10658,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends SessionGroupByArgs,
@@ -8494,7 +10771,7 @@ export namespace Prisma {
     readonly userAgent: FieldRef<"Session", 'String'>
     readonly userId: FieldRef<"Session", 'String'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -8563,31 +10840,31 @@ export namespace Prisma {
     where?: SessionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Sessions to fetch.
      */
     orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Sessions.
      */
     cursor?: SessionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Sessions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Sessions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Sessions.
      */
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
@@ -8615,31 +10892,31 @@ export namespace Prisma {
     where?: SessionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Sessions to fetch.
      */
     orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Sessions.
      */
     cursor?: SessionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Sessions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Sessions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Sessions.
      */
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
@@ -8667,31 +10944,31 @@ export namespace Prisma {
     where?: SessionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Sessions to fetch.
      */
     orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Sessions.
      */
     cursor?: SessionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Sessions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Sessions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Sessions.
      */
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
@@ -9028,43 +11305,43 @@ export namespace Prisma {
     where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Accounts to fetch.
      */
     orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Accounts
     **/
     _count?: true | AccountCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: AccountMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: AccountMaxAggregateInputType
@@ -9302,13 +11579,13 @@ export namespace Prisma {
      * @example
      * // Get all Accounts
      * const accounts = await prisma.account.findMany()
-     * 
+     *
      * // Get first 10 Accounts
      * const accounts = await prisma.account.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const accountWithIdOnly = await prisma.account.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends AccountFindManyArgs>(args?: SelectSubset<T, AccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -9322,7 +11599,7 @@ export namespace Prisma {
      *     // ... data to create a Account
      *   }
      * })
-     * 
+     *
      */
     create<T extends AccountCreateArgs>(args: SelectSubset<T, AccountCreateArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -9336,7 +11613,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends AccountCreateManyArgs>(args?: SelectSubset<T, AccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -9350,7 +11627,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Accounts and only return the `id`
      * const accountWithIdOnly = await prisma.account.createManyAndReturn({
      *   select: { id: true },
@@ -9360,7 +11637,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends AccountCreateManyAndReturnArgs>(args?: SelectSubset<T, AccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -9374,7 +11651,7 @@ export namespace Prisma {
      *     // ... filter to delete one Account
      *   }
      * })
-     * 
+     *
      */
     delete<T extends AccountDeleteArgs>(args: SelectSubset<T, AccountDeleteArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -9391,7 +11668,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends AccountUpdateArgs>(args: SelectSubset<T, AccountUpdateArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -9405,7 +11682,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends AccountDeleteManyArgs>(args?: SelectSubset<T, AccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -9424,7 +11701,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends AccountUpdateManyArgs>(args: SelectSubset<T, AccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -9441,7 +11718,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Accounts and only return the `id`
      * const accountWithIdOnly = await prisma.account.updateManyAndReturn({
      *   select: { id: true },
@@ -9454,7 +11731,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends AccountUpdateManyAndReturnArgs>(args: SelectSubset<T, AccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -9543,7 +11820,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends AccountGroupByArgs,
@@ -9661,7 +11938,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Account", 'DateTime'>
     readonly updatedAt: FieldRef<"Account", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -9730,31 +12007,31 @@ export namespace Prisma {
     where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Accounts to fetch.
      */
     orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Accounts.
      */
     cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Accounts.
      */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
@@ -9782,31 +12059,31 @@ export namespace Prisma {
     where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Accounts to fetch.
      */
     orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Accounts.
      */
     cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Accounts.
      */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
@@ -9834,31 +12111,31 @@ export namespace Prisma {
     where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Accounts to fetch.
      */
     orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Accounts.
      */
     cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Accounts.
      */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
@@ -10153,43 +12430,43 @@ export namespace Prisma {
     where?: VerificationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Verifications to fetch.
      */
     orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: VerificationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Verifications from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Verifications.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Verifications
     **/
     _count?: true | VerificationCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: VerificationMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: VerificationMaxAggregateInputType
@@ -10371,13 +12648,13 @@ export namespace Prisma {
      * @example
      * // Get all Verifications
      * const verifications = await prisma.verification.findMany()
-     * 
+     *
      * // Get first 10 Verifications
      * const verifications = await prisma.verification.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const verificationWithIdOnly = await prisma.verification.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends VerificationFindManyArgs>(args?: SelectSubset<T, VerificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -10391,7 +12668,7 @@ export namespace Prisma {
      *     // ... data to create a Verification
      *   }
      * })
-     * 
+     *
      */
     create<T extends VerificationCreateArgs>(args: SelectSubset<T, VerificationCreateArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -10405,7 +12682,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends VerificationCreateManyArgs>(args?: SelectSubset<T, VerificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -10419,7 +12696,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Verifications and only return the `id`
      * const verificationWithIdOnly = await prisma.verification.createManyAndReturn({
      *   select: { id: true },
@@ -10429,7 +12706,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends VerificationCreateManyAndReturnArgs>(args?: SelectSubset<T, VerificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -10443,7 +12720,7 @@ export namespace Prisma {
      *     // ... filter to delete one Verification
      *   }
      * })
-     * 
+     *
      */
     delete<T extends VerificationDeleteArgs>(args: SelectSubset<T, VerificationDeleteArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -10460,7 +12737,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends VerificationUpdateArgs>(args: SelectSubset<T, VerificationUpdateArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -10474,7 +12751,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends VerificationDeleteManyArgs>(args?: SelectSubset<T, VerificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -10493,7 +12770,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends VerificationUpdateManyArgs>(args: SelectSubset<T, VerificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -10510,7 +12787,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Verifications and only return the `id`
      * const verificationWithIdOnly = await prisma.verification.updateManyAndReturn({
      *   select: { id: true },
@@ -10523,7 +12800,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends VerificationUpdateManyAndReturnArgs>(args: SelectSubset<T, VerificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -10612,7 +12889,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends VerificationGroupByArgs,
@@ -10722,7 +12999,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Verification", 'DateTime'>
     readonly updatedAt: FieldRef<"Verification", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -10779,31 +13056,31 @@ export namespace Prisma {
     where?: VerificationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Verifications to fetch.
      */
     orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Verifications.
      */
     cursor?: VerificationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Verifications from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Verifications.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Verifications.
      */
     distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
@@ -10827,31 +13104,31 @@ export namespace Prisma {
     where?: VerificationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Verifications to fetch.
      */
     orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Verifications.
      */
     cursor?: VerificationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Verifications from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Verifications.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Verifications.
      */
     distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
@@ -10875,31 +13152,31 @@ export namespace Prisma {
     where?: VerificationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Verifications to fetch.
      */
     orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Verifications.
      */
     cursor?: VerificationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Verifications from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Verifications.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Verifications.
      */
     distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
@@ -11111,9 +13388,11 @@ export namespace Prisma {
     idempotencyKey: 'idempotencyKey',
     formPayload: 'formPayload',
     selectedPriceId: 'selectedPriceId',
+    selectedPackageId: 'selectedPackageId',
+    packageTitle: 'packageTitle',
     stripeProductId: 'stripeProductId',
     tierName: 'tierName',
-    confirmationTokenId: 'confirmationTokenId',
+    stripeCheckoutSessionId: 'stripeCheckoutSessionId',
     additionalRepPriceId: 'additionalRepPriceId',
     additionalRepProductId: 'additionalRepProductId',
     additionalRepCount: 'additionalRepCount',
@@ -11156,6 +13435,8 @@ export namespace Prisma {
     degreeLevels: 'degreeLevels',
     positionsAvailable: 'positionsAvailable',
     tierName: 'tierName',
+    selectedPackageId: 'selectedPackageId',
+    packageTitle: 'packageTitle',
     stripeProductId: 'stripeProductId',
     stripePriceId: 'stripePriceId',
     additionalRepPriceId: 'additionalRepPriceId',
@@ -11171,6 +13452,29 @@ export namespace Prisma {
   };
 
   export type EmployerRegistrationScalarFieldEnum = (typeof EmployerRegistrationScalarFieldEnum)[keyof typeof EmployerRegistrationScalarFieldEnum]
+
+
+  export const EmployerRegistrationPackageScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    stripePriceIds: 'stripePriceIds',
+    enabled: 'enabled',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmployerRegistrationPackageScalarFieldEnum = (typeof EmployerRegistrationPackageScalarFieldEnum)[keyof typeof EmployerRegistrationPackageScalarFieldEnum]
+
+
+  export const EmployerRegistrationConfigurationScalarFieldEnum: {
+    id: 'id',
+    additionalRepresentativePriceId: 'additionalRepresentativePriceId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmployerRegistrationConfigurationScalarFieldEnum = (typeof EmployerRegistrationConfigurationScalarFieldEnum)[keyof typeof EmployerRegistrationConfigurationScalarFieldEnum]
 
 
   export const PostScalarFieldEnum: {
@@ -11303,119 +13607,119 @@ export namespace Prisma {
    * Reference to a field of type 'String'
    */
   export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
-    
+
 
 
   /**
    * Reference to a field of type 'String[]'
    */
   export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'Json'
    */
   export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
+
 
 
   /**
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
+
 
 
   /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
+
 
 
   /**
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'RegistrationAttemptStatus'
    */
   export type EnumRegistrationAttemptStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationAttemptStatus'>
-    
+
 
 
   /**
    * Reference to a field of type 'RegistrationAttemptStatus[]'
    */
   export type ListEnumRegistrationAttemptStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationAttemptStatus[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
+
 
 
   /**
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
+
 
 
   /**
    * Reference to a field of type 'RegistrationPaymentStatus'
    */
   export type EnumRegistrationPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationPaymentStatus'>
-    
+
 
 
   /**
    * Reference to a field of type 'RegistrationPaymentStatus[]'
    */
   export type ListEnumRegistrationPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationPaymentStatus[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'AdminRole'
    */
   export type EnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminRole'>
-    
+
 
 
   /**
    * Reference to a field of type 'AdminRole[]'
    */
   export type ListEnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminRole[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
+
 
 
   /**
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
+
   /**
    * Deep Input Types
    */
@@ -11429,9 +13733,11 @@ export namespace Prisma {
     idempotencyKey?: StringFilter<"RegistrationAttempt"> | string
     formPayload?: JsonFilter<"RegistrationAttempt">
     selectedPriceId?: StringFilter<"RegistrationAttempt"> | string
+    selectedPackageId?: StringFilter<"RegistrationAttempt"> | string
+    packageTitle?: StringFilter<"RegistrationAttempt"> | string
     stripeProductId?: StringFilter<"RegistrationAttempt"> | string
     tierName?: StringFilter<"RegistrationAttempt"> | string
-    confirmationTokenId?: StringFilter<"RegistrationAttempt"> | string
+    stripeCheckoutSessionId?: StringNullableFilter<"RegistrationAttempt"> | string | null
     additionalRepPriceId?: StringFilter<"RegistrationAttempt"> | string
     additionalRepProductId?: StringFilter<"RegistrationAttempt"> | string
     additionalRepCount?: IntFilter<"RegistrationAttempt"> | number
@@ -11451,9 +13757,11 @@ export namespace Prisma {
     idempotencyKey?: SortOrder
     formPayload?: SortOrder
     selectedPriceId?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     tierName?: SortOrder
-    confirmationTokenId?: SortOrder
+    stripeCheckoutSessionId?: SortOrderInput | SortOrder
     additionalRepPriceId?: SortOrder
     additionalRepProductId?: SortOrder
     additionalRepCount?: SortOrder
@@ -11471,15 +13779,17 @@ export namespace Prisma {
   export type RegistrationAttemptWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     idempotencyKey?: string
+    stripeCheckoutSessionId?: string
     stripePaymentIntentId?: string
     AND?: RegistrationAttemptWhereInput | RegistrationAttemptWhereInput[]
     OR?: RegistrationAttemptWhereInput[]
     NOT?: RegistrationAttemptWhereInput | RegistrationAttemptWhereInput[]
     formPayload?: JsonFilter<"RegistrationAttempt">
     selectedPriceId?: StringFilter<"RegistrationAttempt"> | string
+    selectedPackageId?: StringFilter<"RegistrationAttempt"> | string
+    packageTitle?: StringFilter<"RegistrationAttempt"> | string
     stripeProductId?: StringFilter<"RegistrationAttempt"> | string
     tierName?: StringFilter<"RegistrationAttempt"> | string
-    confirmationTokenId?: StringFilter<"RegistrationAttempt"> | string
     additionalRepPriceId?: StringFilter<"RegistrationAttempt"> | string
     additionalRepProductId?: StringFilter<"RegistrationAttempt"> | string
     additionalRepCount?: IntFilter<"RegistrationAttempt"> | number
@@ -11491,16 +13801,18 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RegistrationAttempt"> | Date | string
     updatedAt?: DateTimeFilter<"RegistrationAttempt"> | Date | string
     registration?: XOR<EmployerRegistrationNullableScalarRelationFilter, EmployerRegistrationWhereInput> | null
-  }, "id" | "idempotencyKey" | "stripePaymentIntentId">
+  }, "id" | "idempotencyKey" | "stripeCheckoutSessionId" | "stripePaymentIntentId">
 
   export type RegistrationAttemptOrderByWithAggregationInput = {
     id?: SortOrder
     idempotencyKey?: SortOrder
     formPayload?: SortOrder
     selectedPriceId?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     tierName?: SortOrder
-    confirmationTokenId?: SortOrder
+    stripeCheckoutSessionId?: SortOrderInput | SortOrder
     additionalRepPriceId?: SortOrder
     additionalRepProductId?: SortOrder
     additionalRepCount?: SortOrder
@@ -11527,9 +13839,11 @@ export namespace Prisma {
     idempotencyKey?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
     formPayload?: JsonWithAggregatesFilter<"RegistrationAttempt">
     selectedPriceId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    selectedPackageId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    packageTitle?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
     stripeProductId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
     tierName?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
-    confirmationTokenId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
+    stripeCheckoutSessionId?: StringNullableWithAggregatesFilter<"RegistrationAttempt"> | string | null
     additionalRepPriceId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
     additionalRepProductId?: StringWithAggregatesFilter<"RegistrationAttempt"> | string
     additionalRepCount?: IntWithAggregatesFilter<"RegistrationAttempt"> | number
@@ -11572,6 +13886,8 @@ export namespace Prisma {
     degreeLevels?: StringNullableListFilter<"EmployerRegistration">
     positionsAvailable?: StringNullableListFilter<"EmployerRegistration">
     tierName?: StringFilter<"EmployerRegistration"> | string
+    selectedPackageId?: StringFilter<"EmployerRegistration"> | string
+    packageTitle?: StringFilter<"EmployerRegistration"> | string
     stripeProductId?: StringFilter<"EmployerRegistration"> | string
     stripePriceId?: StringFilter<"EmployerRegistration"> | string
     additionalRepPriceId?: StringFilter<"EmployerRegistration"> | string
@@ -11613,6 +13929,8 @@ export namespace Prisma {
     degreeLevels?: SortOrder
     positionsAvailable?: SortOrder
     tierName?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     stripePriceId?: SortOrder
     additionalRepPriceId?: SortOrder
@@ -11658,6 +13976,8 @@ export namespace Prisma {
     degreeLevels?: StringNullableListFilter<"EmployerRegistration">
     positionsAvailable?: StringNullableListFilter<"EmployerRegistration">
     tierName?: StringFilter<"EmployerRegistration"> | string
+    selectedPackageId?: StringFilter<"EmployerRegistration"> | string
+    packageTitle?: StringFilter<"EmployerRegistration"> | string
     stripeProductId?: StringFilter<"EmployerRegistration"> | string
     stripePriceId?: StringFilter<"EmployerRegistration"> | string
     additionalRepPriceId?: StringFilter<"EmployerRegistration"> | string
@@ -11698,6 +14018,8 @@ export namespace Prisma {
     degreeLevels?: SortOrder
     positionsAvailable?: SortOrder
     tierName?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     stripePriceId?: SortOrder
     additionalRepPriceId?: SortOrder
@@ -11746,6 +14068,8 @@ export namespace Prisma {
     degreeLevels?: StringNullableListFilter<"EmployerRegistration">
     positionsAvailable?: StringNullableListFilter<"EmployerRegistration">
     tierName?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    selectedPackageId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
+    packageTitle?: StringWithAggregatesFilter<"EmployerRegistration"> | string
     stripeProductId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
     stripePriceId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
     additionalRepPriceId?: StringWithAggregatesFilter<"EmployerRegistration"> | string
@@ -11758,6 +14082,117 @@ export namespace Prisma {
     paymentStatus?: EnumRegistrationPaymentStatusWithAggregatesFilter<"EmployerRegistration"> | $Enums.RegistrationPaymentStatus
     createdAt?: DateTimeWithAggregatesFilter<"EmployerRegistration"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"EmployerRegistration"> | Date | string
+  }
+
+  export type EmployerRegistrationPackageWhereInput = {
+    AND?: EmployerRegistrationPackageWhereInput | EmployerRegistrationPackageWhereInput[]
+    OR?: EmployerRegistrationPackageWhereInput[]
+    NOT?: EmployerRegistrationPackageWhereInput | EmployerRegistrationPackageWhereInput[]
+    id?: StringFilter<"EmployerRegistrationPackage"> | string
+    title?: StringFilter<"EmployerRegistrationPackage"> | string
+    stripePriceIds?: StringNullableListFilter<"EmployerRegistrationPackage">
+    enabled?: BoolFilter<"EmployerRegistrationPackage"> | boolean
+    sortOrder?: IntFilter<"EmployerRegistrationPackage"> | number
+    createdAt?: DateTimeFilter<"EmployerRegistrationPackage"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployerRegistrationPackage"> | Date | string
+  }
+
+  export type EmployerRegistrationPackageOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    stripePriceIds?: SortOrder
+    enabled?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationPackageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EmployerRegistrationPackageWhereInput | EmployerRegistrationPackageWhereInput[]
+    OR?: EmployerRegistrationPackageWhereInput[]
+    NOT?: EmployerRegistrationPackageWhereInput | EmployerRegistrationPackageWhereInput[]
+    title?: StringFilter<"EmployerRegistrationPackage"> | string
+    stripePriceIds?: StringNullableListFilter<"EmployerRegistrationPackage">
+    enabled?: BoolFilter<"EmployerRegistrationPackage"> | boolean
+    sortOrder?: IntFilter<"EmployerRegistrationPackage"> | number
+    createdAt?: DateTimeFilter<"EmployerRegistrationPackage"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployerRegistrationPackage"> | Date | string
+  }, "id">
+
+  export type EmployerRegistrationPackageOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    stripePriceIds?: SortOrder
+    enabled?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmployerRegistrationPackageCountOrderByAggregateInput
+    _avg?: EmployerRegistrationPackageAvgOrderByAggregateInput
+    _max?: EmployerRegistrationPackageMaxOrderByAggregateInput
+    _min?: EmployerRegistrationPackageMinOrderByAggregateInput
+    _sum?: EmployerRegistrationPackageSumOrderByAggregateInput
+  }
+
+  export type EmployerRegistrationPackageScalarWhereWithAggregatesInput = {
+    AND?: EmployerRegistrationPackageScalarWhereWithAggregatesInput | EmployerRegistrationPackageScalarWhereWithAggregatesInput[]
+    OR?: EmployerRegistrationPackageScalarWhereWithAggregatesInput[]
+    NOT?: EmployerRegistrationPackageScalarWhereWithAggregatesInput | EmployerRegistrationPackageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmployerRegistrationPackage"> | string
+    title?: StringWithAggregatesFilter<"EmployerRegistrationPackage"> | string
+    stripePriceIds?: StringNullableListFilter<"EmployerRegistrationPackage">
+    enabled?: BoolWithAggregatesFilter<"EmployerRegistrationPackage"> | boolean
+    sortOrder?: IntWithAggregatesFilter<"EmployerRegistrationPackage"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"EmployerRegistrationPackage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmployerRegistrationPackage"> | Date | string
+  }
+
+  export type EmployerRegistrationConfigurationWhereInput = {
+    AND?: EmployerRegistrationConfigurationWhereInput | EmployerRegistrationConfigurationWhereInput[]
+    OR?: EmployerRegistrationConfigurationWhereInput[]
+    NOT?: EmployerRegistrationConfigurationWhereInput | EmployerRegistrationConfigurationWhereInput[]
+    id?: StringFilter<"EmployerRegistrationConfiguration"> | string
+    additionalRepresentativePriceId?: StringFilter<"EmployerRegistrationConfiguration"> | string
+    createdAt?: DateTimeFilter<"EmployerRegistrationConfiguration"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployerRegistrationConfiguration"> | Date | string
+  }
+
+  export type EmployerRegistrationConfigurationOrderByWithRelationInput = {
+    id?: SortOrder
+    additionalRepresentativePriceId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationConfigurationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EmployerRegistrationConfigurationWhereInput | EmployerRegistrationConfigurationWhereInput[]
+    OR?: EmployerRegistrationConfigurationWhereInput[]
+    NOT?: EmployerRegistrationConfigurationWhereInput | EmployerRegistrationConfigurationWhereInput[]
+    additionalRepresentativePriceId?: StringFilter<"EmployerRegistrationConfiguration"> | string
+    createdAt?: DateTimeFilter<"EmployerRegistrationConfiguration"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployerRegistrationConfiguration"> | Date | string
+  }, "id">
+
+  export type EmployerRegistrationConfigurationOrderByWithAggregationInput = {
+    id?: SortOrder
+    additionalRepresentativePriceId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmployerRegistrationConfigurationCountOrderByAggregateInput
+    _max?: EmployerRegistrationConfigurationMaxOrderByAggregateInput
+    _min?: EmployerRegistrationConfigurationMinOrderByAggregateInput
+  }
+
+  export type EmployerRegistrationConfigurationScalarWhereWithAggregatesInput = {
+    AND?: EmployerRegistrationConfigurationScalarWhereWithAggregatesInput | EmployerRegistrationConfigurationScalarWhereWithAggregatesInput[]
+    OR?: EmployerRegistrationConfigurationScalarWhereWithAggregatesInput[]
+    NOT?: EmployerRegistrationConfigurationScalarWhereWithAggregatesInput | EmployerRegistrationConfigurationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmployerRegistrationConfiguration"> | string
+    additionalRepresentativePriceId?: StringWithAggregatesFilter<"EmployerRegistrationConfiguration"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"EmployerRegistrationConfiguration"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmployerRegistrationConfiguration"> | Date | string
   }
 
   export type PostWhereInput = {
@@ -12182,9 +14617,11 @@ export namespace Prisma {
     idempotencyKey: string
     formPayload: JsonNullValueInput | InputJsonValue
     selectedPriceId: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     tierName: string
-    confirmationTokenId: string
+    stripeCheckoutSessionId?: string | null
     additionalRepPriceId: string
     additionalRepProductId: string
     additionalRepCount: number
@@ -12204,9 +14641,11 @@ export namespace Prisma {
     idempotencyKey: string
     formPayload: JsonNullValueInput | InputJsonValue
     selectedPriceId: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     tierName: string
-    confirmationTokenId: string
+    stripeCheckoutSessionId?: string | null
     additionalRepPriceId: string
     additionalRepProductId: string
     additionalRepCount: number
@@ -12226,9 +14665,11 @@ export namespace Prisma {
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     formPayload?: JsonNullValueInput | InputJsonValue
     selectedPriceId?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     tierName?: StringFieldUpdateOperationsInput | string
-    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    stripeCheckoutSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
     additionalRepProductId?: StringFieldUpdateOperationsInput | string
     additionalRepCount?: IntFieldUpdateOperationsInput | number
@@ -12248,9 +14689,11 @@ export namespace Prisma {
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     formPayload?: JsonNullValueInput | InputJsonValue
     selectedPriceId?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     tierName?: StringFieldUpdateOperationsInput | string
-    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    stripeCheckoutSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
     additionalRepProductId?: StringFieldUpdateOperationsInput | string
     additionalRepCount?: IntFieldUpdateOperationsInput | number
@@ -12270,9 +14713,11 @@ export namespace Prisma {
     idempotencyKey: string
     formPayload: JsonNullValueInput | InputJsonValue
     selectedPriceId: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     tierName: string
-    confirmationTokenId: string
+    stripeCheckoutSessionId?: string | null
     additionalRepPriceId: string
     additionalRepProductId: string
     additionalRepCount: number
@@ -12291,9 +14736,11 @@ export namespace Prisma {
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     formPayload?: JsonNullValueInput | InputJsonValue
     selectedPriceId?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     tierName?: StringFieldUpdateOperationsInput | string
-    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    stripeCheckoutSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
     additionalRepProductId?: StringFieldUpdateOperationsInput | string
     additionalRepCount?: IntFieldUpdateOperationsInput | number
@@ -12312,9 +14759,11 @@ export namespace Prisma {
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     formPayload?: JsonNullValueInput | InputJsonValue
     selectedPriceId?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     tierName?: StringFieldUpdateOperationsInput | string
-    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    stripeCheckoutSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
     additionalRepProductId?: StringFieldUpdateOperationsInput | string
     additionalRepCount?: IntFieldUpdateOperationsInput | number
@@ -12353,6 +14802,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
     tierName: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     stripePriceId: string
     additionalRepPriceId: string
@@ -12394,6 +14845,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
     tierName: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     stripePriceId: string
     additionalRepPriceId: string
@@ -12433,6 +14886,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
     tierName?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     stripePriceId?: StringFieldUpdateOperationsInput | string
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
@@ -12474,6 +14929,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
     tierName?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     stripePriceId?: StringFieldUpdateOperationsInput | string
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
@@ -12514,6 +14971,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
     tierName: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     stripePriceId: string
     additionalRepPriceId: string
@@ -12553,6 +15012,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
     tierName?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     stripePriceId?: StringFieldUpdateOperationsInput | string
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
@@ -12593,6 +15054,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
     tierName?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     stripePriceId?: StringFieldUpdateOperationsInput | string
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
@@ -12603,6 +15066,125 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     paymentStatus?: EnumRegistrationPaymentStatusFieldUpdateOperationsInput | $Enums.RegistrationPaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationPackageCreateInput = {
+    id?: string
+    title: string
+    stripePriceIds?: EmployerRegistrationPackageCreatestripePriceIdsInput | string[]
+    enabled?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationPackageUncheckedCreateInput = {
+    id?: string
+    title: string
+    stripePriceIds?: EmployerRegistrationPackageCreatestripePriceIdsInput | string[]
+    enabled?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationPackageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    stripePriceIds?: EmployerRegistrationPackageUpdatestripePriceIdsInput | string[]
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationPackageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    stripePriceIds?: EmployerRegistrationPackageUpdatestripePriceIdsInput | string[]
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationPackageCreateManyInput = {
+    id?: string
+    title: string
+    stripePriceIds?: EmployerRegistrationPackageCreatestripePriceIdsInput | string[]
+    enabled?: boolean
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationPackageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    stripePriceIds?: EmployerRegistrationPackageUpdatestripePriceIdsInput | string[]
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationPackageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    stripePriceIds?: EmployerRegistrationPackageUpdatestripePriceIdsInput | string[]
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationConfigurationCreateInput = {
+    id?: string
+    additionalRepresentativePriceId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationConfigurationUncheckedCreateInput = {
+    id?: string
+    additionalRepresentativePriceId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationConfigurationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    additionalRepresentativePriceId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationConfigurationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    additionalRepresentativePriceId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationConfigurationCreateManyInput = {
+    id?: string
+    additionalRepresentativePriceId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployerRegistrationConfigurationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    additionalRepresentativePriceId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployerRegistrationConfigurationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    additionalRepresentativePriceId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13101,17 +15683,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -13125,6 +15696,17 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type EnumRegistrationAttemptStatusFilter<$PrismaModel = never> = {
@@ -13160,9 +15742,11 @@ export namespace Prisma {
     idempotencyKey?: SortOrder
     formPayload?: SortOrder
     selectedPriceId?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     tierName?: SortOrder
-    confirmationTokenId?: SortOrder
+    stripeCheckoutSessionId?: SortOrder
     additionalRepPriceId?: SortOrder
     additionalRepProductId?: SortOrder
     additionalRepCount?: SortOrder
@@ -13186,9 +15770,11 @@ export namespace Prisma {
     id?: SortOrder
     idempotencyKey?: SortOrder
     selectedPriceId?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     tierName?: SortOrder
-    confirmationTokenId?: SortOrder
+    stripeCheckoutSessionId?: SortOrder
     additionalRepPriceId?: SortOrder
     additionalRepProductId?: SortOrder
     additionalRepCount?: SortOrder
@@ -13206,9 +15792,11 @@ export namespace Prisma {
     id?: SortOrder
     idempotencyKey?: SortOrder
     selectedPriceId?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     tierName?: SortOrder
-    confirmationTokenId?: SortOrder
+    stripeCheckoutSessionId?: SortOrder
     additionalRepPriceId?: SortOrder
     additionalRepProductId?: SortOrder
     additionalRepCount?: SortOrder
@@ -13272,22 +15860,6 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -13304,6 +15876,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumRegistrationAttemptStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -13386,6 +15974,8 @@ export namespace Prisma {
     degreeLevels?: SortOrder
     positionsAvailable?: SortOrder
     tierName?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     stripePriceId?: SortOrder
     additionalRepPriceId?: SortOrder
@@ -13429,6 +16019,8 @@ export namespace Prisma {
     overview?: SortOrder
     workAuthorizationOther?: SortOrder
     tierName?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     stripePriceId?: SortOrder
     additionalRepPriceId?: SortOrder
@@ -13465,6 +16057,8 @@ export namespace Prisma {
     overview?: SortOrder
     workAuthorizationOther?: SortOrder
     tierName?: SortOrder
+    selectedPackageId?: SortOrder
+    packageTitle?: SortOrder
     stripeProductId?: SortOrder
     stripePriceId?: SortOrder
     additionalRepPriceId?: SortOrder
@@ -13510,6 +16104,63 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRegistrationPaymentStatusFilter<$PrismaModel>
     _max?: NestedEnumRegistrationPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type EmployerRegistrationPackageCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    stripePriceIds?: SortOrder
+    enabled?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationPackageAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type EmployerRegistrationPackageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    enabled?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationPackageMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    enabled?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationPackageSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type EmployerRegistrationConfigurationCountOrderByAggregateInput = {
+    id?: SortOrder
+    additionalRepresentativePriceId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationConfigurationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    additionalRepresentativePriceId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployerRegistrationConfigurationMinOrderByAggregateInput = {
+    id?: SortOrder
+    additionalRepresentativePriceId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserScalarRelationFilter = {
@@ -13814,16 +16465,16 @@ export namespace Prisma {
     set?: string
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type EnumRegistrationAttemptStatusFieldUpdateOperationsInput = {
@@ -13914,6 +16565,15 @@ export namespace Prisma {
     upsert?: RegistrationAttemptUpsertWithoutRegistrationInput
     connect?: RegistrationAttemptWhereUniqueInput
     update?: XOR<XOR<RegistrationAttemptUpdateToOneWithWhereWithoutRegistrationInput, RegistrationAttemptUpdateWithoutRegistrationInput>, RegistrationAttemptUncheckedUpdateWithoutRegistrationInput>
+  }
+
+  export type EmployerRegistrationPackageCreatestripePriceIdsInput = {
+    set: string[]
+  }
+
+  export type EmployerRegistrationPackageUpdatestripePriceIdsInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type UserCreateNestedOneWithoutPostsInput = {
@@ -14212,17 +16872,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -14235,6 +16884,17 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedEnumRegistrationAttemptStatusFilter<$PrismaModel = never> = {
@@ -14295,33 +16955,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -14348,6 +16981,33 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedEnumRegistrationAttemptStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -14484,6 +17144,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
     tierName: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     stripePriceId: string
     additionalRepPriceId: string
@@ -14523,6 +17185,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationCreatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationCreatepositionsAvailableInput | string[]
     tierName: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     stripePriceId: string
     additionalRepPriceId: string
@@ -14578,6 +17242,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
     tierName?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     stripePriceId?: StringFieldUpdateOperationsInput | string
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
@@ -14617,6 +17283,8 @@ export namespace Prisma {
     degreeLevels?: EmployerRegistrationUpdatedegreeLevelsInput | string[]
     positionsAvailable?: EmployerRegistrationUpdatepositionsAvailableInput | string[]
     tierName?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     stripePriceId?: StringFieldUpdateOperationsInput | string
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
@@ -14636,9 +17304,11 @@ export namespace Prisma {
     idempotencyKey: string
     formPayload: JsonNullValueInput | InputJsonValue
     selectedPriceId: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     tierName: string
-    confirmationTokenId: string
+    stripeCheckoutSessionId?: string | null
     additionalRepPriceId: string
     additionalRepProductId: string
     additionalRepCount: number
@@ -14657,9 +17327,11 @@ export namespace Prisma {
     idempotencyKey: string
     formPayload: JsonNullValueInput | InputJsonValue
     selectedPriceId: string
+    selectedPackageId?: string
+    packageTitle?: string
     stripeProductId: string
     tierName: string
-    confirmationTokenId: string
+    stripeCheckoutSessionId?: string | null
     additionalRepPriceId: string
     additionalRepProductId: string
     additionalRepCount: number
@@ -14694,9 +17366,11 @@ export namespace Prisma {
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     formPayload?: JsonNullValueInput | InputJsonValue
     selectedPriceId?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     tierName?: StringFieldUpdateOperationsInput | string
-    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    stripeCheckoutSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
     additionalRepProductId?: StringFieldUpdateOperationsInput | string
     additionalRepCount?: IntFieldUpdateOperationsInput | number
@@ -14715,9 +17389,11 @@ export namespace Prisma {
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     formPayload?: JsonNullValueInput | InputJsonValue
     selectedPriceId?: StringFieldUpdateOperationsInput | string
+    selectedPackageId?: StringFieldUpdateOperationsInput | string
+    packageTitle?: StringFieldUpdateOperationsInput | string
     stripeProductId?: StringFieldUpdateOperationsInput | string
     tierName?: StringFieldUpdateOperationsInput | string
-    confirmationTokenId?: StringFieldUpdateOperationsInput | string
+    stripeCheckoutSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     additionalRepPriceId?: StringFieldUpdateOperationsInput | string
     additionalRepProductId?: StringFieldUpdateOperationsInput | string
     additionalRepCount?: IntFieldUpdateOperationsInput | number

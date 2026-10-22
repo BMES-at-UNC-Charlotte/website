@@ -125,9 +125,11 @@ exports.Prisma.RegistrationAttemptScalarFieldEnum = {
   idempotencyKey: 'idempotencyKey',
   formPayload: 'formPayload',
   selectedPriceId: 'selectedPriceId',
+  selectedPackageId: 'selectedPackageId',
+  packageTitle: 'packageTitle',
   stripeProductId: 'stripeProductId',
   tierName: 'tierName',
-  confirmationTokenId: 'confirmationTokenId',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
   additionalRepPriceId: 'additionalRepPriceId',
   additionalRepProductId: 'additionalRepProductId',
   additionalRepCount: 'additionalRepCount',
@@ -167,6 +169,8 @@ exports.Prisma.EmployerRegistrationScalarFieldEnum = {
   degreeLevels: 'degreeLevels',
   positionsAvailable: 'positionsAvailable',
   tierName: 'tierName',
+  selectedPackageId: 'selectedPackageId',
+  packageTitle: 'packageTitle',
   stripeProductId: 'stripeProductId',
   stripePriceId: 'stripePriceId',
   additionalRepPriceId: 'additionalRepPriceId',
@@ -177,6 +181,23 @@ exports.Prisma.EmployerRegistrationScalarFieldEnum = {
   amount: 'amount',
   currency: 'currency',
   paymentStatus: 'paymentStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmployerRegistrationPackageScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  stripePriceIds: 'stripePriceIds',
+  enabled: 'enabled',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmployerRegistrationConfigurationScalarFieldEnum = {
+  id: 'id',
+  additionalRepresentativePriceId: 'additionalRepresentativePriceId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -290,6 +311,8 @@ exports.AdminRole = exports.$Enums.AdminRole = {
 exports.Prisma.ModelName = {
   RegistrationAttempt: 'RegistrationAttempt',
   EmployerRegistration: 'EmployerRegistration',
+  EmployerRegistrationPackage: 'EmployerRegistrationPackage',
+  EmployerRegistrationConfiguration: 'EmployerRegistrationConfiguration',
   Post: 'Post',
   User: 'User',
   AdminUser: 'AdminUser',

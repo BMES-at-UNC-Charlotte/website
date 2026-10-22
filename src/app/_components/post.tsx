@@ -1,5 +1,6 @@
 "use client";
 
+import { Typography } from "@/app/_components/typography";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
@@ -20,11 +21,11 @@ export function LatestPost() {
   return (
     <div className="w-full max-w-xs space-y-3">
       {latestPost ? (
-        <p className="text-muted-foreground truncate text-sm">
+        <Typography variant="caption" className="truncate">
           Your most recent post: {latestPost.name}
-        </p>
+        </Typography>
       ) : (
-        <p className="text-muted-foreground text-sm">You have no posts yet.</p>
+        <Typography variant="caption">You have no posts yet.</Typography>
       )}
       <form
         onSubmit={(e) => {

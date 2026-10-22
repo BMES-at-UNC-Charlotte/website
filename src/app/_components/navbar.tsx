@@ -13,10 +13,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const mainNavigationItems = [
+type NavigationItem = {
+  title: string;
+  href: string;
+};
+
+const mainNavigationItems: NavigationItem[] = [
   { title: "Home", href: "/" },
   { title: "About", href: "/about" },
   { title: "Gallery", href: "/gallery" },
+  { title: "Career Events", href: "/career-events" },
   { title: "Sponsors", href: "/sponsors" },
   // Only include dev link in development environment
   ...(process.env.NODE_ENV === "development"
@@ -24,7 +30,7 @@ const mainNavigationItems = [
     : []),
 ];
 
-const adminNavigationItems = [
+const adminNavigationItems: NavigationItem[] = [
   { title: "Dashboard", href: "/admin" },
   { title: "Employer Events", href: "/admin/career" },
   { title: "Main Site", href: "/" },
@@ -37,6 +43,11 @@ export function NavBar() {
   const navigationItems = isAdminPage
     ? adminNavigationItems
     : mainNavigationItems;
+
+  const isActive = (href: string) =>
+    href === "/"
+      ? pathname === href
+      : pathname.startsWith(`${href}/`) || pathname === href;
 
   return (
     <header className="bg-background/95 fixed z-50 w-full border-b">
@@ -67,10 +78,10 @@ export function NavBar() {
               {navigationItems.map((item) => (
                 <NavigationMenuItem key={item.href}>
                   <NavigationMenuLink
+                    active={isActive(item.href)}
+                    aria-current={isActive(item.href) ? "page" : undefined}
                     render={<Link href={item.href} />}
-                    className={navigationMenuTriggerStyle({
-                      className: "px-3 py-2",
-                    })}
+                    className={navigationMenuTriggerStyle()}
                   >
                     {item.title}
                   </NavigationMenuLink>

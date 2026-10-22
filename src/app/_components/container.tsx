@@ -42,7 +42,7 @@ export function Container({
             sizes="100vw"
           />
           {heroContent ? (
-            <div className="relative z-10 mx-auto flex size-full max-w-6xl items-end px-4 py-10 sm:px-6 lg:px-8">
+            <div className="relative z-10 flex size-full items-center justify-center bg-black/40 px-4 py-10 sm:px-6 lg:px-8">
               {heroContent}
             </div>
           ) : null}

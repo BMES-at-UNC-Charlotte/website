@@ -1,29 +1,34 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { env } from "@/env";
 import {
   additionalRepresentativeCount,
   finalizeRegistrationSchema,
   representativeSurcharge,
   submitRegistrationSchema,
-} from "@/lib/employer-registration";
+} from "@/app/career-events/register/schema";
+import { promoteAcceptedAttempt } from "@/server/registration-payments";
 import {
-  paymentIntentResult,
-  promoteAcceptedAttempt,
-  recordFailedAttempt,
-} from "@/server/registration-payments";
-import { getRegistrationConfiguration, getStripe } from "@/server/stripe";
+  getActiveStripePrice,
+  getRegistrationConfiguration,
+  getStripe,
+} from "@/server/stripe";
 import {
   createTRPCRouter,
   officerProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 
-const getReturnUrl = (headers: Headers, attemptId: string) => {
+const getSiteUrl = (headers: Headers) => {
+  if (env.BETTER_AUTH_URL) {
+    return new URL(env.BETTER_AUTH_URL).origin;
+  }
+
   const origin = headers.get("origin");
   if (origin) {
     try {
-      return `${new URL(origin).origin}/register?attempt=${attemptId}`;
+      return new URL(origin).origin;
     } catch {
       // Fall through to the forwarded host.
     }
@@ -31,16 +36,104 @@ const getReturnUrl = (headers: Headers, attemptId: string) => {
 
   const host = headers.get("x-forwarded-host") ?? headers.get("host");
   const protocol = headers.get("x-forwarded-proto") ?? "http";
-  return `${protocol}://${host ?? "localhost:3000"}/register?attempt=${attemptId}`;
+  return `${protocol}://${host ?? "localhost:3000"}`;
 };
 
 const publicPaymentError = (error: unknown) => {
-  const message =
-    error instanceof Error ? error.message : "Stripe could not process payment";
-  return new TRPCError({ code: "BAD_REQUEST", message });
+  console.error(error);
+  return new TRPCError({
+    code: "BAD_REQUEST",
+    message:
+      "Payment could not be processed. Try again or use another payment method.",
+  });
+};
+
+const packageInput = z.object({
+  id: z.string().cuid().optional(),
+  title: z.string().trim().min(1, "Package title is required"),
+  stripePriceIds: z
+    .array(z.string().trim().startsWith("price_"))
+    .min(1, "Add at least one Stripe Price ID")
+    .refine((priceIds) => new Set(priceIds).size === priceIds.length, {
+      message: "Stripe Price IDs must be unique within a package",
+    }),
+  enabled: z.boolean(),
+  sortOrder: z.number().int(),
+});
+
+const verifyActivePrices = async (priceIds: string[]) => {
+  const prices = await Promise.all(
+    priceIds.map(async (priceId) => ({
+      priceId,
+      price: await getActiveStripePrice(priceId),
+    })),
+  );
+  const unavailablePrice = prices.find(({ price }) => !price);
+  if (unavailablePrice) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: `${unavailablePrice.priceId} is not an active one-time Stripe Price`,
+    });
+  }
 };
 
 export const registrationRouter = createTRPCRouter({
+  adminConfiguration: officerProcedure.query(async ({ ctx }) => {
+    const [packages, configuration] = await ctx.db.$transaction([
+      ctx.db.employerRegistrationPackage.findMany({
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      }),
+      ctx.db.employerRegistrationConfiguration.findUnique({
+        where: { id: "default" },
+      }),
+    ]);
+
+    return {
+      packages,
+      additionalRepresentativePriceId:
+        configuration?.additionalRepresentativePriceId ?? "",
+    };
+  }),
+
+  savePackage: officerProcedure
+    .input(packageInput)
+    .mutation(async ({ ctx, input }) => {
+      if (input.enabled) await verifyActivePrices(input.stripePriceIds);
+
+      const data = {
+        title: input.title,
+        stripePriceIds: input.stripePriceIds,
+        enabled: input.enabled,
+        sortOrder: input.sortOrder,
+      };
+
+      return input.id
+        ? ctx.db.employerRegistrationPackage.update({
+            where: { id: input.id },
+            data,
+          })
+        : ctx.db.employerRegistrationPackage.create({ data });
+    }),
+
+  saveAdditionalRepresentativePrice: officerProcedure
+    .input(
+      z.object({
+        priceId: z.string().trim().startsWith("price_"),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await verifyActivePrices([input.priceId]);
+
+      return ctx.db.employerRegistrationConfiguration.upsert({
+        where: { id: "default" },
+        update: { additionalRepresentativePriceId: input.priceId },
+        create: {
+          id: "default",
+          additionalRepresentativePriceId: input.priceId,
+        },
+      });
+    }),
+
   list: officerProcedure
     .input(
       z.object({
@@ -80,6 +173,7 @@ export const registrationRouter = createTRPCRouter({
             positionsAvailable: true,
             representativeCount: true,
             tierName: true,
+            packageTitle: true,
             additionalRepCount: true,
             additionalRepUnitAmount: true,
             amount: true,
@@ -96,10 +190,17 @@ export const registrationRouter = createTRPCRouter({
       return { registrations, total };
     }),
 
-  tiers: publicProcedure.query(async () => {
+  configuration: publicProcedure.query(async () => {
     try {
       return await getRegistrationConfiguration();
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "Employer registration pricing is not configured"
+      ) {
+        return null;
+      }
+
       throw new TRPCError({
         code: "PRECONDITION_FAILED",
         message:
@@ -127,13 +228,16 @@ export const registrationRouter = createTRPCRouter({
         throw publicPaymentError(error);
       }
 
-      const tier = configuration.tiers.find(
+      const registrationPackage = configuration.packages.find(
+        (candidate) => candidate.id === input.packageId,
+      );
+      const packageOption = registrationPackage?.options.find(
         (candidate) => candidate.priceId === input.priceId,
       );
-      if (!tier) {
+      if (!registrationPackage || !packageOption) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "The selected registration tier is not allowed",
+          message: "The selected package tier is not allowed",
         });
       }
 
@@ -141,7 +245,7 @@ export const registrationRouter = createTRPCRouter({
         input.registration.representativeCount,
       );
       const amount =
-        tier.unitAmount +
+        packageOption.unitAmount +
         representativeSurcharge(
           input.registration.representativeCount,
           configuration.additionalRepresentative.unitAmount,
@@ -153,20 +257,22 @@ export const registrationRouter = createTRPCRouter({
       });
 
       if (attempt?.registration) {
+        const registrationUrl = new URL(
+          "/career-events/register",
+          getSiteUrl(ctx.headers),
+        );
+        registrationUrl.searchParams.set("attempt", attempt.id);
         return {
-          accepted: true,
           attemptId: attempt.id,
-          clientSecret: null,
-          paymentStatus:
-            attempt.registration.paymentStatus === "SUCCEEDED"
-              ? "succeeded"
-              : "processing",
+          checkoutUrl: registrationUrl.toString(),
         } as const;
       }
 
       if (
         attempt &&
-        (attempt.selectedPriceId !== input.priceId || attempt.amount !== amount)
+        (attempt.selectedPackageId !== input.packageId ||
+          attempt.selectedPriceId !== input.priceId ||
+          attempt.amount !== amount)
       ) {
         throw new TRPCError({
           code: "CONFLICT",
@@ -178,10 +284,11 @@ export const registrationRouter = createTRPCRouter({
         data: {
           idempotencyKey: input.idempotencyKey,
           formPayload: input.registration,
-          selectedPriceId: tier.priceId,
-          stripeProductId: tier.productId,
-          tierName: tier.name,
-          confirmationTokenId: input.confirmationTokenId,
+          selectedPackageId: registrationPackage.id,
+          packageTitle: registrationPackage.title,
+          selectedPriceId: packageOption.priceId,
+          stripeProductId: packageOption.productId,
+          tierName: packageOption.name,
           additionalRepPriceId: configuration.additionalRepresentative.priceId,
           additionalRepProductId:
             configuration.additionalRepresentative.productId,
@@ -189,7 +296,7 @@ export const registrationRouter = createTRPCRouter({
           additionalRepUnitAmount:
             configuration.additionalRepresentative.unitAmount,
           amount,
-          currency: tier.currency,
+          currency: packageOption.currency,
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
         },
         include: { registration: true },
@@ -197,32 +304,61 @@ export const registrationRouter = createTRPCRouter({
 
       const stripe = getStripe();
 
-      if (attempt.stripePaymentIntentId) {
-        const existingPaymentIntent = await stripe.paymentIntents.retrieve(
-          attempt.stripePaymentIntentId,
+      if (attempt.stripeCheckoutSessionId) {
+        const existingSession = await stripe.checkout.sessions.retrieve(
+          attempt.stripeCheckoutSessionId,
         );
-        await promoteAcceptedAttempt(existingPaymentIntent);
+        if (!existingSession.url) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "This checkout session is no longer available",
+          });
+        }
+
         return {
           attemptId: attempt.id,
-          ...paymentIntentResult(existingPaymentIntent),
-        };
+          checkoutUrl: existingSession.url,
+        } as const;
       }
 
       try {
-        const paymentIntent = await stripe.paymentIntents.create(
+        const siteUrl = getSiteUrl(ctx.headers);
+        const successUrl = new URL("/career-events/register", siteUrl);
+        successUrl.searchParams.set("attempt", attempt.id);
+        const cancelUrl = new URL("/career-events/register", siteUrl);
+        cancelUrl.searchParams.set("canceled", "1");
+
+        const lineItems = [
+          { price: attempt.selectedPriceId, quantity: 1 },
+          ...(attempt.additionalRepCount > 0
+            ? [
+                {
+                  price: attempt.additionalRepPriceId,
+                  quantity: attempt.additionalRepCount,
+                },
+              ]
+            : []),
+        ];
+        const checkoutSession = await stripe.checkout.sessions.create(
           {
-            amount: attempt.amount,
-            currency: attempt.currency,
-            confirm: true,
-            confirmation_token: attempt.confirmationTokenId,
-            description: `${input.registration.companyName} employer event registration`,
+            mode: "payment",
+            line_items: lineItems,
+            customer_email: input.registration.email,
+            success_url: successUrl.toString(),
+            cancel_url: cancelUrl.toString(),
             metadata: {
               registrationAttemptId: attempt.id,
-              registrationPriceId: attempt.selectedPriceId,
-              additionalRepPriceId: attempt.additionalRepPriceId,
-              additionalRepQuantity: String(attempt.additionalRepCount),
             },
-            return_url: getReturnUrl(ctx.headers, attempt.id),
+            payment_intent_data: {
+              description: `${input.registration.companyName} employer event registration`,
+              metadata: {
+                registrationAttemptId: attempt.id,
+                registrationPackageId: attempt.selectedPackageId,
+                registrationPriceId: attempt.selectedPriceId,
+                additionalRepPriceId: attempt.additionalRepPriceId,
+                additionalRepQuantity: String(attempt.additionalRepCount),
+              },
+            },
           },
           { idempotencyKey: `employer-registration:${attempt.id}` },
         );
@@ -230,54 +366,20 @@ export const registrationRouter = createTRPCRouter({
         await ctx.db.registrationAttempt.update({
           where: { id: attempt.id },
           data: {
-            stripePaymentIntentId: paymentIntent.id,
-            status:
-              paymentIntent.status === "requires_action"
-                ? "REQUIRES_ACTION"
-                : paymentIntent.status === "processing"
-                  ? "PROCESSING"
-                  : paymentIntent.status === "succeeded"
-                    ? "SUCCEEDED"
-                    : "PENDING",
+            stripeCheckoutSessionId: checkoutSession.id,
           },
         });
 
-        await promoteAcceptedAttempt(paymentIntent);
-
-        if (paymentIntent.status === "requires_payment_method") {
-          await recordFailedAttempt(paymentIntent);
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "The payment method was declined. Please try another.",
-          });
+        if (!checkoutSession.url) {
+          throw new Error("Stripe did not return a checkout URL");
         }
 
         return {
           attemptId: attempt.id,
-          ...paymentIntentResult(paymentIntent),
-        };
+          checkoutUrl: checkoutSession.url,
+        } as const;
       } catch (error) {
         if (error instanceof TRPCError) throw error;
-
-        const paymentIntent = (error as { payment_intent?: unknown })
-          .payment_intent;
-        if (
-          paymentIntent &&
-          typeof paymentIntent === "object" &&
-          "id" in paymentIntent &&
-          "metadata" in paymentIntent
-        ) {
-          await recordFailedAttempt(
-            paymentIntent as Parameters<typeof recordFailedAttempt>[0],
-          );
-        } else {
-          await ctx.db.registrationAttempt.deleteMany({
-            where: {
-              id: attempt.id,
-              stripePaymentIntentId: null,
-            },
-          });
-        }
 
         throw publicPaymentError(error);
       }
@@ -289,7 +391,9 @@ export const registrationRouter = createTRPCRouter({
       const attempt = await ctx.db.registrationAttempt.findFirst({
         where: {
           ...(input.attemptId ? { id: input.attemptId } : {}),
-          idempotencyKey: input.idempotencyKey,
+          ...(input.idempotencyKey
+            ? { idempotencyKey: input.idempotencyKey }
+            : {}),
         },
         include: { registration: true },
       });
@@ -313,13 +417,22 @@ export const registrationRouter = createTRPCRouter({
         } as const;
       }
 
-      if (!attempt.stripePaymentIntentId) {
-        return { accepted: false, paymentStatus: "pending" } as const;
+      let paymentIntentId = attempt.stripePaymentIntentId;
+      if (!paymentIntentId && attempt.stripeCheckoutSessionId) {
+        const checkoutSession = await getStripe().checkout.sessions.retrieve(
+          attempt.stripeCheckoutSessionId,
+        );
+        paymentIntentId =
+          typeof checkoutSession.payment_intent === "string"
+            ? checkoutSession.payment_intent
+            : (checkoutSession.payment_intent?.id ?? null);
       }
 
-      const paymentIntent = await getStripe().paymentIntents.retrieve(
-        attempt.stripePaymentIntentId,
-      );
+      if (!paymentIntentId) {
+        return { accepted: false, paymentStatus: "pending" } as const;
+      }
+      const paymentIntent =
+        await getStripe().paymentIntents.retrieve(paymentIntentId);
       await promoteAcceptedAttempt(paymentIntent);
 
       return {

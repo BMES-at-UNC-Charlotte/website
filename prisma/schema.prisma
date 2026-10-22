@@ -33,9 +33,11 @@ model RegistrationAttempt {
   idempotencyKey          String                    @unique
   formPayload             Json
   selectedPriceId         String
+  selectedPackageId       String                    @default("")
+  packageTitle            String                    @default("")
   stripeProductId         String
   tierName                String
-  confirmationTokenId     String
+  stripeCheckoutSessionId String?                   @unique
   additionalRepPriceId    String
   additionalRepProductId  String
   additionalRepCount      Int
@@ -81,6 +83,8 @@ model EmployerRegistration {
   degreeLevels            String[]
   positionsAvailable      String[]
   tierName                String
+  selectedPackageId       String                    @default("")
+  packageTitle            String                    @default("")
   stripeProductId         String
   stripePriceId           String
   additionalRepPriceId    String
@@ -97,6 +101,25 @@ model EmployerRegistration {
   @@index([companyName])
   @@index([email])
   @@index([paymentStatus])
+}
+
+model EmployerRegistrationPackage {
+  id             String   @id @default(cuid())
+  title          String
+  stripePriceIds String[]
+  enabled        Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model EmployerRegistrationConfiguration {
+  id                              String   @id @default("default")
+  additionalRepresentativePriceId String
+  createdAt                       DateTime @default(now())
+  updatedAt                       DateTime @updatedAt
 }
 
 model Post {

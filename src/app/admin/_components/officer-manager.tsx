@@ -1,7 +1,7 @@
 "use client";
 
-import { Typography } from "@/app/_components/typography";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import { toTitleCase } from "@/lib/utils";
 import { authClient } from "@/server/better-auth/client";
 import { api } from "@/trpc/react";
 import { Plus, Trash2, UserPlus } from "lucide-react";
@@ -163,7 +164,7 @@ function AuthorizedOfficerList({
                 </Button>
               </>
             ) : (
-              <span className="capitalize">{officer.role.toLowerCase()}</span>
+              <Badge variant="outline">{toTitleCase(officer.role)}</Badge>
             )}
           </ItemActions>
         </Item>
@@ -205,15 +206,9 @@ function AddOfficerForm({ canManage }: { canManage: boolean }) {
   return (
     <form onSubmit={handleSubmit}>
       <Field data-invalid={Boolean(addOfficer.error)}>
-        <FieldLabel htmlFor="officer-email">
-          <Typography
-            as="span"
-            variant="h6"
-            className="flex items-center gap-2"
-          >
-            <UserPlus size={16} />
-            Add an officer
-          </Typography>
+        <FieldLabel htmlFor="officer-email" className="flex items-center gap-2">
+          <UserPlus />
+          Add an officer
         </FieldLabel>
 
         <InputGroup>
@@ -254,7 +249,6 @@ function AddOfficerForm({ canManage }: { canManage: boolean }) {
             ) : null}
             <InputGroupButton
               aria-label="Add officer"
-              className="size-7 rounded-full"
               disabled={addOfficer.isPending || !email.trim()}
               size="icon-sm"
               type="submit"

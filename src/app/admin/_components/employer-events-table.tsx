@@ -24,7 +24,8 @@ import {
   FieldTitle,
 } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
-import { toTitleCase } from "@/lib/utils";
+import { formatMoney, toTitleCase } from "@/lib/utils";
+import { env } from "@/env";
 import { api, type RouterOutputs } from "@/trpc/react";
 import { ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
@@ -36,15 +37,13 @@ type Registration =
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   dateStyle: "medium",
   timeStyle: "short",
-  timeZone: "UTC",
 });
 
-function formatCurrency(amount: number, currency: string) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: currency.toUpperCase(),
-  }).format(amount / 100);
-}
+const stripePaymentsUrl = env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith(
+  "pk_test",
+)
+  ? "https://dashboard.stripe.com/test/payments"
+  : "https://dashboard.stripe.com/payments";
 
 const columns: ColumnDef<Registration>[] = [
   {
@@ -59,7 +58,13 @@ const columns: ColumnDef<Registration>[] = [
     ),
   },
   { header: "Contact", value: "contactName" },
-  { header: "Package", value: "tierName" },
+  {
+    header: "Package",
+    value: (registration) =>
+      registration.packageTitle.length > 0
+        ? registration.packageTitle
+        : registration.tierName,
+  },
   {
     header: "Representatives",
     value: "representativeCount",
@@ -84,7 +89,7 @@ const columns: ColumnDef<Registration>[] = [
   {
     header: "Total",
     value: (registration) =>
-      formatCurrency(registration.amount, registration.currency),
+      formatMoney(registration.amount, registration.currency),
     float: "right",
   },
   {
@@ -149,7 +154,7 @@ function RegistrationDetails({ registration }: { registration: Registration }) {
           variant="outline"
           render={
             <a
-              href={`https://dashboard.stripe.com/payments/${registration.stripePaymentIntentId}`}
+              href={`${stripePaymentsUrl}/${registration.stripePaymentIntentId}`}
               rel="noreferrer"
               target="_blank"
             />
@@ -229,7 +234,14 @@ function RegistrationDetails({ registration }: { registration: Registration }) {
         <section className="space-y-3">
           <Typography variant="h6">Registration & payment</Typography>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Detail label="Package">{registration.tierName}</Detail>
+            <Detail label="Package">
+              {registration.packageTitle.length > 0
+                ? registration.packageTitle
+                : registration.tierName}
+            </Detail>
+            {registration.packageTitle ? (
+              <Detail label="Package tier">{registration.tierName}</Detail>
+            ) : null}
             <Detail label="Representatives">
               {registration.representativeCount}
             </Detail>
@@ -237,13 +249,13 @@ function RegistrationDetails({ registration }: { registration: Registration }) {
               {registration.additionalRepCount}
             </Detail>
             <Detail label="Additional representative rate">
-              {formatCurrency(
+              {formatMoney(
                 registration.additionalRepUnitAmount,
                 registration.currency,
               )}
             </Detail>
             <Detail label="Total">
-              {formatCurrency(registration.amount, registration.currency)}
+              {formatMoney(registration.amount, registration.currency)}
             </Detail>
             <Detail label="Last updated">
               {dateFormatter.format(registration.updatedAt)}

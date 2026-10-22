@@ -11,7 +11,6 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  Loader2,
 } from "lucide-react";
 import { isValidElement, type ReactNode } from "react";
 
@@ -24,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -141,7 +141,7 @@ export function DataTable<TData>({
         <TableCell colSpan={columns.length} className="h-24 text-center">
           <div className="flex items-center justify-center gap-2">
             <Typography variant="caption">Loading...</Typography>
-            <Loader2 className="animate-spin" size={16} />
+            <Spinner />
           </div>
         </TableCell>
       </TableRow>
@@ -193,7 +193,7 @@ export function DataTable<TData>({
     body = (
       <TableRow>
         <TableCell colSpan={columns.length} className="h-24 text-center">
-          No results.
+          <Typography variant="caption">No results.</Typography>
         </TableCell>
       </TableRow>
     );
@@ -307,11 +307,7 @@ export function Pagination({
         >
           <ChevronLeft />
         </Button>
-        <Typography
-          as="span"
-          variant="caption"
-          className="text-foreground px-2 font-medium"
-        >
+        <Typography as="span" variant="caption" className="px-2">
           Page {page} of {totalPages}
         </Typography>
         <Button

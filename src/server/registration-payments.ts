@@ -2,9 +2,23 @@ import "server-only";
 
 import type Stripe from "stripe";
 
-import { employerRegistrationSchema } from "@/lib/employer-registration";
+import { employerRegistrationSchema } from "@/app/career-events/register/schema";
 import { db } from "@/server/db";
 
+/**
+ * Checkout is two rows on purpose.
+ *
+ * 1. `RegistrationAttempt` — in-flight checkout. Holds the form JSON and the
+ *    Stripe Checkout Session and PaymentIntent ids. Created when they leave
+ *    for Stripe Checkout. Not shown in admin.
+ * 2. `EmployerRegistration` — the real signup officers look at. Created only
+ *    once Stripe says the payment is `processing` or `succeeded`.
+ *
+ * Stripe and the return page can both report the same PaymentIntent, so these
+ * helpers are idempotent. Webhooks and `registration.finalize` both call them.
+ */
+
+/** Statuses that mean "we should create / keep the officer-facing row." */
 const acceptedStatuses = new Set<Stripe.PaymentIntent.Status>([
   "processing",
   "succeeded",
@@ -13,15 +27,18 @@ const acceptedStatuses = new Set<Stripe.PaymentIntent.Status>([
 const emptyToNull = (value: string | undefined) =>
   value && value.length > 0 ? value : null;
 
-export const paymentIntentResult = (paymentIntent: Stripe.PaymentIntent) => ({
-  accepted: acceptedStatuses.has(paymentIntent.status),
-  clientSecret:
-    paymentIntent.status === "requires_action"
-      ? paymentIntent.client_secret
-      : null,
-  paymentStatus: paymentIntent.status,
-});
-
+/**
+ * Turn a paid (or ACH-processing) PaymentIntent into an `EmployerRegistration`.
+ *
+ * No-ops if the PI is not `processing`/`succeeded`, has no attempt id in
+ * metadata, or the attempt row is gone. Upsert so a webhook and a tRPC
+ * finalize hitting the same PI don't create two registrations.
+ *
+ * On a later `succeeded` after `processing`, only `paymentStatus` and the PI
+ * id are updated — form fields stay as they were on first promote.
+ *
+ * @returns The registration row, or `null` if this PI is not ready to promote.
+ */
 export const promoteAcceptedAttempt = async (
   paymentIntent: Stripe.PaymentIntent,
 ) => {
@@ -73,6 +90,8 @@ export const promoteAcceptedAttempt = async (
         degreeLevels: registration.degreeLevels,
         positionsAvailable: registration.positionsAvailable,
         tierName: attempt.tierName,
+        selectedPackageId: attempt.selectedPackageId,
+        packageTitle: attempt.packageTitle,
         stripeProductId: attempt.stripeProductId,
         stripePriceId: attempt.selectedPriceId,
         additionalRepPriceId: attempt.additionalRepPriceId,
@@ -98,17 +117,34 @@ export const promoteAcceptedAttempt = async (
   });
 };
 
+/**
+ * Handle a PaymentIntent that Stripe reports as failed or canceled
+ * (`payment_intent.payment_failed` / `canceled`, or a declined confirm).
+ *
+ * Three cases:
+ *
+ * - **Already promoted** (registration row exists, e.g. ACH was `processing`
+ *   then later failed): mark both rows `FAILED`. Officers already have an
+ *   entry; deleting it would hide a company that paid and then bounced.
+ * - **Hosted Checkout still exists**: keep the attempt because Checkout lets
+ *   the customer try another payment method on the same Session.
+ * - **Legacy embedded checkout**: delete the attempt so a retry starts clean.
+ *
+ * Delete is `deleteMany` so a missing row is a no-op (webhook retry).
+ */
 export const recordFailedAttempt = async (
   paymentIntent: Stripe.PaymentIntent,
 ) => {
   const attemptId = paymentIntent.metadata.registrationAttemptId;
   if (!attemptId) return;
 
-  const existingRegistration = await db.employerRegistration.findUnique({
-    where: { attemptId },
+  const attempt = await db.registrationAttempt.findUnique({
+    where: { id: attemptId },
+    include: { registration: true },
   });
+  if (!attempt) return;
 
-  if (existingRegistration) {
+  if (attempt.registration) {
     await db.$transaction([
       db.employerRegistration.update({
         where: { attemptId },
@@ -122,6 +158,17 @@ export const recordFailedAttempt = async (
         },
       }),
     ]);
+    return;
+  }
+
+  if (attempt.stripeCheckoutSessionId) {
+    await db.registrationAttempt.update({
+      where: { id: attemptId },
+      data: {
+        status: "FAILED",
+        stripePaymentIntentId: paymentIntent.id,
+      },
+    });
     return;
   }
 

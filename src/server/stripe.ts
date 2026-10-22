@@ -3,6 +3,7 @@ import "server-only";
 import Stripe from "stripe";
 
 import { env } from "@/env";
+import { db } from "@/server/db";
 
 let stripeClient: Stripe | undefined;
 
@@ -15,63 +16,10 @@ export const getStripe = () => {
   return stripeClient;
 };
 
-export const getAllowedPriceIds = () => {
-  const priceIds = [
-    env.STRIPE_TIER_1_PRICE_ID,
-    env.STRIPE_TIER_2_PRICE_ID,
-    env.STRIPE_TIER_3_PRICE_ID,
-  ];
-
-  if (priceIds.some((priceId) => !priceId)) {
-    throw new Error("All three Stripe tier Price IDs must be configured");
-  }
-
-  return priceIds as [string, string, string];
-};
-
-export const getRegistrationTiers = async () => {
-  const stripe = getStripe();
-  const prices = await Promise.all(
-    getAllowedPriceIds().map((priceId) =>
-      stripe.prices.retrieve(priceId, { expand: ["product"] }),
-    ),
-  );
-
-  return prices.map((price, index) => {
-    if (
-      !price.active ||
-      price.type !== "one_time" ||
-      price.unit_amount === null ||
-      typeof price.product === "string" ||
-      price.product.deleted
-    ) {
-      throw new Error(
-        `Stripe tier ${index + 1} is not an active one-time price`,
-      );
-    }
-
-    return {
-      description: price.product.description,
-      name: price.product.name,
-      priceId: price.id,
-      productId: price.product.id,
-      unitAmount: price.unit_amount,
-      currency: price.currency,
-    };
+export const getActiveStripePrice = async (priceId: string) => {
+  const price = await getStripe().prices.retrieve(priceId, {
+    expand: ["product"],
   });
-};
-
-export const getAdditionalRepresentativePrice = async () => {
-  if (!env.STRIPE_ADDITIONAL_REP_PRICE_ID) {
-    throw new Error(
-      "The additional representative Stripe Price is not configured",
-    );
-  }
-
-  const price = await getStripe().prices.retrieve(
-    env.STRIPE_ADDITIONAL_REP_PRICE_ID,
-    { expand: ["product"] },
-  );
 
   if (
     !price.active ||
@@ -80,12 +28,11 @@ export const getAdditionalRepresentativePrice = async () => {
     typeof price.product === "string" ||
     price.product.deleted
   ) {
-    throw new Error(
-      "The additional representative Price is not an active one-time price",
-    );
+    return null;
   }
 
   return {
+    description: price.product.description,
     name: price.product.name,
     priceId: price.id,
     productId: price.product.id,
@@ -95,28 +42,67 @@ export const getAdditionalRepresentativePrice = async () => {
 };
 
 export const getRegistrationConfiguration = async () => {
-  const [tiers, additionalRepresentative] = await Promise.all([
-    getRegistrationTiers(),
-    getAdditionalRepresentativePrice(),
+  const [packages, settings] = await Promise.all([
+    db.employerRegistrationPackage.findMany({
+      where: { enabled: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    }),
+    db.employerRegistrationConfiguration.findUnique({
+      where: { id: "default" },
+    }),
   ]);
 
+  if (!settings) {
+    throw new Error("Employer registration pricing is not configured");
+  }
+
+  const priceIds = [
+    ...new Set([
+      ...packages.flatMap(
+        (registrationPackage) => registrationPackage.stripePriceIds,
+      ),
+      settings.additionalRepresentativePriceId,
+    ]),
+  ];
+  const prices = await Promise.all(
+    priceIds.map(
+      async (priceId) =>
+        [priceId, await getActiveStripePrice(priceId)] as const,
+    ),
+  );
+  const pricesById = new Map(prices);
+
+  const registrationPackages = packages
+    .map((registrationPackage) => ({
+      id: registrationPackage.id,
+      title: registrationPackage.title,
+      options: registrationPackage.stripePriceIds.flatMap((priceId) => {
+        const price = pricesById.get(priceId);
+        return price ? [price] : [];
+      }),
+    }))
+    .filter((registrationPackage) => registrationPackage.options.length > 0);
+
+  const additionalRepresentative = pricesById.get(
+    settings.additionalRepresentativePriceId,
+  );
+  if (!additionalRepresentative) {
+    throw new Error("The additional representative Price is unavailable");
+  }
+
+  const optionCurrencies = registrationPackages.flatMap((registrationPackage) =>
+    registrationPackage.options.map((option) => option.currency),
+  );
   if (
-    tiers.some((tier) => tier.currency !== additionalRepresentative.currency)
+    optionCurrencies.some(
+      (currency) => currency !== additionalRepresentative.currency,
+    )
   ) {
     throw new Error("All registration Prices must use the same currency");
   }
 
-  return { tiers, additionalRepresentative };
-};
-
-export const getRegistrationTier = async (priceId: string) => {
-  const allowedPriceIds = getAllowedPriceIds();
-  if (!allowedPriceIds.includes(priceId)) {
-    throw new Error("The selected registration tier is not allowed");
-  }
-
-  const tiers = await getRegistrationTiers();
-  const tier = tiers.find((candidate) => candidate.priceId === priceId);
-  if (!tier) throw new Error("The selected registration tier is unavailable");
-  return tier;
+  return {
+    packages: registrationPackages,
+    additionalRepresentative,
+  };
 };

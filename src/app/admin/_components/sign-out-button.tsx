@@ -38,14 +38,13 @@ export function SignOutButton({ user }: SignOutButtonProps) {
 
   return (
     <Button
-      className="bg-card text-card-foreground ring-foreground/5 dark:ring-foreground/10 hover:bg-card/80 h-auto gap-2 rounded-4xl px-4 py-2 text-sm shadow-md ring-1"
       aria-label={`Sign out ${user.name}`}
       disabled={isSigningOut}
       onClick={signOut}
       type="button"
-      variant="ghost"
+      variant="outline"
     >
-      <Avatar size="sm" className="-ml-1.5">
+      <Avatar size="sm">
         <AvatarImage
           alt={`${user.name}'s profile`}
           src={user.image ?? undefined}

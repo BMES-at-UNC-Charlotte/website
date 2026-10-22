@@ -29,22 +29,6 @@ export const env = createEnv({
       process.env.NODE_ENV === "production"
         ? z.string()
         : z.string().optional(),
-    STRIPE_TIER_1_PRICE_ID:
-      process.env.NODE_ENV === "production"
-        ? z.string()
-        : z.string().optional(),
-    STRIPE_TIER_2_PRICE_ID:
-      process.env.NODE_ENV === "production"
-        ? z.string()
-        : z.string().optional(),
-    STRIPE_TIER_3_PRICE_ID:
-      process.env.NODE_ENV === "production"
-        ? z.string()
-        : z.string().optional(),
-    STRIPE_ADDITIONAL_REP_PRICE_ID:
-      process.env.NODE_ENV === "production"
-        ? z.string()
-        : z.string().optional(),
   },
 
   /**
@@ -72,10 +56,6 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-    STRIPE_TIER_1_PRICE_ID: process.env.STRIPE_TIER_1_PRICE_ID,
-    STRIPE_TIER_2_PRICE_ID: process.env.STRIPE_TIER_2_PRICE_ID,
-    STRIPE_TIER_3_PRICE_ID: process.env.STRIPE_TIER_3_PRICE_ID,
-    STRIPE_ADDITIONAL_REP_PRICE_ID: process.env.STRIPE_ADDITIONAL_REP_PRICE_ID,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   },

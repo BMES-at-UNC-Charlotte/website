@@ -21,8 +21,10 @@ import {
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { FieldError } from "@/components/ui/field";
+import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/trpc/react";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { type SubmitEvent, useRef, useState } from "react";
 
@@ -80,7 +82,7 @@ export default function DevPage() {
       <section className="space-y-4">
         <div className="space-y-1">
           <Typography variant="h2">Documentation</Typography>
-          <Typography className="text-muted-foreground">
+          <Typography variant="caption">
             Quick links for stack setup and project docs.
           </Typography>
         </div>
@@ -162,17 +164,12 @@ export default function DevPage() {
                   <InputGroupAddon align="inline-end" className="pr-2">
                     <InputGroupButton
                       aria-label="Send message"
-                      className="size-8 rounded-full"
                       disabled={!message.trim() || isSending}
                       size="icon-sm"
                       type="submit"
                       variant="default"
                     >
-                      {isSending ? (
-                        <Loader2 className="animate-spin" />
-                      ) : (
-                        <ArrowRight />
-                      )}
+                      {isSending ? <Spinner /> : <ArrowRight />}
                     </InputGroupButton>
                   </InputGroupAddon>
                 </InputGroup>
@@ -194,7 +191,7 @@ export default function DevPage() {
       <section className="space-y-4">
         <div className="space-y-1">
           <Typography variant="h2">Brand tokens</Typography>
-          <Typography className="text-muted-foreground">
+          <Typography variant="caption">
             Primary brand colors applied to the theme.
           </Typography>
         </div>
@@ -202,30 +199,28 @@ export default function DevPage() {
           <div className="space-y-2">
             <div className="bg-primary h-16 rounded-xl" />
             <div>
-              <Typography className="text-sm font-medium">primary</Typography>
+              <Typography variant="h6">primary</Typography>
               <Typography variant="caption">#005035</Typography>
             </div>
           </div>
           <div className="space-y-2">
             <div className="bg-secondary h-16 rounded-xl" />
             <div>
-              <Typography className="text-sm font-medium">secondary</Typography>
+              <Typography variant="h6">secondary</Typography>
               <Typography variant="caption">#A49665</Typography>
             </div>
           </div>
           <div className="space-y-2">
             <div className="bg-background h-16 rounded-xl border" />
             <div>
-              <Typography className="text-sm font-medium">
-                background
-              </Typography>
+              <Typography variant="h6">background</Typography>
               <Typography variant="caption">#101820</Typography>
             </div>
           </div>
           <div className="space-y-2">
             <div className="bg-chart-1 h-16 rounded-xl" />
             <div>
-              <Typography className="text-sm font-medium">chart-1</Typography>
+              <Typography variant="h6">chart-1</Typography>
               <Typography variant="caption">#151060</Typography>
             </div>
           </div>
@@ -236,7 +231,7 @@ export default function DevPage() {
       <section className="space-y-4">
         <div className="space-y-1">
           <Typography variant="h2">Surfaces & neutrals</Typography>
-          <Typography className="text-muted-foreground">
+          <Typography variant="caption">
             Navy-tinted surface steps for cards, muted fills, and borders.
           </Typography>
         </div>
@@ -272,7 +267,7 @@ export default function DevPage() {
       <section className="space-y-4">
         <div className="space-y-1">
           <Typography variant="h2">Chart palette</Typography>
-          <Typography className="text-muted-foreground">
+          <Typography variant="caption">
             chart-1 is brand indigo; chart-2 through chart-5 use the default
             palette.
           </Typography>
@@ -307,7 +302,7 @@ export default function DevPage() {
       <section className="space-y-4">
         <div className="space-y-1">
           <Typography variant="h2">Buttons</Typography>
-          <Typography className="text-muted-foreground">
+          <Typography variant="caption">
             Available variants, sizes, and states.
           </Typography>
         </div>
@@ -345,9 +340,7 @@ export default function DevPage() {
       <section className="space-y-4">
         <div className="space-y-1">
           <Typography variant="h2">Badges</Typography>
-          <Typography className="text-muted-foreground">
-            Available badge variants.
-          </Typography>
+          <Typography variant="caption">Available badge variants.</Typography>
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge>Default</Badge>
@@ -362,7 +355,7 @@ export default function DevPage() {
       <section className="space-y-4">
         <div className="space-y-1">
           <Typography variant="h2">Form controls</Typography>
-          <Typography className="text-muted-foreground">
+          <Typography variant="caption">
             Label, input, and validation states.
           </Typography>
         </div>
@@ -381,9 +374,7 @@ export default function DevPage() {
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input id="name" placeholder="Required" aria-invalid />
-              <Typography variant="caption" className="text-destructive">
-                Name is required.
-              </Typography>
+              <FieldError>Name is required.</FieldError>
             </div>
           </CardContent>
           <CardFooter className="gap-2">
@@ -399,7 +390,7 @@ export default function DevPage() {
       <section className="space-y-4">
         <div className="space-y-1">
           <Typography variant="h2">Typography</Typography>
-          <Typography className="text-muted-foreground">
+          <Typography variant="caption">
             Heading, body, subtitle, and caption styles.
           </Typography>
         </div>
@@ -420,12 +411,6 @@ export default function DevPage() {
             </Typography>
             <Typography variant="caption">
               Caption — smaller supporting text.
-            </Typography>
-            <Typography className="text-muted-foreground">
-              Paragraph with muted applied via className.
-            </Typography>
-            <Typography className="text-secondary">
-              Accent text using secondary.
             </Typography>
           </CardContent>
         </Card>
