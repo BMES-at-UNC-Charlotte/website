@@ -1,0 +1,23 @@
+name: Delete Neon Preview Branch on PR Close
+
+on:
+  # Run even when the closed PR has merge conflicts; never check out PR code.
+  pull_request_target:
+    types: [closed]
+
+permissions: {}
+
+jobs:
+  delete-neon-branch:
+    # Forks may reuse an internal branch name and must not delete its preview.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Delete Neon branch
+        # Pin upstream's input-handling fix, which is not yet in a tagged release.
+        uses: neondatabase/delete-branch-action@aed9ab1ec86e380312c7b0a9e29942e41349adf6
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID || secrets.NEON_PROJECT_ID }}
+          branch: preview/${{ github.event.pull_request.head.ref }}
+          api_key: ${{ secrets.NEON_API_KEY }}
