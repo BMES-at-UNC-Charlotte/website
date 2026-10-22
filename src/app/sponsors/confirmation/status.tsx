@@ -12,10 +12,10 @@ import { formatDonationUsd } from "@/lib/donation";
 import { SPONSORSHIP_EMAIL } from "@/lib/sponsorship";
 import { api } from "@/trpc/react";
 
-export function ContributionStatus({ sessionId }: { sessionId?: string }) {
-  const valid = Boolean(sessionId?.startsWith("cs_"));
+export function ContributionStatus({ reference }: { reference?: string }) {
+  const valid = Boolean(reference?.startsWith("cs_"));
   const payment = api.donation.paymentStatus.useQuery(
-    { sessionId: sessionId ?? "" },
+    { sessionId: reference ?? "" },
     {
       enabled: valid,
       retry: 1,
@@ -69,13 +69,18 @@ export function ContributionStatus({ sessionId }: { sessionId?: string }) {
             </Button>
           </Alert>
         ) : paid ? (
-          <div className="flex items-center gap-3">
-            <CheckCircle2 aria-hidden="true" className="shrink-0" />
-            <Typography>
-              Your {formatDonationUsd(payment.data.amount)}{" "}
-              {payment.data?.kind === "sponsorship"
-                ? "sponsorship payment is confirmed. Your company registration has been saved, and we'll contact you about your sponsorship."
-                : "donation is confirmed. Your contribution supports Charlotte BMES student programs and activities."}
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 aria-hidden="true" className="shrink-0" />
+              <Typography>
+                Your {formatDonationUsd(payment.data.amount)}{" "}
+                {payment.data?.kind === "sponsorship"
+                  ? "sponsorship payment is confirmed. Your company registration has been saved, and we'll contact you about your sponsorship."
+                  : "donation is confirmed. Your contribution supports Charlotte BMES student programs and activities."}
+              </Typography>
+            </div>
+            <Typography variant="caption" className="break-all">
+              Payment reference: {reference}
             </Typography>
           </div>
         ) : payment.data?.status === "PROCESSING" ? (

@@ -8,13 +8,13 @@ export const metadata: Metadata = {
 export default async function ConfirmationPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ reference?: string }>;
 }) {
-  const { session_id } = await searchParams;
+  const { reference } = await searchParams;
   return (
     <Container>
       <ContributionStatus
-        sessionId={typeof session_id === "string" ? session_id : undefined}
+        reference={typeof reference === "string" ? reference : undefined}
       />
     </Container>
   );

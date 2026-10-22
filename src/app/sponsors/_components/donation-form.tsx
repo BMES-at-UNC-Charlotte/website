@@ -63,6 +63,10 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
         parsed.data.amountCents === cents
       )
         input = parsed.data;
+    } catch {
+      /* Replace an unreadable draft with the current request below. */
+    }
+    try {
       sessionStorage.setItem(DONATION_CHECKOUT_KEY, JSON.stringify(input));
     } catch {
       /* The mutation retains its request when browser storage is unavailable. */

@@ -183,7 +183,7 @@ export async function createDonationCheckout(
       return { url: previous.url };
     if (previous.status === "complete")
       return {
-        url: `${origin}/sponsors/confirmation?session_id=${previous.id}`,
+        url: `${origin}/sponsors/confirmation?reference=${previous.id}`,
       };
     throw new TRPCError({
       code: "CONFLICT",
@@ -209,7 +209,7 @@ export async function createDonationCheckout(
       custom_text: { submit: { message: PAYMENT_DISCLAIMER } },
       customer_email:
         input.kind === "sponsorship" ? input.sponsor.email : undefined,
-      success_url: `${origin}/sponsors/confirmation?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/sponsors/confirmation?reference={CHECKOUT_SESSION_ID}`,
       cancel_url:
         input.kind === "individual"
           ? `${origin}/sponsors?status=canceled`
@@ -245,7 +245,7 @@ export async function createDonationCheckout(
     data: { stripeCheckoutSessionId: session.id },
   });
   if (session.status === "complete")
-    return { url: `${origin}/sponsors/confirmation?session_id=${session.id}` };
+    return { url: `${origin}/sponsors/confirmation?reference=${session.id}` };
   if (session.status !== "open" || !session.url)
     throw new TRPCError({
       code: "CONFLICT",
