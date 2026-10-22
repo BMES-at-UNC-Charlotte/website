@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Typography } from "@/app/_components/typography";
 import { PaymentDisclaimer } from "@/app/_components/payment-disclaimer";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -34,62 +34,42 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
   const [custom, setCustom] = useState(false);
   const [customValue, setCustomValue] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [redirecting, setRedirecting] = useState(false);
-  const request = useRef<{ amount: number; key: string } | null>(null);
-  const inFlight = useRef(false);
   const customInput = useRef<HTMLInputElement>(null);
   const createCheckout = api.donation.createCheckoutSession.useMutation();
   const amount = parseDonationCents(customValue);
   const invalid =
     custom && amount === null && (submitted || customValue.length > 0);
-  const busy = createCheckout.isPending || redirecting;
+  const busy = createCheckout.isPending;
 
-  useEffect(() => {
+  function checkout(cents: number) {
+    if (busy) return;
+    const previous = createCheckout.variables;
+    let input = {
+      kind: "individual" as const,
+      amountCents: cents,
+      idempotencyKey:
+        previous?.kind === "individual" && previous.amountCents === cents
+          ? previous.idempotencyKey
+          : createCheckoutKey(),
+    };
     try {
       const saved = sessionStorage.getItem(DONATION_CHECKOUT_KEY);
       const parsed = donationCheckoutInput.safeParse(
         saved ? JSON.parse(saved) : null,
       );
-      if (parsed.success && parsed.data.kind === "individual")
-        request.current = {
-          amount: parsed.data.amountCents,
-          key: parsed.data.idempotencyKey,
-        };
-    } catch {
-      /* Browser storage may be unavailable. */
-    }
-    function restore(event: PageTransitionEvent) {
-      if (!event.persisted) return;
-      inFlight.current = false;
-      setRedirecting(false);
-    }
-    window.addEventListener("pageshow", restore);
-    return () => window.removeEventListener("pageshow", restore);
-  }, []);
-
-  async function checkout(cents: number) {
-    if (inFlight.current) return;
-    inFlight.current = true;
-    if (request.current?.amount !== cents)
-      request.current = { amount: cents, key: createCheckoutKey() };
-    const input = {
-      kind: "individual" as const,
-      amountCents: cents,
-      idempotencyKey: request.current.key,
-    };
-    try {
+      if (
+        parsed.success &&
+        parsed.data.kind === "individual" &&
+        parsed.data.amountCents === cents
+      )
+        input = parsed.data;
       sessionStorage.setItem(DONATION_CHECKOUT_KEY, JSON.stringify(input));
     } catch {
-      /* The current page still retains its checkout key. */
+      /* The mutation retains its request when browser storage is unavailable. */
     }
-    try {
-      const { url } = await createCheckout.mutateAsync(input);
-      setRedirecting(true);
-      window.location.assign(url);
-    } catch {
-      inFlight.current = false;
-      // The mutation error is displayed below.
-    }
+    createCheckout.mutate(input, {
+      onSuccess: ({ url }) => window.location.assign(url),
+    });
   }
 
   return (
@@ -109,7 +89,7 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
               customInput.current?.focus();
               return;
             }
-            void checkout(amount);
+            checkout(amount);
           }}
         >
           {canceled ? (
@@ -133,7 +113,7 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
                   variant="outline"
                   size="lg"
                   disabled={busy}
-                  onClick={() => void checkout(dollars * 100)}
+                  onClick={() => checkout(dollars * 100)}
                 >
                   {formatDonationUsd(dollars * 100)}
                 </Button>
@@ -147,7 +127,6 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
                 onClick={() => {
                   setCustom(!custom);
                   createCheckout.reset();
-                  requestAnimationFrame(() => customInput.current?.focus());
                 }}
               >
                 Custom
@@ -165,6 +144,7 @@ export function DonationForm({ canceled = false }: { canceled?: boolean }) {
                 </InputGroupAddon>
                 <InputGroupInput
                   ref={customInput}
+                  autoFocus
                   id="custom-amount"
                   inputMode="decimal"
                   placeholder="25.00"

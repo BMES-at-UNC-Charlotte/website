@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Typography } from "@/app/_components/typography";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -35,56 +36,54 @@ function Detail({ label, children }: { label: string; children: ReactNode }) {
 
 function SponsorLogo({ id, companyName }: { id: string; companyName: string }) {
   const utils = api.useUtils();
-  const [src, setSrc] = useState("");
-  const [error, setError] = useState(false);
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    let active = true;
-    setSrc("");
-    setError(false);
-    async function load() {
+  const [imageError, setImageError] = useState(false);
+  const logo = useQuery({
+    queryKey: ["sponsorship-logo", id],
+    staleTime: Infinity,
+    retry: false,
+    queryFn: async ({ signal }) => {
       const parts: string[] = [];
       let chunk: number | null = 0;
       let contentType = "";
-      while (chunk !== null && active) {
-        const result = await utils.sponsorship.logo.fetch({ id, chunk });
+      while (chunk !== null) {
+        const result = await utils.client.sponsorship.logo.query(
+          { id, chunk },
+          { signal },
+        );
         parts.push(result.base64);
         contentType = result.contentType;
         chunk = result.nextChunk;
       }
-      if (active) setSrc(`data:${contentType};base64,${parts.join("")}`);
-    }
-    void load().catch(() => {
-      if (active) setError(true);
-    });
-    return () => {
-      active = false;
-    };
-  }, [id, utils, attempt]);
+      return `data:${contentType};base64,${parts.join("")}`;
+    },
+  });
 
-  if (error)
-    return (
-      <Alert variant="destructive">
-        <AlertDescription>
-          Unable to load the company logo.
-          <Button variant="link" onClick={() => setAttempt(attempt + 1)}>
-            Try again
-          </Button>
-        </AlertDescription>
-      </Alert>
-    );
-  if (!src)
+  if (logo.isPending || logo.isFetching)
     return (
       <div className="flex items-center gap-2" role="status">
         <Spinner /> Loading logo…
       </div>
     );
+  if (logo.error || imageError)
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>
+          Unable to load the company logo.
+          <Button
+            variant="link"
+            onClick={() => void logo.refetch().then(() => setImageError(false))}
+          >
+            Try again
+          </Button>
+        </AlertDescription>
+      </Alert>
+    );
   return (
     // eslint-disable-next-line @next/next/no-img-element -- This logo comes from authenticated tRPC data.
     <img
-      src={src}
+      src={logo.data}
       alt={`${companyName} logo`}
-      onError={() => setError(true)}
+      onError={() => setImageError(true)}
       className="max-h-64 max-w-full object-contain"
     />
   );
@@ -264,6 +263,7 @@ export function SponsorshipDetails({
                       Company logo
                     </Typography>
                     <SponsorLogo
+                      key={id}
                       id={id}
                       companyName={registration?.companyName ?? "Company"}
                     />

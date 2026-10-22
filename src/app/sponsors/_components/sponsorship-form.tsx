@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { revalidateLogic, useSelector } from "@tanstack/react-form";
 import { focusFirstInvalidField, useAppForm } from "@/app/_components/form";
 import { PaymentDisclaimer } from "@/app/_components/payment-disclaimer";
@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
   logoSchema,
+  donationCheckoutInput,
   createCheckoutKey,
   CUSTOM_SPONSORSHIP,
   formatDonationUsd,
@@ -35,7 +36,6 @@ import {
   PARTNERSHIP_INTERESTS,
   sponsorRegistrationSchema,
   SPONSORSHIP_PREFERENCES,
-  sponsorshipFormSchema,
   sponsorshipSelectionFormSchema,
   type SponsorLogo,
   type SponsorshipFormValues,
@@ -62,6 +62,34 @@ const sponsorDefaults: SponsorshipFormValues = {
 };
 
 const SPONSOR_DRAFT_KEY = "bmes-sponsor-registration";
+
+function readSavedCheckout() {
+  try {
+    const stored = sessionStorage.getItem(SPONSOR_DRAFT_KEY);
+    if (!stored) return;
+    const saved = JSON.parse(stored) as {
+      kind?: unknown;
+      value?: { tier?: unknown };
+      logo?: unknown;
+      idempotencyKey?: unknown;
+    };
+    // Also accept drafts saved before the full checkout input was persisted.
+    const input = saved.kind
+      ? saved
+      : {
+          kind: "sponsorship",
+          priceId: saved.value?.tier,
+          sponsor: saved.value,
+          logo: saved.logo,
+          idempotencyKey: saved.idempotencyKey,
+        };
+    const parsed = donationCheckoutInput.safeParse(input);
+    if (parsed.success && parsed.data.kind === "sponsorship")
+      return parsed.data;
+  } catch {
+    /* A missing or invalid draft leaves a new registration ready to fill. */
+  }
+}
 
 async function readLogoChunk(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -92,23 +120,11 @@ export function SponsorshipForm({
 }) {
   const element = useRef<HTMLFormElement>(null);
   const logoInput = useRef<HTMLInputElement>(null);
-  const request = useRef<{ payload: string; key: string } | null>(null);
   const [logo, setLogo] = useState<SponsorLogo>();
   const [logoError, setLogoError] = useState("");
   const [readingLogo, setReadingLogo] = useState(false);
-  const [redirecting, setRedirecting] = useState(false);
-  const [invalidNotice, setInvalidNotice] = useState(false);
   const createCheckout = api.donation.createCheckoutSession.useMutation();
   const uploadLogo = api.donation.uploadLogoChunk.useMutation();
-  const busy = createCheckout.isPending || redirecting;
-
-  useEffect(() => {
-    function restore(event: PageTransitionEvent) {
-      if (event.persisted) setRedirecting(false);
-    }
-    window.addEventListener("pageshow", restore);
-    return () => window.removeEventListener("pageshow", restore);
-  }, []);
 
   const form = useAppForm({
     defaultValues: { ...sponsorDefaults, tier: initialTier },
@@ -117,16 +133,31 @@ export function SponsorshipForm({
       modeAfterSubmission: "change",
     }),
     validators: { onDynamic: sponsorshipSelectionFormSchema },
+    listeners: {
+      onMount: ({ formApi }) => {
+        if (!canceled) return;
+        const saved = readSavedCheckout();
+        if (!saved) return;
+        formApi.reset(
+          {
+            ...saved.sponsor,
+            tier: tiers.some((tier) => tier.priceId === saved.priceId)
+              ? saved.priceId
+              : initialTier,
+          },
+          { keepDefaultValues: true },
+        );
+        setLogo(saved.logo);
+      },
+    },
     onSubmitInvalid: ({ formApi }) => {
-      setInvalidNotice(true);
       void formApi
         .validateAllFields("submit")
         .then(() => focusFirstInvalidField(element.current));
     },
     onSubmit: async ({ value }) => {
-      if (busy || readingLogo || logoError) return;
+      if (createCheckout.isPending || readingLogo || logoError) return;
       if (value.tier === CUSTOM_SPONSORSHIP) return;
-      setInvalidNotice(false);
       const sponsor = sponsorRegistrationSchema.parse(value);
       const selected = tiers.find((tier) => tier.priceId === value.tier);
       if (!selected) return;
@@ -136,23 +167,24 @@ export function SponsorshipForm({
         sponsor,
         logo,
       };
-      const signature = JSON.stringify(payload);
-      if (request.current?.payload !== signature)
-        request.current = { payload: signature, key: createCheckoutKey() };
+      const previous = createCheckout.variables ?? readSavedCheckout();
+      const { idempotencyKey: previousKey, ...previousPayload } =
+        previous ?? {};
+      const input = {
+        ...payload,
+        idempotencyKey:
+          previousKey &&
+          JSON.stringify(previousPayload) === JSON.stringify(payload)
+            ? previousKey
+            : createCheckoutKey(),
+      };
       try {
-        sessionStorage.setItem(
-          SPONSOR_DRAFT_KEY,
-          JSON.stringify({ value, logo, idempotencyKey: request.current.key }),
-        );
+        sessionStorage.setItem(SPONSOR_DRAFT_KEY, JSON.stringify(input));
       } catch {
-        /* Checkout can proceed if browser storage is unavailable. */
+        /* The mutation retains its request when browser storage is unavailable. */
       }
       try {
-        const { url } = await createCheckout.mutateAsync({
-          ...payload,
-          idempotencyKey: request.current.key,
-        });
-        setRedirecting(true);
+        const { url } = await createCheckout.mutateAsync(input);
         window.location.assign(url);
       } catch (error) {
         if (error instanceof Error && error.message.includes("logo")) {
@@ -164,50 +196,11 @@ export function SponsorshipForm({
     },
   });
 
-  useEffect(() => {
-    if (!canceled) return;
-    try {
-      const stored = sessionStorage.getItem(SPONSOR_DRAFT_KEY);
-      if (!stored) return;
-      const draft = JSON.parse(stored) as {
-        value?: unknown;
-        logo?: unknown;
-        idempotencyKey?: unknown;
-      };
-      const parsed = sponsorshipFormSchema.safeParse(draft.value);
-      if (!parsed.success) return;
-      form.reset({
-        ...parsed.data,
-        tier: tiers.some((tier) => tier.priceId === parsed.data.tier)
-          ? parsed.data.tier
-          : initialTier,
-      });
-      const checked = logoSchema.optional().safeParse(draft.logo);
-      if (!checked.success) {
-        setLogoError("Please choose your logo again.");
-        return;
-      }
-      setLogo(checked.data);
-      if (
-        typeof draft.idempotencyKey === "string" &&
-        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-          draft.idempotencyKey,
-        )
-      )
-        request.current = {
-          key: draft.idempotencyKey,
-          payload: JSON.stringify({
-            kind: "sponsorship",
-            priceId: parsed.data.tier,
-            sponsor: sponsorRegistrationSchema.parse(parsed.data),
-            logo: checked.data,
-          }),
-        };
-    } catch {
-      /* A missing or invalid draft leaves the form ready for a new registration. */
-    }
-  }, [canceled, form, tiers, initialTier]);
-
+  const busy = useSelector(form.store, (state) => state.isSubmitting);
+  const invalidNotice = useSelector(
+    form.store,
+    (state) => state.submissionAttempts > 0 && !state.isValid,
+  );
   const tier = useSelector(form.store, (state) => state.values.tier);
   const selected = tiers.find((item) => item.priceId === tier);
 
@@ -519,10 +512,10 @@ export function SponsorshipForm({
                     <form.SubmitButton
                       size="lg"
                       className="w-full"
-                      disabled={busy || readingLogo || Boolean(logoError)}
+                      disabled={readingLogo || Boolean(logoError)}
                       pending="Loading…"
                     >
-                      {redirecting ? "Loading…" : "Continue to payment"}
+                      Continue to payment
                     </form.SubmitButton>
                   </CardContent>
                   <CardFooter>
