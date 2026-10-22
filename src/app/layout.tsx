@@ -39,7 +39,7 @@ export default function RootLayout({
       lang="en"
       className={cn(fraunces.variable, crimsonText.variable, "dark")}
     >
-      <body>
+      <body suppressHydrationWarning>
         <TRPCReactProvider>
           <NavBar />
           {children}
