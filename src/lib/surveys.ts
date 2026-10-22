@@ -22,18 +22,25 @@ export function surveyEmbedUrl(formUrl: string) {
   try {
     const url = new URL(formUrl);
     if (
-      url.protocol !== "https:" ||
-      url.hostname !== "docs.google.com" ||
+      !["http:", "https:"].includes(url.protocol) ||
       url.username ||
-      url.password ||
-      !/^\/forms\/(?:u\/\d+\/)?d\/(?:e\/)?[\w-]+\/viewform\/?$/.test(
-        url.pathname,
-      )
+      url.password
     ) {
       return null;
     }
-    url.searchParams.set("embedded", "true");
-    return url.toString();
+    if (url.hostname === "docs.google.com") {
+      if (
+        url.protocol !== "https:" ||
+        !/^\/forms\/(?:u\/\d+\/)?d\/(?:e\/)?[\w-]+\/viewform\/?$/.test(
+          url.pathname,
+        )
+      ) {
+        return null;
+      }
+      url.searchParams.set("embedded", "true");
+      return url.toString();
+    }
+    return formUrl;
   } catch {
     return null;
   }
@@ -70,10 +77,10 @@ export const surveyInputSchema = z
       .string()
       .trim()
       .max(2048)
-      .url("Enter a valid Google Form URL.")
+      .url("Enter a valid URL.")
       .refine(
         (value) => surveyEmbedUrl(value) !== null,
-        "Paste the full Google Forms responder link ending in /viewform, not a shortened link or editor URL.",
+        "Enter an HTTP or HTTPS URL. For Google Forms, paste the full responder link ending in /viewform.",
       ),
     live: z.boolean(),
     closesOn: closingDateSchema.nullable(),

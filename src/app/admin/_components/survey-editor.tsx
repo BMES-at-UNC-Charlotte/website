@@ -104,7 +104,7 @@ export function SurveyEditor({
           <DialogHeader>
             <DialogTitle>{survey ? "Edit survey" : "New survey"}</DialogTitle>
             <DialogDescription>
-              Embed a Google Form and choose an easy-to-type link for its page.
+              Embed a survey and choose an easy-to-type link for its page.
             </DialogDescription>
           </DialogHeader>
           <DialogBody className="space-y-6">
@@ -140,24 +140,23 @@ export function SurveyEditor({
                   </FieldError>
                 </Field>
                 <Field data-invalid={Boolean(errors.formUrl)}>
-                  <FieldLabel htmlFor="survey-form-url">
-                    Google Form URL
-                  </FieldLabel>
+                  <FieldLabel htmlFor="survey-form-url">Survey URL</FieldLabel>
                   <Input
                     id="survey-form-url"
                     type="url"
                     required
                     maxLength={2048}
-                    placeholder="https://docs.google.com/forms/…/viewform"
+                    placeholder="https://example.com/survey"
                     value={values.formUrl}
                     onChange={(event) => change("formUrl", event.target.value)}
                     aria-invalid={Boolean(errors.formUrl)}
                     aria-describedby="survey-url-help survey-url-error"
                   />
                   <FieldDescription id="survey-url-help">
-                    Paste the full docs.google.com/forms/…/viewform responder
-                    link, rather than a shortened forms.gle link or editor URL.
-                    Responses are collected in Google Forms.
+                    Paste any HTTP or HTTPS link. For Google Forms, use the full
+                    docs.google.com/forms/…/viewform responder link. Other links
+                    are embedded as entered; if a site blocks embedding,
+                    visitors can open it in a new tab.
                   </FieldDescription>
                   <FieldError id="survey-url-error">
                     {errors.formUrl?.[0]}
