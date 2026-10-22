@@ -27,7 +27,7 @@ export default async function SupportUsPage({
   return (
     <Container contentClassName="space-y-12 sm:space-y-16">
       <header className="max-w-3xl space-y-4">
-        <Typography variant="h1">Support Us</Typography>
+        <Typography variant="h1">Support Charlotte BMES</Typography>
         <Typography>
           Help students build, learn, and connect through biomedical
           engineering.
