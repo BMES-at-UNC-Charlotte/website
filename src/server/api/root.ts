@@ -1,3 +1,5 @@
+import { donationRouter } from "@/server/api/routers/donation";
+import { sponsorshipRouter } from "@/server/api/routers/sponsorship";
 import { officerRouter } from "@/server/api/routers/officer";
 import { surveyRouter } from "@/server/api/routers/survey";
 import { postRouter } from "@/server/api/routers/post";
@@ -9,6 +11,8 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  donation: donationRouter,
+  sponsorship: sponsorshipRouter,
   post: postRouter,
   officer: officerRouter,
   survey: surveyRouter,

@@ -41,19 +41,20 @@ const mainNavigationItems: NavigationItem[] = [
     : []),
 ];
 
-const adminNavigationItems: NavigationItem[] = [
-  { title: "Dashboard", href: "/admin" },
-  { title: "Surveys", href: "/admin/surveys" },
-  { title: "Main Site", href: "/" },
-];
-
 export function NavBar() {
   const pathname = usePathname();
   const { data: session } = authClient.useSession();
   const isAdminPage = pathname.startsWith("/admin");
   const isSurveyPage = pathname === "/s" || pathname.startsWith("/s/");
-  const navigationItems = isAdminPage
-    ? adminNavigationItems
+  const navigationItems: NavigationItem[] = isAdminPage
+    ? [
+        { title: "Dashboard", href: "/admin" },
+        { title: "Surveys", href: "/admin/surveys" },
+        ...(session?.user.adminUser?.role === "ADMIN"
+          ? [{ title: "Sponsorships", href: "/admin/sponsorship" }]
+          : []),
+        { title: "Main Site", href: "/" },
+      ]
     : mainNavigationItems;
 
   const isActive = (href: string) =>

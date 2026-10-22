@@ -122,3 +122,51 @@ model Survey {
 
   @@index([closesOn])
 }
+
+enum DonationPaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  EXPIRED
+}
+
+model DonationCheckout {
+  id                      String                @id @default(cuid())
+  idempotencyKey          String                @unique
+  requestHash             String
+  kind                    String
+  tier                    String?
+  stripePriceId           String?
+  amount                  Int
+  currency                String                @default("usd")
+  sponsor                 Json?
+  logoName                String?
+  logoContentType         String?
+  logoData                Bytes?
+  stripeCheckoutSessionId String?               @unique
+  stripePaymentIntentId   String?               @unique
+  status                  DonationPaymentStatus @default(PENDING)
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model SponsorshipPrice {
+  priceId String @id
+}
+
+// Temporary upload pieces; completed logos live on DonationCheckout.
+model SponsorshipLogoChunk {
+  uploadId    String
+  chunk       Int
+  name        String
+  contentType String
+  size        Int
+  data        Bytes
+  createdAt   DateTime @default(now())
+
+  @@id([uploadId, chunk])
+  @@index([createdAt])
+}
