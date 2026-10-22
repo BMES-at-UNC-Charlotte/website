@@ -9,13 +9,13 @@ import { Separator } from "@/components/ui/separator";
 import { getSponsorshipCatalog } from "@/server/sponsorship-prices";
 
 export const metadata: Metadata = {
-  title: "Donate & sponsor | Charlotte BMES",
+  title: "Support Us | Charlotte BMES",
   description:
     "Support Charlotte BMES with an individual donation or contact us about a corporate sponsorship.",
 };
 export const dynamic = "force-dynamic";
 
-export default async function SponsorsPage({
+export default async function SupportUsPage({
   searchParams,
 }: {
   searchParams: Promise<{ status?: string }>;
@@ -27,7 +27,7 @@ export default async function SponsorsPage({
   return (
     <Container contentClassName="space-y-12 sm:space-y-16">
       <header className="max-w-3xl space-y-4">
-        <Typography variant="h1">Support Charlotte BMES</Typography>
+        <Typography variant="h1">Support Us</Typography>
         <Typography>
           Help students build, learn, and connect through biomedical
           engineering.
